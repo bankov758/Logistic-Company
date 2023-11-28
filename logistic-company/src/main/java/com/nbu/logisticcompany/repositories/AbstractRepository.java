@@ -15,7 +15,7 @@ public class AbstractRepository<T> extends AbstractReadRepository<T> {
     public void create(T entity) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.persist(entity);
+            session.save(entity);
             session.getTransaction().commit();
         }
     }
@@ -23,7 +23,7 @@ public class AbstractRepository<T> extends AbstractReadRepository<T> {
     public void update(T entity) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.merge(entity);
+            session.update(entity);
             session.getTransaction().commit();
         }
     }
@@ -32,7 +32,7 @@ public class AbstractRepository<T> extends AbstractReadRepository<T> {
         T toDelete = getById(id);
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.remove(toDelete);
+            session.delete(toDelete);
             session.getTransaction().commit();
         }
     }
