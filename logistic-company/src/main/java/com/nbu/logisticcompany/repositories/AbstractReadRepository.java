@@ -29,14 +29,7 @@ public abstract class AbstractReadRepository<T> implements BaseReadRepository<T>
      * @return an entity that matches the given criteria
      */
     public <V> T getByField(String name, V value) {
-        final String query;
-        if(clazz.getSimpleName().equals("User")){
-            query = format(" from %s where %s = :value and is_deleted = false", clazz.getSimpleName(), name);
-        }
-        else {
-            query = format(" from %s where %s = :value", clazz.getSimpleName(), name);
-        }
-
+        final String query = format(" from %s where %s = :value", clazz.getSimpleName(), name);
         try (Session session = sessionFactory.openSession()) {
             return session
                     .createQuery(query, clazz)
@@ -54,13 +47,7 @@ public abstract class AbstractReadRepository<T> implements BaseReadRepository<T>
     @Override
     public List<T> getAll() {
         try (Session session = sessionFactory.openSession()) {
-            String query;
-            if (clazz.getSimpleName().equals("User")){
-                query = format(" from %s where is_deleted = false", clazz.getName());
-            }
-            else {
-                query = format(" from %s ", clazz.getName());
-            }
+            String query = format(" from %s ", clazz.getName());
             return session.createQuery(query, clazz).list();
         }
     }
