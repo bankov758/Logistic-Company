@@ -36,6 +36,7 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public List<UserOutDTO> getAll(@RequestHeader HttpHeaders headers,
                                    @RequestParam(required = false) Optional<String> search) {
