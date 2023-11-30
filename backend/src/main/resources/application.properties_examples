@@ -1,0 +1,7 @@
+1. Create a file named application.properties at the same folder
+2. Copy all properties below
+3. Modify the values to match your setup
+
+database.url=jdbc:mysql://localhost:3306/logistic_company
+database.username=root
+database.password=parolkazaSql123#
