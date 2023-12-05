@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const TheHeader: React.FC = () => {
 
@@ -7,10 +7,21 @@ const TheHeader: React.FC = () => {
         <nav>
             <ul>
                 <li>
-                    <Link to='/'>Home</Link>
+                    <NavLink 
+                        to='/'
+                        className={({isActive}) => isActive ? 'active' : undefined}
+                        end
+                    >
+                        Home
+                    </NavLink>
                 </li>
                 <li>
-                    <Link to='/auth'>Auth</Link>
+                    <NavLink 
+                        to='/auth' 
+                        className={({isActive}) => isActive ? 'active' : undefined}
+                    >
+                        Auth
+                    </NavLink>
                 </li>
             </ul>
         </nav>
