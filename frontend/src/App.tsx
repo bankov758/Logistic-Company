@@ -1,10 +1,10 @@
-import './App.css';
+import React from "react";
 
-function App() {
+const App: React.FC = () => {
 
     return (
         <div className="App">
-            <h1>app</h1>
+            <h1>app - test</h1>
         </div>
     );
 }
