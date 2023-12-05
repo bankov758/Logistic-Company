@@ -6,6 +6,7 @@ import RootLayout from '../components/Root';
 //pages
 import Home from '../pages/Home';
 import Auth from '../pages/Auth';
+import ProductPage from '../pages/Products';
 import ErrorPage from '../components/Error';
 
 
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
             {
                 path: '/',//pathname
                 element: <Home />//JSX element (component)
+            },
+            {
+                path: '/products',//pathname
+                element: <ProductPage />//JSX element (component)
             },
             {
                 path: '/auth',//pathname
