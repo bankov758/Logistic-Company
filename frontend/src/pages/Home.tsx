@@ -1,6 +1,14 @@
-const Home = () => {
+import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-    return <h1>home page</h1>
+const Home: React.FC = () => {
+
+    return (
+        <Fragment>
+            <h1>home page</h1>
+            <Link to='/auth'>Auth page</Link>
+        </Fragment>
+    )
 }
 
 export default Home;
