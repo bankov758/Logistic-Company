@@ -2,5 +2,8 @@
     padding: 4rem 4rem;
 }
 .footer{
-    background-color: #98AFC7
+    background-color: lightblue;
+}
+.sb_footer-links{
+    display: flex;
 }

@@ -1,10 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import "./TheHeader.css";
 
 const TheHeader: React.FC = () => {
 
     return (
-        <nav>
+        <nav className="navbar">
             <ul>
                 <li>
                     <NavLink 
