@@ -33,7 +33,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<Company> getAll(Optional<String> search) {
-        return null;
+        return companyRepository.getAll();
     }
 
     @Override

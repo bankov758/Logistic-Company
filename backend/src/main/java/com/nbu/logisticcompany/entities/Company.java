@@ -14,11 +14,11 @@ public class Company {
     @Column(name = "name")
     private String name;
 
-    // Employee to be mapped
+    //TODO Employee to be mapped
 
-    //Clients to be mapped
+    //TODO Clients to be mapped
 
-    //Shippment to be mapped
+    //TODO Shippment to be mapped
 
 
     public Company() {
