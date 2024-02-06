@@ -23,12 +23,12 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Company getById(int id) {
-        return null;
+        return companyRepository.getById(id);
     }
 
     @Override
     public Company getByName(String name) {
-        return null;
+        return companyRepository.getByField("name",name);
     }
 
     @Override

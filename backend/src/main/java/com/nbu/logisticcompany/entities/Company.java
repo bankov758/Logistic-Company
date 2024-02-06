@@ -18,7 +18,7 @@ public class Company {
 
     //TODO Clients to be mapped
 
-    //TODO Shippment to be mapped
+    //TODO Shipment to be mapped
 
 
     public Company() {
