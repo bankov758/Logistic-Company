@@ -1,14 +1,14 @@
 package com.nbu.logisticcompany.entities.dto;
 
-public class CompanyOutDTO {
+public class CompanyOutDto {
 
     private int id;
     private String name;
 
-    public CompanyOutDTO() {
+    public CompanyOutDto() {
     }
 
-    public CompanyOutDTO(int id, String name) {
+    public CompanyOutDto(int id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities.dto;
 
-public class CourierRegisterDto extends UserRegisterDTO {
+public class CourierRegisterDto extends UserRegisterDto {
 
     private String companyName;
 

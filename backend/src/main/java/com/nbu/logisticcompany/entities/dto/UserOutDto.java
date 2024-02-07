@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities.dto;
 
-public class UserOutDTO {
+public class UserOutDto {
     private int id;
 
     private String username;
@@ -9,10 +9,10 @@ public class UserOutDTO {
 
     private String lastName;
 
-    public UserOutDTO() {
+    public UserOutDto() {
     }
 
-    public UserOutDTO(int id, String username, String firstName, String lastName) {
+    public UserOutDto(int id, String username, String firstName, String lastName) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;

@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities.dto;
 
-public class CourierUpdateDto extends UserUpdateDTO {
+public class CourierUpdateDto extends UserUpdateDto {
 
     private String companyName;
 

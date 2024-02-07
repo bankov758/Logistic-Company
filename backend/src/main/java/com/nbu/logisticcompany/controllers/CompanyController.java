@@ -5,13 +5,8 @@ import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dto.*;
-import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
-import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.mappers.CompanyMapper;
-import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
-import org.springframework.data.web.config.SpringDataJacksonConfiguration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +34,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public List<CompanyOutDTO> getAll(@RequestHeader HttpHeaders headers,
+    public List<CompanyOutDto> getAll(@RequestHeader HttpHeaders headers,
                                       @RequestParam(required = false) Optional<String> search) {
         authenticationHelper.tryGetUser(headers);
         return companyService.getAll(search).stream()
@@ -48,15 +43,15 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public CompanyOutDTO getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+    public CompanyOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
         return companyMapper.ObjectToDTO(companyService.getById(id));
     }
 
     @PostMapping
-    public Company create(@Valid @RequestBody CompanyRegisterDTO companyRegisterDTO) {
+    public Company create(@Valid @RequestBody CompanyCreateDto companyCreateDTO) {
         try {
-            Company company = companyMapper.DTOtoObject(companyRegisterDTO);
+            Company company = companyMapper.DTOtoObject(companyCreateDTO);
             companyService.create(company);
             return company;
         } catch (IOException e) {
@@ -66,7 +61,7 @@ public class CompanyController {
 
     @PutMapping()
     public Company update(@RequestHeader HttpHeaders headers,
-                          @Valid @RequestBody CompanyUpdateDTO companyUpdateDTO) {
+                          @Valid @RequestBody CompanyUpdateDto companyUpdateDTO) {
         User updater = authenticationHelper.tryGetUser(headers);
         Company company = companyMapper.UpdateDTOtoToCompany(companyUpdateDTO);
         companyService.update(company, updater);

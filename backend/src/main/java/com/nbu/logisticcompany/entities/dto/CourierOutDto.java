@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities.dto;
 
-public class CourierOutDto extends UserOutDTO {
+public class CourierOutDto extends UserOutDto {
 
     private String companyName;
 

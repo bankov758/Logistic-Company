@@ -2,12 +2,9 @@ package com.nbu.logisticcompany.controllers;
 
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dto.UserOutDTO;
-import com.nbu.logisticcompany.entities.dto.UserRegisterDTO;
-import com.nbu.logisticcompany.entities.dto.UserUpdateDTO;
-import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
-import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
+import com.nbu.logisticcompany.entities.dto.UserOutDto;
+import com.nbu.logisticcompany.entities.dto.UserRegisterDto;
+import com.nbu.logisticcompany.entities.dto.UserUpdateDto;
 import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserOutDTO> getAll(@RequestHeader HttpHeaders headers,
+    public List<UserOutDto> getAll(@RequestHeader HttpHeaders headers,
                                    @RequestParam(required = false) Optional<String> search) {
         authenticationHelper.tryGetUser(headers);
         return userService.getAll(search).stream()
@@ -47,13 +44,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserOutDTO getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+    public UserOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
         return userMapper.ObjectToDTO(userService.getById(id));
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+    public User create(@Valid @RequestBody UserRegisterDto userRegisterDTO) {
         try {
             User user = userMapper.DTOtoObject(userRegisterDTO);
             userService.create(user);
@@ -65,7 +62,7 @@ public class UserController {
 
     @PutMapping
     public User update(@RequestHeader HttpHeaders headers,
-                       @Valid @RequestBody UserUpdateDTO userToUpdate) {
+                       @Valid @RequestBody UserUpdateDto userToUpdate) {
         User updater = authenticationHelper.tryGetUser(headers);
         User user = userMapper.UpdateDTOtoUser(userToUpdate);
         userService.update(user, updater);

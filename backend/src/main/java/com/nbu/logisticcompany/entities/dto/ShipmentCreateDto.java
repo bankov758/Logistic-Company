@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities.dto;
 
-public class ShipmentRegisterDTO {
+public class ShipmentCreateDto {
 
     private int id;
     private String arrivalAddress;
@@ -17,7 +17,7 @@ public class ShipmentRegisterDTO {
     private  boolean isSentFromOffice;
     private  boolean isReceivedFromOffice;
 
-    public ShipmentRegisterDTO() {
+    public ShipmentCreateDto() {
     }
 
     public int getId() {

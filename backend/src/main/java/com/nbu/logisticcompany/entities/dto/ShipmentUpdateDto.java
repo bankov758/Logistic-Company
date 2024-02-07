@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities.dto;
 
-public class ShipmentOutDTO {
+public class ShipmentUpdateDto {
 
     private  int id;
     private String departureAddress;
@@ -13,10 +13,10 @@ public class ShipmentOutDTO {
     private boolean isSentFromOffice;
     private boolean isReceivedFromOffice;
 
-    public ShipmentOutDTO() {
+    public ShipmentUpdateDto() {
     }
 
-    public ShipmentOutDTO(int id, String departureAddress, String arrivalAddress, int senderID, int receiverID, int employeeID, boolean isSentFromOffice, boolean isReceivedFromOffice) {
+    public ShipmentUpdateDto(int id, String departureAddress, String arrivalAddress, int senderID, int receiverID, int employeeID, boolean isSentFromOffice, boolean isReceivedFromOffice) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
@@ -90,4 +90,5 @@ public class ShipmentOutDTO {
     public void setReceivedFromOffice(boolean receivedFromOffice) {
         isReceivedFromOffice = receivedFromOffice;
     }
+
 }

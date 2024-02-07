@@ -37,7 +37,7 @@ public class CourierController {
 
     @GetMapping
     public List<CourierOutDto> getAll(@RequestHeader HttpHeaders headers,
-                                   @RequestParam(required = false) Optional<String> search) {
+                                      @RequestParam(required = false) Optional<String> search) {
         authenticationHelper.tryGetUser(headers);
         return courierService.getAll(search).stream()
                 .map(courierMapper::ObjectToDTO)

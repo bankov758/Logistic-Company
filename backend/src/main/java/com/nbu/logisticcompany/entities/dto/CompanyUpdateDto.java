@@ -1,18 +1,16 @@
 package com.nbu.logisticcompany.entities.dto;
 
-import javax.validation.constraints.NotEmpty;
-
-public class CompanyUpdateDTO {
+public class CompanyUpdateDto {
 
 
     private String name;
 
     private  int id;
 
-    public CompanyUpdateDTO() {
+    public CompanyUpdateDto() {
     }
 
-    public CompanyUpdateDTO(String name, int id) {
+    public CompanyUpdateDto(String name, int id) {
         this.name = name;
         this.id = id;
     }

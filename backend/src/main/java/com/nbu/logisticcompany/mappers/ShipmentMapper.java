@@ -1,9 +1,7 @@
 package com.nbu.logisticcompany.mappers;
 
-import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.entities.dto.*;
-import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,15 +17,15 @@ public class ShipmentMapper {
         this.shipmentService = shipmentService;
     }
 
-    public Shipment DTOtoObject(ShipmentRegisterDTO shipmentRegisterDTO) throws IOException {
+    public Shipment DTOtoObject(ShipmentCreateDto shipmentCreateDto) throws IOException {
         Shipment shipment = new Shipment();
-        shipment.setId(shipmentRegisterDTO.getId());
+        shipment.setId(shipmentCreateDto.getId());
 
         return shipment;
     }
 
-    public ShipmentOutDTO ObjectToDTO(Shipment shipment) {
-        ShipmentOutDTO shipmentOutDTO = new ShipmentOutDTO();
+    public ShipmentOutDto ObjectToDTO(Shipment shipment) {
+        ShipmentOutDto shipmentOutDTO = new ShipmentOutDto();
         shipmentOutDTO.setId(shipmentOutDTO.getId());
         shipmentOutDTO.setArrivalAddress(shipmentOutDTO.getArrivalAddress());
         shipmentOutDTO.setDepartureAddress(shipmentOutDTO.getDepartureAddress());
@@ -40,8 +38,8 @@ public class ShipmentMapper {
         return shipmentOutDTO;
     }
 
-    public ShipmentUpdateDTO shipmentUpdateDTO(Shipment shipment) {
-        ShipmentUpdateDTO shipmentUpdateDTO = new ShipmentUpdateDTO();
+    public ShipmentUpdateDto shipmentUpdateDTO(Shipment shipment) {
+        ShipmentUpdateDto shipmentUpdateDTO = new ShipmentUpdateDto();
 
         shipmentUpdateDTO.setArrivalAddress(shipmentUpdateDTO.getArrivalAddress());
         shipmentUpdateDTO.setDepartureAddress(shipmentUpdateDTO.getDepartureAddress());
@@ -54,7 +52,7 @@ public class ShipmentMapper {
         return shipmentUpdateDTO;
     }
     // Tova otdolu izglejda greshno
-    public Shipment UpdateDTOtoShipment(ShipmentUpdateDTO shipmentUpdateDTO) {
+    public Shipment UpdateDTOtoShipment(ShipmentUpdateDto shipmentUpdateDTO) {
         Shipment shipment = shipmentService.getById(shipmentUpdateDTO.getId());
 /*  opravi tova isEmpty na ekvivalenta mu za IDta
         if (!shipmentUpdateDTO.getId().isEmpty()) {
