@@ -1,6 +1,5 @@
 package com.nbu.logisticcompany.services;
 
-import com.nbu.logisticcompany.repositories.UserRepositoryImpl;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
