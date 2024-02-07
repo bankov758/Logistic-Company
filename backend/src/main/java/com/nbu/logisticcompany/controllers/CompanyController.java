@@ -70,7 +70,7 @@ public class CompanyController {
             Company company = companyMapper.DTOtoObject(companyRegisterDTO);
             companyService.create(company);
             return company;
-        } catch (DuplicateEntityException | IOException e) {
+        } catch ( IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }

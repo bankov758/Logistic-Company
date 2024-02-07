@@ -68,34 +68,20 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`company_has_client` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `logistic_company`.`employee` (
                                                              `id` INT NOT NULL,
+                                                             `company_id` INT NOT NULL,
                                                              PRIMARY KEY (`id`),
+                                                             INDEX `fk_employee_company1_idx` (`company_id` ASC) VISIBLE,
                                                              CONSTRAINT `fk_employee_user1`
                                                                  FOREIGN KEY (`id`)
                                                                      REFERENCES `logistic_company`.`user` (`id`)
                                                                      ON DELETE NO ACTION
+                                                                     ON UPDATE NO ACTION,
+                                                             CONSTRAINT `fk_employee_company1`
+                                                                 FOREIGN KEY (`company_id`)
+                                                                     REFERENCES `logistic_company`.`company` (`id`)
+                                                                     ON DELETE NO ACTION
                                                                      ON UPDATE NO ACTION)
     ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `logistic_company`.`company_has_employee`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`company_has_employee` (
-                                                                         `company_id` INT NOT NULL,
-                                                                         `employee_user_id` INT NOT NULL,
-                                                                         PRIMARY KEY (`company_id`, `employee_user_id`),
-                                                                         INDEX `fk_company_has_user_company1_idx` (`company_id` ASC) VISIBLE,
-                                                                         INDEX `fk_company_has_employee_employee1_idx` (`employee_user_id` ASC) VISIBLE,
-                                                                         CONSTRAINT `fk_company_has_user_company1`
-                                                                             FOREIGN KEY (`company_id`)
-                                                                                 REFERENCES `logistic_company`.`company` (`id`),
-                                                                         CONSTRAINT `fk_company_has_employee_employee1`
-                                                                             FOREIGN KEY (`employee_user_id`)
-                                                                                 REFERENCES `logistic_company`.`employee` (`id`)
-                                                                                 ON DELETE NO ACTION
-                                                                                 ON UPDATE NO ACTION)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
