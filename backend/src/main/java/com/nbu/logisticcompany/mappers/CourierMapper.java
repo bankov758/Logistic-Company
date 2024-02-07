@@ -1,16 +1,14 @@
 package com.nbu.logisticcompany.mappers;
 
-import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Courier;
-import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dto.*;
+import com.nbu.logisticcompany.entities.dto.CourierOutDto;
+import com.nbu.logisticcompany.entities.dto.CourierRegisterDto;
+import com.nbu.logisticcompany.entities.dto.CourierUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
-import com.nbu.logisticcompany.services.interfaces.UserService;
+import com.nbu.logisticcompany.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 public class CourierMapper {
@@ -44,22 +42,15 @@ public class CourierMapper {
         return courierOutDto;
     }
 
-//    public UserUpdateDTO objectToUpdateDto(User user) {
-//        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-//        userUpdateDTO.setId(user.getId());
-//        userUpdateDTO.setFirstName(user.getFirstName());
-//        userUpdateDTO.setLastName(user.getLastName());
-//        return userUpdateDTO;
-//    }
-//
-//    public User UpdateDTOtoUser(UserUpdateDTO userDTO) {
-//        User user = userService.getById(userDTO.getId());
-//        user.setFirstName(userDTO.getFirstName());
-//        user.setLastName(userDTO.getLastName());
-//        if (!userDTO.getNewPassword().isEmpty()) {
-//            user.setPassword(userDTO.getNewPassword());
-//        }
-//        return user;
-//    }
+    public Courier UpdateDTOtoCourier(CourierUpdateDto courierDto) {
+        Courier courier = courierService.getById(courierDto.getId());
+        courier.setFirstName(courierDto.getFirstName());
+        courier.setLastName(courierDto.getLastName());
+        courier.setCompany(companyService.getByName(courierDto.getCompanyName()));
+        if (StringUtil.isNotEmpty(courierDto.getNewPassword())) {
+            courier.setPassword(courierDto.getNewPassword());
+        }
+        return courier;
+    }
 
 }

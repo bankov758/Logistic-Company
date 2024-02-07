@@ -1,5 +1,7 @@
 package com.nbu.logisticcompany.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -27,6 +29,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_has_role",
@@ -107,5 +110,16 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(username, firstName, lastName);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }

@@ -1,7 +1,6 @@
 package com.nbu.logisticcompany.utils;
 
 import com.nbu.logisticcompany.exceptions.ValidationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -16,7 +15,6 @@ public class ValidationUtil {
             Map<String, List<String>> errors = result.getFieldErrors().stream()
                     .collect(Collectors.groupingBy(FieldError::getField,
                             Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())));
-
             throw new ValidationException(errors);
         }
     }

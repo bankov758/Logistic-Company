@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
@@ -36,7 +37,6 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public List<UserOutDTO> getAll(@RequestHeader HttpHeaders headers,
                                    @RequestParam(required = false) Optional<String> search) {
@@ -63,7 +63,7 @@ public class UserController {
         }
     }
 
-    @PutMapping()
+    @PutMapping
     public User update(@RequestHeader HttpHeaders headers,
                        @Valid @RequestBody UserUpdateDTO userToUpdate) {
         User updater = authenticationHelper.tryGetUser(headers);
