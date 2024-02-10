@@ -16,7 +16,8 @@ public class ShipmentOutDto {
     public ShipmentOutDto() {
     }
 
-    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, int senderID, int receiverID, int employeeID, boolean isSentFromOffice, boolean isReceivedFromOffice) {
+    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, int senderID, int receiverID,
+                          int employeeID, boolean isSentFromOffice, boolean isReceivedFromOffice) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;

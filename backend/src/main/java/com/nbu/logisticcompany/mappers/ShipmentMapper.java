@@ -1,65 +1,63 @@
 package com.nbu.logisticcompany.mappers;
 
+import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.Shipment;
+import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dto.*;
+import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
+import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 @Component
 public class ShipmentMapper {
 
-
     private final ShipmentService shipmentService;
+    private final UserService userService;
+    private final OfficeEmployeeService officeEmployeeService;
+
     @Autowired
-    public ShipmentMapper(ShipmentService shipmentService) {
+    public ShipmentMapper(ShipmentService shipmentService, UserService userService,
+                          OfficeEmployeeService officeEmployeeService) {
         this.shipmentService = shipmentService;
+        this.userService = userService;
+        this.officeEmployeeService = officeEmployeeService;
     }
 
-    public Shipment DTOtoObject(ShipmentCreateDto shipmentCreateDto) throws IOException {
+    public Shipment createDtoToObject(ShipmentCreateDto shipmentCreateDto) {
         Shipment shipment = new Shipment();
-        shipment.setId(shipmentCreateDto.getId());
-
+        shipment.setDepartureAddress(shipment.getDepartureAddress());
+        shipment.setArrivalAddress(shipment.getArrivalAddress());
+        shipment.setWeight(shipmentCreateDto.getWeight());
+        User sender = userService.getById(shipmentCreateDto.getSenderId());
+        User receiver = userService.getById(shipmentCreateDto.getReceiverId());
+        OfficeEmployee officeEmployee = officeEmployeeService.getById(shipmentCreateDto.getEmployeeId());
+        shipment.setSender(sender);
+        shipment.setReceiver(receiver);
+        shipment.setEmployee(officeEmployee);
+        shipment.setSentFromOffice(shipmentCreateDto.isSentFromOffice());
+        shipment.setReceivedFromOffice(shipmentCreateDto.isReceivedFromOffice());
         return shipment;
     }
 
-    public ShipmentOutDto ObjectToDTO(Shipment shipment) {
-        ShipmentOutDto shipmentOutDTO = new ShipmentOutDto();
-        shipmentOutDTO.setId(shipmentOutDTO.getId());
-        shipmentOutDTO.setArrivalAddress(shipmentOutDTO.getArrivalAddress());
-        shipmentOutDTO.setDepartureAddress(shipmentOutDTO.getDepartureAddress());
-        shipmentOutDTO.setEmployeeID(shipmentOutDTO.getEmployeeID());
-        shipmentOutDTO.setReceiverID(shipmentOutDTO.getReceiverID());
-        shipmentOutDTO.setSenderID(shipmentOutDTO.getSenderID());
-        shipmentOutDTO.setReceivedFromOffice(shipmentOutDTO.isReceivedFromOffice());
-        shipmentOutDTO.setSentFromOffice(shipmentOutDTO.isSentFromOffice());
-
-        return shipmentOutDTO;
-    }
-
-    public ShipmentUpdateDto shipmentUpdateDTO(Shipment shipment) {
-        ShipmentUpdateDto shipmentUpdateDTO = new ShipmentUpdateDto();
-
-        shipmentUpdateDTO.setArrivalAddress(shipmentUpdateDTO.getArrivalAddress());
-        shipmentUpdateDTO.setDepartureAddress(shipmentUpdateDTO.getDepartureAddress());
-        shipmentUpdateDTO.setEmployeeID(shipmentUpdateDTO.getEmployeeID());
-        shipmentUpdateDTO.setReceiverID(shipmentUpdateDTO.getReceiverID());
-        shipmentUpdateDTO.setSenderID(shipmentUpdateDTO.getSenderID());
-        shipmentUpdateDTO.setReceivedFromOffice(shipmentUpdateDTO.isReceivedFromOffice());
-        shipmentUpdateDTO.setSentFromOffice(shipmentUpdateDTO.isSentFromOffice());
-
-        return shipmentUpdateDTO;
-    }
-    // Tova otdolu izglejda greshno
-    public Shipment UpdateDTOtoShipment(ShipmentUpdateDto shipmentUpdateDTO) {
-        Shipment shipment = shipmentService.getById(shipmentUpdateDTO.getId());
-/*  opravi tova isEmpty na ekvivalenta mu za IDta
-        if (!shipmentUpdateDTO.getId().isEmpty()) {
-            shipment.setId(shipmentUpdateDTO.getId());
-        }
-        */
-
+    public Shipment updateDtoToObject(ShipmentUpdateDto shipmentUpdateDto) {
+        Shipment shipment = createDtoToObject(shipmentUpdateDto);
+        shipment.setId(shipmentUpdateDto.getId());
         return shipment;
     }
+
+    public ShipmentOutDto ObjectToDto(Shipment shipment) {
+        ShipmentOutDto shipmentOutDto = new ShipmentOutDto();
+        shipmentOutDto.setId(shipment.getId());
+        shipmentOutDto.setArrivalAddress(shipment.getArrivalAddress());
+        shipmentOutDto.setDepartureAddress(shipment.getDepartureAddress());
+        shipmentOutDto.setEmployeeID(shipment.getEmployee().getId());
+        shipmentOutDto.setReceiverID(shipment.getReceiver().getId());
+        shipmentOutDto.setSenderID(shipment.getSender().getId());
+        shipmentOutDto.setReceivedFromOffice(shipment.isReceivedFromOffice());
+        shipmentOutDto.setSentFromOffice(shipment.isSentFromOffice());
+        return shipmentOutDto;
+    }
+
 }

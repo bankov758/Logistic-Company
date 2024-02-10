@@ -2,30 +2,16 @@ package com.nbu.logisticcompany.entities.dto;
 
 public class ShipmentCreateDto {
 
-    private int id;
     private String arrivalAddress;
     private String departureAddress;
-
     private double weight;
-
-    private int senderID;
-
-    private int receiverID;
-
-    private int employeeID;
-
-    private  boolean isSentFromOffice;
-    private  boolean isReceivedFromOffice;
+    private int senderId;
+    private int receiverId;
+    private int employeeId;
+    private boolean isSentFromOffice;
+    private boolean isReceivedFromOffice;
 
     public ShipmentCreateDto() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getArrivalAddress() {
@@ -52,28 +38,28 @@ public class ShipmentCreateDto {
         this.weight = weight;
     }
 
-    public int getSenderID() {
-        return senderID;
+    public int getSenderId() {
+        return senderId;
     }
 
-    public void setSenderID(int senderID) {
-        this.senderID = senderID;
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
     }
 
-    public int getReceiverID() {
-        return receiverID;
+    public int getReceiverId() {
+        return receiverId;
     }
 
-    public void setReceiverID(int receiverID) {
-        this.receiverID = receiverID;
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public int getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 
     public boolean isSentFromOffice() {
