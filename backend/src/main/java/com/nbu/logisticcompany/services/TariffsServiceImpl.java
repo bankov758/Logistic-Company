@@ -1,4 +1,4 @@
-package com.nbu.logisticcompany.repositories;
+package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Tariff;
