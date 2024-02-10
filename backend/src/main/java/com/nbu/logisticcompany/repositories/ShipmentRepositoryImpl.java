@@ -1,15 +1,11 @@
 package com.nbu.logisticcompany.repositories;
 
-import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
-import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
-
-import static java.lang.String.format;
 
 @Repository
 public class ShipmentRepositoryImpl extends AbstractRepository<Shipment> implements ShipmentRepository {
@@ -53,4 +49,5 @@ public class ShipmentRepositoryImpl extends AbstractRepository<Shipment> impleme
                             "employeeId", String.valueOf(employeeId)));
         }
     }
+
 }

@@ -18,26 +18,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/tariff")
+@RequestMapping("/api/tariffs")
 @CrossOrigin(origins = "http://localhost:3000")
-public class TariffsController {
-
+public class TariffController {
 
     private final TariffsService tariffsService;
-
     private final AuthenticationHelper authenticationHelper;
-
     private final TariffsMapper tariffsMapper;
 
-    public TariffsController(TariffsService tariffsService, AuthenticationHelper authenticationHelper, TariffsMapper tariffsMapper) {
+    public TariffController(TariffsService tariffsService, AuthenticationHelper authenticationHelper, TariffsMapper tariffsMapper) {
         this.tariffsService = tariffsService;
         this.authenticationHelper = authenticationHelper;
         this.tariffsMapper = tariffsMapper;
     }
 
-
     @GetMapping
-    public List<TariffsOutDTO> getAll(@RequestHeader HttpHeaders headers){
+    public List<TariffsOutDTO> getAll(@RequestHeader HttpHeaders headers) {
         try {
             authenticationHelper.tryGetUser(headers);
             return tariffsService.getAll().stream()
@@ -47,13 +43,13 @@ public class TariffsController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, u.getMessage());
         }
     }
+
     @GetMapping("/{id}")
     public TariffsOutDTO getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-
-            authenticationHelper.tryGetUser(headers);
-            return tariffsMapper.ObjectToDTO(tariffsService.getById(id));
-
+        authenticationHelper.tryGetUser(headers);
+        return tariffsMapper.ObjectToDTO(tariffsService.getById(id));
     }
+
     @PostMapping
     public Tariff create(@Valid @RequestBody TariffsCreateDTO tariffsCreateDTO) {
         try {
@@ -64,21 +60,20 @@ public class TariffsController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
+
     @PutMapping()
     public Tariff update(@RequestHeader HttpHeaders headers,
                          @Valid @RequestBody TariffsUpdateDTO tariffsUpdateDTO) {
-
-            User updater = authenticationHelper.tryGetUser(headers);
-            Tariff tariff = tariffsMapper.UpdateDTOtoTariffs(tariffsUpdateDTO);
-            tariffsService.update(tariff, updater);
-            return tariff;
-
+        User updater = authenticationHelper.tryGetUser(headers);
+        Tariff tariff = tariffsMapper.UpdateDTOtoTariffs(tariffsUpdateDTO);
+        tariffsService.update(tariff, updater);
+        return tariff;
     }
 
     @DeleteMapping("/{id}")
     public void delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-
         User user = authenticationHelper.tryGetUser(headers);
         tariffsService.delete(id, user);
     }
+
 }
