@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.mappers;
 
-import com.nbu.logisticcompany.entities.Tariffs;
+import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.dto.TariffsCreateDTO;
 import com.nbu.logisticcompany.entities.dto.TariffsOutDTO;
 import com.nbu.logisticcompany.entities.dto.TariffsUpdateDTO;
@@ -19,39 +19,39 @@ public class TariffsMapper {
     public TariffsMapper(TariffsService tariffsService){
         this.tariffsService=tariffsService;
     }
-    public Tariffs DTOtoObject(TariffsCreateDTO tariffsCreateDTO) throws IOException{
-        Tariffs tariffs = new Tariffs();
-        tariffs.setCompanyID(tariffsCreateDTO.getCompanyID());
-        tariffs.setOfficeDiscount(tariffsCreateDTO.getOfficeDiscount());
-        tariffs.setPricePerKG(tariffsCreateDTO.getPricePerKG());
-        return tariffs;
+    public Tariff DTOtoObject(TariffsCreateDTO tariffsCreateDTO) throws IOException{
+        Tariff tariff = new Tariff();
+        tariff.setCompanyID(tariffsCreateDTO.getCompanyID());
+        tariff.setOfficeDiscount(tariffsCreateDTO.getOfficeDiscount());
+        tariff.setPricePerKG(tariffsCreateDTO.getPricePerKG());
+        return tariff;
     }
 
-    public TariffsOutDTO ObjectToDTO(Tariffs tariffs){
+    public TariffsOutDTO ObjectToDTO(Tariff tariff){
         TariffsOutDTO tariffsOutDTO = new TariffsOutDTO();
-        tariffsOutDTO.setId(tariffs.getId());
-        tariffsOutDTO.setCompanyID(tariffs.getCompanyID());
-        tariffsOutDTO.setOfficeDiscount(tariffs.getOfficeDiscount());
-        tariffsOutDTO.setPricePerKG(tariffs.getPricePerKG());
+        tariffsOutDTO.setId(tariff.getId());
+        tariffsOutDTO.setCompanyID(tariff.getCompanyID());
+        tariffsOutDTO.setOfficeDiscount(tariff.getOfficeDiscount());
+        tariffsOutDTO.setPricePerKG(tariff.getPricePerKG());
         return tariffsOutDTO;
     }
 
-    private TariffsUpdateDTO objectToUpdateDTO(Tariffs tariffs){
+    private TariffsUpdateDTO objectToUpdateDTO(Tariff tariff){
         TariffsUpdateDTO tariffsUpdateDTO = new TariffsUpdateDTO();
-        tariffsUpdateDTO.setCompanyID(tariffs.getCompanyID());
-        tariffsUpdateDTO.setOfficeDiscount(tariffs.getOfficeDiscount());
-        tariffsUpdateDTO.setPricePerKG(tariffs.getPricePerKG());
+        tariffsUpdateDTO.setCompanyID(tariff.getCompanyID());
+        tariffsUpdateDTO.setOfficeDiscount(tariff.getOfficeDiscount());
+        tariffsUpdateDTO.setPricePerKG(tariff.getPricePerKG());
         return tariffsUpdateDTO;
     }
 
-    public Tariffs UpdateDTOtoTariffs(TariffsUpdateDTO tariffsUpdateDTO){
-        Tariffs tariffs = new Tariffs();
-        tariffs.setPricePerKG(tariffsUpdateDTO.getPricePerKG());
-        tariffs.setOfficeDiscount(tariffsUpdateDTO.getOfficeDiscount());
-        tariffs.setId(tariffsUpdateDTO.getId());
-        tariffs.setCompanyID(tariffsUpdateDTO.getCompanyID());
+    public Tariff UpdateDTOtoTariffs(TariffsUpdateDTO tariffsUpdateDTO){
+        Tariff tariff = new Tariff();
+        tariff.setPricePerKG(tariffsUpdateDTO.getPricePerKG());
+        tariff.setOfficeDiscount(tariffsUpdateDTO.getOfficeDiscount());
+        tariff.setId(tariffsUpdateDTO.getId());
+        tariff.setCompanyID(tariffsUpdateDTO.getCompanyID());
 
-        return tariffs;
+        return tariff;
 
     }
 

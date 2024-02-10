@@ -1,20 +1,20 @@
 package com.nbu.logisticcompany.services.interfaces;
 
 import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.Tariffs;
+import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
 
 import java.util.List;
 public interface TariffsService {
 
-    Tariffs getById(int id);
-    Tariffs getByCompany(Company company);
+    Tariff getById(int id);
+    Tariff getByCompany(Company company);
 
-    List<Tariffs> getAll();
+    List<Tariff> getAll();
 
-    void create(Tariffs tariffs);
+    void create(Tariff tariff);
 
-    void update(Tariffs tariffsToUpdate, User user);
+    void update(Tariff tariffToUpdate, User user);
 
     void delete(int tariffId, User user);
 

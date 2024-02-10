@@ -1,7 +1,7 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.Tariffs;
+import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.TariffsRepository;
@@ -23,35 +23,35 @@ public class TariffsServiceImpl implements TariffsService {
 
 
     @Override
-    public Tariffs getById(int id) {
+    public Tariff getById(int id) {
         return tariffsRepository.getById(id);
     }
 
     @Override
-    public Tariffs getByCompany(Company company) {
+    public Tariff getByCompany(Company company) {
         return tariffsRepository.getByField("company", company);
     }
 
     @Override
-    public List<Tariffs> getAll() {
+    public List<Tariff> getAll() {
         return tariffsRepository.getAll();
     }
 
     @Override
-    public void create(Tariffs tariffs) {
+    public void create(Tariff tariff) {
         boolean duplicateTariff = true;
         try{
-            tariffsRepository.getByField("id",tariffs.getId());
+            tariffsRepository.getByField("id", tariff.getId());
         }
         catch (EntityNotFoundException e) {
             duplicateTariff = false;
         }
-        tariffsRepository.create(tariffs);
+        tariffsRepository.create(tariff);
     }
 
     @Override
-    public void update(Tariffs tariffsToUpdate, User user) {
-        tariffsRepository.update(tariffsToUpdate);
+    public void update(Tariff tariffToUpdate, User user) {
+        tariffsRepository.update(tariffToUpdate);
     }
 
     @Override

@@ -5,7 +5,8 @@ import javax.validation.constraints.Positive;
 import java.util.Objects;
 
 @Entity
-public class Tariffs {
+@Table(name = "tariff")
+public class Tariff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +25,10 @@ public class Tariffs {
     @JoinColumn(name = "company_id")
     private Company companyID;
 
-    public Tariffs() {
+    public Tariff() {
     }
 
-    public Tariffs(int id, float pricePerKG, float officeDiscount, Company companyID) {
+    public Tariff(int id, float pricePerKG, float officeDiscount, Company companyID) {
         this.id = id;
         this.pricePerKG = pricePerKG;
         this.officeDiscount = officeDiscount;
@@ -70,8 +71,8 @@ public class Tariffs {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tariffs tariffs = (Tariffs) o;
-        return Float.compare(pricePerKG, tariffs.pricePerKG) == 0 && Float.compare(officeDiscount, tariffs.officeDiscount) == 0 && Objects.equals(companyID, tariffs.companyID);
+        Tariff tariff = (Tariff) o;
+        return Float.compare(pricePerKG, tariff.pricePerKG) == 0 && Float.compare(officeDiscount, tariff.officeDiscount) == 0 && Objects.equals(companyID, tariff.companyID);
     }
 
     @Override

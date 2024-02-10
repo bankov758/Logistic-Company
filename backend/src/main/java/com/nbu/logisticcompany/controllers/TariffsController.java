@@ -1,12 +1,9 @@
 package com.nbu.logisticcompany.controllers;
 
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
-import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.Tariffs;
+import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dto.*;
-import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.mappers.TariffsMapper;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
@@ -18,11 +15,10 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/tariffs")
+@RequestMapping("/api/tariff")
 public class TariffsController {
 
 
@@ -58,23 +54,23 @@ public class TariffsController {
 
     }
     @PostMapping
-    public Tariffs create(@Valid @RequestBody TariffsCreateDTO tariffsCreateDTO) {
+    public Tariff create(@Valid @RequestBody TariffsCreateDTO tariffsCreateDTO) {
         try {
-            Tariffs tariffs = tariffsMapper.DTOtoObject(tariffsCreateDTO);
-            tariffsService.create(tariffs);
-            return tariffs;
+            Tariff tariff = tariffsMapper.DTOtoObject(tariffsCreateDTO);
+            tariffsService.create(tariff);
+            return tariff;
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
     @PutMapping()
-    public Tariffs update(@RequestHeader HttpHeaders headers,
-                          @Valid @RequestBody TariffsUpdateDTO tariffsUpdateDTO) {
+    public Tariff update(@RequestHeader HttpHeaders headers,
+                         @Valid @RequestBody TariffsUpdateDTO tariffsUpdateDTO) {
 
             User updater = authenticationHelper.tryGetUser(headers);
-            Tariffs tariffs = tariffsMapper.UpdateDTOtoTariffs(tariffsUpdateDTO);
-            tariffsService.update(tariffs, updater);
-            return tariffs;
+            Tariff tariff = tariffsMapper.UpdateDTOtoTariffs(tariffsUpdateDTO);
+            tariffsService.update(tariff, updater);
+            return tariff;
 
     }
 

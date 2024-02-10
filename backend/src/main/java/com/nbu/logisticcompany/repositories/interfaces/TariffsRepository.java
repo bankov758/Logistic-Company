@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.repositories.interfaces;
 
-import com.nbu.logisticcompany.entities.Tariffs;
+import com.nbu.logisticcompany.entities.Tariff;
 
-public interface TariffsRepository extends  BaseCRUDRepository<Tariffs>{
+public interface TariffsRepository extends  BaseCRUDRepository<Tariff>{
 }
