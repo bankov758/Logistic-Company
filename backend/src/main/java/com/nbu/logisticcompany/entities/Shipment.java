@@ -9,43 +9,47 @@ public class Shipment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id ;
+    private int id;
 
     @Column(name = "departure_address")
-    private String departure_address;
-    //TODO map sender,receiver and employeeIDs
+    private String departureAddress;
+
     @Column(name = "arrival_address")
-    private String arrival_address;
+    private String arrivalAddress;
 
     @Column(name = "weight")
-    private double  weight;
+    private double weight;
 
-    @Column(name = "senderID")
-    private int senderID;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
-    @Column(name = "receiverID")
-    private int receiverID;
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
-    @Column(name = "employeeID")
-    private int employeeID;
+    @ManyToOne
+    @JoinColumn(name = "office_employee_id")
+    private OfficeEmployee employee;
 
     @Column(name = "is_sent_from_office")
     private boolean isSentFromOffice;
 
-    @Column(name = "is_received_from_office")
+    @Column(name = "is_received_in_office")
     private boolean isReceivedFromOffice;
 
     public Shipment() {
     }
 
-    public Shipment(int id, String departure_address, String arrival_address, double weight, int senderID, int receiverID, int employeeID, boolean isSentFromOffice, boolean isReceivedFromOffice) {
+    public Shipment(int id, String departureAddress, String arrivalAddress, double weight, User sender, User receiver,
+                    OfficeEmployee employee, boolean isSentFromOffice, boolean isReceivedFromOffice) {
         this.id = id;
-        this.departure_address = departure_address;
-        this.arrival_address = arrival_address;
+        this.departureAddress = departureAddress;
+        this.arrivalAddress = arrivalAddress;
         this.weight = weight;
-        this.senderID = senderID;
-        this.receiverID = receiverID;
-        this.employeeID = employeeID;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.employee = employee;
         this.isSentFromOffice = isSentFromOffice;
         this.isReceivedFromOffice = isReceivedFromOffice;
     }
@@ -58,20 +62,20 @@ public class Shipment {
         this.id = id;
     }
 
-    public String getDeparture_address() {
-        return departure_address;
+    public String getDepartureAddress() {
+        return departureAddress;
     }
 
-    public void setDeparture_address(String departure_address) {
-        this.departure_address = departure_address;
+    public void setDepartureAddress(String departureAddress) {
+        this.departureAddress = departureAddress;
     }
 
-    public String getArrival_address() {
-        return arrival_address;
+    public String getArrivalAddress() {
+        return arrivalAddress;
     }
 
-    public void setArrival_address(String arrival_address) {
-        this.arrival_address = arrival_address;
+    public void setArrivalAddress(String arrivalAddress) {
+        this.arrivalAddress = arrivalAddress;
     }
 
     public double getWeight() {
@@ -82,28 +86,28 @@ public class Shipment {
         this.weight = weight;
     }
 
-    public int getSenderID() {
-        return senderID;
+    public User getSender() {
+        return sender;
     }
 
-    public void setSenderID(int senderID) {
-        this.senderID = senderID;
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 
-    public int getReceiverID() {
-        return receiverID;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public void setReceiverID(int receiverID) {
-        this.receiverID = receiverID;
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public OfficeEmployee getEmployee() {
+        return employee;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    public void setEmployee(OfficeEmployee employee) {
+        this.employee = employee;
     }
 
     public boolean isSentFromOffice() {
