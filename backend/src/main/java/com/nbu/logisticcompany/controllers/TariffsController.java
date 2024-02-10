@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tariff")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TariffsController {
 
 
@@ -34,7 +35,7 @@ public class TariffsController {
         this.tariffsMapper = tariffsMapper;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+
     @GetMapping
     public List<TariffsOutDTO> getAll(@RequestHeader HttpHeaders headers){
         try {
