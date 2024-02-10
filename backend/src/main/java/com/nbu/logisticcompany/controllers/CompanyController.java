@@ -1,6 +1,5 @@
 package com.nbu.logisticcompany.controllers;
 
-
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
@@ -19,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/company")
+@RequestMapping("/api/companies")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CompanyController {
 

@@ -12,6 +12,7 @@ import java.io.IOException;
 
 @Component
 public class UserMapper {
+
     private final UserService userService;
 
     @Autowired

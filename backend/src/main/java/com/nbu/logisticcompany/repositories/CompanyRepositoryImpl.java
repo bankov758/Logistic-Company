@@ -8,10 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class CompanyRepositoryImpl extends AbstractRepository<Company> implements CompanyRepository {
-
-
     public CompanyRepositoryImpl(SessionFactory sessionFactory) {
         super(Company.class, sessionFactory);
     }
-
 }
