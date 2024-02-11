@@ -1,6 +1,7 @@
 package com.nbu.logisticcompany.entities;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -38,11 +39,25 @@ public class Shipment {
     @Column(name = "is_received_in_office")
     private boolean isReceivedFromOffice;
 
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "sent_date")
+    private LocalDateTime sentDate;
+
+    @Column(name = "received_date")
+    private LocalDateTime receivedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "courier_id")
+    private Courier courier;
+
     public Shipment() {
     }
 
     public Shipment(int id, String departureAddress, String arrivalAddress, double weight, User sender, User receiver,
-                    OfficeEmployee employee, boolean isSentFromOffice, boolean isReceivedFromOffice) {
+                    OfficeEmployee employee, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
+                    LocalDateTime sentDate, LocalDateTime receivedDate, Courier courier) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
@@ -52,6 +67,10 @@ public class Shipment {
         this.employee = employee;
         this.isSentFromOffice = isSentFromOffice;
         this.isReceivedFromOffice = isReceivedFromOffice;
+        this.price = price;
+        this.sentDate = sentDate;
+        this.receivedDate = receivedDate;
+        this.courier = courier;
     }
 
     public int getId() {
@@ -124,6 +143,38 @@ public class Shipment {
 
     public void setReceivedFromOffice(boolean receivedFromOffice) {
         isReceivedFromOffice = receivedFromOffice;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public LocalDateTime getSentDate() {
+        return sentDate;
+    }
+
+    public void setSentDate(LocalDateTime sentDate) {
+        this.sentDate = sentDate;
+    }
+
+    public LocalDateTime getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(LocalDateTime receivedDate) {
+        this.receivedDate = receivedDate;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
     }
 
     @Override

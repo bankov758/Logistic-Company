@@ -62,13 +62,7 @@ public class ShipmentServiceImpl implements ShipmentService {
 //            throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE);
 //        }
 
-        try {
-            shipmentRepository.getByField("id", shipment.getId());
-        } catch (EntityNotFoundException e) {
-
-            shipmentRepository.create(shipment);
-        }
-        throw new DuplicateEntityException("Shipment", "id", String.valueOf(shipment.getId()));
+        shipmentRepository.create(shipment);
     }
 
     @Override

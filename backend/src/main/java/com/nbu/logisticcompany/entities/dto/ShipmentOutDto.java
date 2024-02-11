@@ -1,31 +1,40 @@
 package com.nbu.logisticcompany.entities.dto;
 
+import java.time.LocalDateTime;
+
 public class ShipmentOutDto {
 
-    private  int id;
+    private int id;
     private String departureAddress;
     private String arrivalAddress;
-
-    private int senderID;
-    private int receiverID;
-    private int employeeID;
-
+    private int senderId;
+    private int receiverId;
+    private int employeeId;
     private boolean isSentFromOffice;
     private boolean isReceivedFromOffice;
+    private double price;
+    private LocalDateTime sentDate;
+    private LocalDateTime receivedDate;
+    private int courierId;
 
     public ShipmentOutDto() {
     }
 
-    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, int senderID, int receiverID,
-                          int employeeID, boolean isSentFromOffice, boolean isReceivedFromOffice) {
+    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, int senderId, int receiverId,
+                          int employeeId, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
+                          LocalDateTime sentDate, LocalDateTime receivedDate, int courierId) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
-        this.senderID = senderID;
-        this.receiverID = receiverID;
-        this.employeeID = employeeID;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.employeeId = employeeId;
         this.isSentFromOffice = isSentFromOffice;
         this.isReceivedFromOffice = isReceivedFromOffice;
+        this.price = price;
+        this.sentDate = sentDate;
+        this.receivedDate = receivedDate;
+        this.courierId = courierId;
     }
 
     public int getId() {
@@ -52,28 +61,28 @@ public class ShipmentOutDto {
         this.arrivalAddress = arrivalAddress;
     }
 
-    public int getSenderID() {
-        return senderID;
+    public int getSenderId() {
+        return senderId;
     }
 
-    public void setSenderID(int senderID) {
-        this.senderID = senderID;
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
     }
 
-    public int getReceiverID() {
-        return receiverID;
+    public int getReceiverId() {
+        return receiverId;
     }
 
-    public void setReceiverID(int receiverID) {
-        this.receiverID = receiverID;
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public int getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 
     public boolean isSentFromOffice() {
@@ -90,5 +99,37 @@ public class ShipmentOutDto {
 
     public void setReceivedFromOffice(boolean receivedFromOffice) {
         isReceivedFromOffice = receivedFromOffice;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public LocalDateTime getSentDate() {
+        return sentDate;
+    }
+
+    public void setSentDate(LocalDateTime sentDate) {
+        this.sentDate = sentDate;
+    }
+
+    public LocalDateTime getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(LocalDateTime receivedDate) {
+        this.receivedDate = receivedDate;
+    }
+
+    public int getCourierId() {
+        return courierId;
+    }
+
+    public void setCourierId(int courierId) {
+        this.courierId = courierId;
     }
 }
