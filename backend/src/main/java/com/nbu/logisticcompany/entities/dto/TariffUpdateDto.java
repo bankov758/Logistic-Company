@@ -2,7 +2,7 @@ package com.nbu.logisticcompany.entities.dto;
 
 import com.nbu.logisticcompany.entities.Company;
 
-public class TariffsUpdateDTO {
+public class TariffUpdateDto {
 
     private int id;
     private float pricePerKG;
@@ -11,10 +11,10 @@ public class TariffsUpdateDTO {
 
     private Company companyID;
 
-    public TariffsUpdateDTO() {
+    public TariffUpdateDto() {
     }
 
-    public TariffsUpdateDTO(int id, float pricePerKG, float officeDiscount, Company companyID) {
+    public TariffUpdateDto(int id, float pricePerKG, float officeDiscount, Company companyID) {
         this.id = id;
         this.pricePerKG = pricePerKG;
         this.officeDiscount = officeDiscount;

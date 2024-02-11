@@ -33,27 +33,23 @@ public class TariffController {
     }
 
     @GetMapping
-    public List<TariffsOutDTO> getAll(@RequestHeader HttpHeaders headers) {
-        try {
-            authenticationHelper.tryGetUser(headers);
-            return tariffsService.getAll().stream()
-                    .map(tariffsMapper::ObjectToDTO)
-                    .collect(Collectors.toList());
-        } catch (UnauthorizedOperationException u) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, u.getMessage());
-        }
+    public List<TariffOutDto> getAll(@RequestHeader HttpHeaders headers) {
+        authenticationHelper.tryGetUser(headers);
+        return tariffsService.getAll().stream()
+                .map(tariffsMapper::ObjectToDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public TariffsOutDTO getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+    public TariffOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
         return tariffsMapper.ObjectToDTO(tariffsService.getById(id));
     }
 
     @PostMapping
-    public Tariff create(@Valid @RequestBody TariffsCreateDTO tariffsCreateDTO) {
+    public Tariff create(@Valid @RequestBody TariffCreateDto tariffCreateDto) {
         try {
-            Tariff tariff = tariffsMapper.DTOtoObject(tariffsCreateDTO);
+            Tariff tariff = tariffsMapper.DTOtoObject(tariffCreateDto);
             tariffsService.create(tariff);
             return tariff;
         } catch (IOException e) {
@@ -61,11 +57,11 @@ public class TariffController {
         }
     }
 
-    @PutMapping()
+    @PutMapping
     public Tariff update(@RequestHeader HttpHeaders headers,
-                         @Valid @RequestBody TariffsUpdateDTO tariffsUpdateDTO) {
+                         @Valid @RequestBody TariffUpdateDto tariffUpdateDto) {
         User updater = authenticationHelper.tryGetUser(headers);
-        Tariff tariff = tariffsMapper.UpdateDTOtoTariffs(tariffsUpdateDTO);
+        Tariff tariff = tariffsMapper.UpdateDTOtoTariffs(tariffUpdateDto);
         tariffsService.update(tariff, updater);
         return tariff;
     }
