@@ -3,6 +3,7 @@ package com.nbu.logisticcompany.entities.dtos;
 import javax.validation.constraints.Size;
 
 public class UserRegisterDto {
+
     @Size(min = 2, max = 40, message = "Username should be between 2 and 40 symbols")
     private String username;
 

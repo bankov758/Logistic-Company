@@ -1,9 +1,6 @@
 package com.nbu.logisticcompany.controllers.helpers;
 
-import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
-import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
-import com.nbu.logisticcompany.exceptions.ValidationException;
+import com.nbu.logisticcompany.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,6 +30,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateEntityException.class)
     public ResponseEntity<String> handleDuplicateEntityException(DuplicateEntityException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<String> handleInvalidDataException(InvalidDataException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
 }

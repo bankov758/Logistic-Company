@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.mappers;
 
+import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.UserOutDto;
 import com.nbu.logisticcompany.entities.dtos.UserRegisterDto;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Set;
 
 @Component
 public class UserMapper {
@@ -20,33 +22,27 @@ public class UserMapper {
         this.userService = userService;
     }
 
-    public User DTOtoObject(UserRegisterDto userRegisterDTO) throws IOException {
+    public User DtoToObject(UserRegisterDto userRegisterDTO) throws IOException {
         User user = new User();
         user.setUsername(userRegisterDTO.getUsername());
         user.setFirstName(userRegisterDTO.getFirstName());
         user.setLastName(userRegisterDTO.getLastName());
         user.setPassword(userRegisterDTO.getPassword());
+        user.setRoles(Set.of(Role.USER));
         return user;
     }
 
-    public UserOutDto ObjectToDTO(User user) {
-        UserOutDto userOutDTO = new UserOutDto();
-        userOutDTO.setId(user.getId());
-        userOutDTO.setUsername(user.getUsername());
-        userOutDTO.setFirstName(user.getFirstName());
-        userOutDTO.setLastName(user.getLastName());
-        return userOutDTO;
+    public UserOutDto ObjectToDto(User user) {
+        UserOutDto userOutDto = new UserOutDto();
+        userOutDto.setId(user.getId());
+        userOutDto.setUsername(user.getUsername());
+        userOutDto.setFirstName(user.getFirstName());
+        userOutDto.setLastName(user.getLastName());
+        userOutDto.setRoles(user.getRoles());
+        return userOutDto;
     }
 
-    public UserUpdateDto objectToUpdateDto(User user) {
-        UserUpdateDto userUpdateDTO = new UserUpdateDto();
-        userUpdateDTO.setId(user.getId());
-        userUpdateDTO.setFirstName(user.getFirstName());
-        userUpdateDTO.setLastName(user.getLastName());
-        return userUpdateDTO;
-    }
-
-    public User UpdateDTOtoUser(UserUpdateDto userDTO) {
+    public User UpdateDtoToUser(UserUpdateDto userDTO) {
         User user = userService.getById(userDTO.getId());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());

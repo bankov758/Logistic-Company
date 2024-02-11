@@ -4,6 +4,7 @@ import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.UserOutDto;
 import com.nbu.logisticcompany.entities.dtos.UserRegisterDto;
+import com.nbu.logisticcompany.entities.dtos.UserRole;
 import com.nbu.logisticcompany.entities.dtos.UserUpdateDto;
 import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.UserService;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,20 +39,20 @@ public class UserController {
                                    @RequestParam(required = false) Optional<String> search) {
         authenticationHelper.tryGetUser(headers);
         return userService.getAll(search).stream()
-                .map(userMapper::ObjectToDTO)
+                .map(userMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public UserOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
-        return userMapper.ObjectToDTO(userService.getById(id));
+        return userMapper.ObjectToDto(userService.getById(id));
     }
 
     @PostMapping
     public User create(@Valid @RequestBody UserRegisterDto userRegisterDTO) {
         try {
-            User user = userMapper.DTOtoObject(userRegisterDTO);
+            User user = userMapper.DtoToObject(userRegisterDTO);
             userService.create(user);
             return user;
         } catch (IOException e) {
@@ -64,8 +64,26 @@ public class UserController {
     public User update(@RequestHeader HttpHeaders headers,
                        @Valid @RequestBody UserUpdateDto userToUpdate) {
         User updater = authenticationHelper.tryGetUser(headers);
-        User user = userMapper.UpdateDTOtoUser(userToUpdate);
+        User user = userMapper.UpdateDtoToUser(userToUpdate);
         userService.update(user, updater);
+        return user;
+    }
+
+    @PutMapping("/add-role")
+    public User addRole(@RequestHeader HttpHeaders headers,
+                       @Valid @RequestBody UserRole userRole) {
+        User updater = authenticationHelper.tryGetUser(headers);
+        User user = userService.getById(userRole.getUserId());
+        userService.addRole(user, userRole.getRole(), updater);
+        return user;
+    }
+
+    @PutMapping("/remove-role")
+    public User removeRole(@RequestHeader HttpHeaders headers,
+                       @Valid @RequestBody UserRole userRole) {
+        User updater = authenticationHelper.tryGetUser(headers);
+        User user = userService.getById(userRole.getUserId());
+        userService.removeRole(user, userRole.getRole(), updater);
         return user;
     }
 

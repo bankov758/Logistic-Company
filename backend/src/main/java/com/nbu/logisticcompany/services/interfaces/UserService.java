@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.services.interfaces;
 
+import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 
 import java.util.List;
@@ -15,7 +16,11 @@ public interface UserService {
 
     void create(User user);
 
-    void update(User userToUpdate, User user);
+    void update(User userToUpdate, User updater);
+
+    void addRole(User user, String role, User updater);
+
+    void removeRole(User user, String role, User updater);
 
     void delete(int id, User user);
 

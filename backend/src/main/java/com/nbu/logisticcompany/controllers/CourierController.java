@@ -40,20 +40,20 @@ public class CourierController {
                                       @RequestParam(required = false) Optional<String> search) {
         authenticationHelper.tryGetUser(headers);
         return courierService.getAll(search).stream()
-                .map(courierMapper::ObjectToDTO)
+                .map(courierMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public CourierOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
-        return courierMapper.ObjectToDTO(courierService.getById(id));
+        return courierMapper.ObjectToDto(courierService.getById(id));
     }
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CourierRegisterDto courierRegisterDto, BindingResult result) {
         ValidationUtil.validate(result);
-        Courier courier = courierMapper.DTOtoObject(courierRegisterDto);
+        Courier courier = courierMapper.DtoToObject(courierRegisterDto);
         courierService.create(courier);
         return ResponseEntity.ok().body(courierRegisterDto);
     }
@@ -63,7 +63,7 @@ public class CourierController {
                                     @Valid @RequestBody CourierUpdateDto courierToUpdate, BindingResult result) {
         ValidationUtil.validate(result);
         User updater = authenticationHelper.tryGetUser(headers);
-        Courier courier = courierMapper.UpdateDTOtoCourier(courierToUpdate);
+        Courier courier = courierMapper.UpdateDtoToCourier(courierToUpdate);
         courierService.update(courier, updater);
         return ResponseEntity.ok().body(courierToUpdate);
     }
