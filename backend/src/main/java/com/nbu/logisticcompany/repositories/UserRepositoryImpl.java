@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepositoryImpl extends AbstractRepository<User> implements UserRepository {
-
     public UserRepositoryImpl(SessionFactory sessionFactory) {
         super(User.class, sessionFactory);
     }
-
 }

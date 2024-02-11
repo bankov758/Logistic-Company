@@ -2,12 +2,9 @@ package com.nbu.logisticcompany.services.interfaces;
 
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dto.ShipmentCreateDto;
-import com.nbu.logisticcompany.entities.dto.ShipmentUpdateDto;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public interface ShipmentService {
 

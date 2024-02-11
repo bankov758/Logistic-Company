@@ -1,9 +1,9 @@
 package com.nbu.logisticcompany.mappers;
 
 import com.nbu.logisticcompany.entities.Courier;
-import com.nbu.logisticcompany.entities.dto.CourierOutDto;
-import com.nbu.logisticcompany.entities.dto.CourierRegisterDto;
-import com.nbu.logisticcompany.entities.dto.CourierUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.CourierOutDto;
+import com.nbu.logisticcompany.entities.dtos.CourierRegisterDto;
+import com.nbu.logisticcompany.entities.dtos.CourierUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.utils.StringUtil;

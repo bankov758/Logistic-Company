@@ -1,8 +1,8 @@
-package com.nbu.logisticcompany.entities.dto;
+package com.nbu.logisticcompany.entities.dtos;
 
 import com.nbu.logisticcompany.entities.Company;
 
-public class TariffOutDto {
+public class TariffUpdateDto {
 
     private int id;
     private float pricePerKG;
@@ -11,10 +11,10 @@ public class TariffOutDto {
 
     private Company companyID;
 
-    public TariffOutDto() {
+    public TariffUpdateDto() {
     }
 
-    public TariffOutDto(int id, float pricePerKG, float officeDiscount, Company companyID) {
+    public TariffUpdateDto(int id, float pricePerKG, float officeDiscount, Company companyID) {
         this.id = id;
         this.pricePerKG = pricePerKG;
         this.officeDiscount = officeDiscount;

@@ -1,4 +1,8 @@
-package com.nbu.logisticcompany.entities.dto;
+package com.nbu.logisticcompany.entities.dtos;
+
+import com.nbu.logisticcompany.entities.Role;
+
+import java.util.Set;
 
 public class CourierOutDto extends UserOutDto {
 
@@ -7,8 +11,8 @@ public class CourierOutDto extends UserOutDto {
     public CourierOutDto() {
     }
 
-    public CourierOutDto(int id, String username, String firstName, String lastName, String companyName) {
-        super(id, username, firstName, lastName);
+    public CourierOutDto(int id, String username, String firstName, String lastName, String companyName, Set<Role> roles) {
+        super(id, username, firstName, lastName, roles);
         this.companyName = companyName;
     }
 

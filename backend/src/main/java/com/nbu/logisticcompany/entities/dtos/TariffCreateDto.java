@@ -1,32 +1,24 @@
-package com.nbu.logisticcompany.entities.dto;
+package com.nbu.logisticcompany.entities.dtos;
 
 import com.nbu.logisticcompany.entities.Company;
 
-public class TariffUpdateDto {
+public class TariffCreateDto {
 
-    private int id;
+
+
     private float pricePerKG;
 
     private float officeDiscount;
 
     private Company companyID;
 
-    public TariffUpdateDto() {
+    public TariffCreateDto() {
     }
 
-    public TariffUpdateDto(int id, float pricePerKG, float officeDiscount, Company companyID) {
-        this.id = id;
+    public TariffCreateDto(float pricePerKG, float officeDiscount, Company companyID) {
         this.pricePerKG = pricePerKG;
         this.officeDiscount = officeDiscount;
         this.companyID = companyID;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public float getPricePerKG() {

@@ -2,8 +2,6 @@ package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,4 +78,5 @@ public class ShipmentServiceImpl implements ShipmentService {
 //        }
         shipmentRepository.delete(shipmentId);
     }
+
 }

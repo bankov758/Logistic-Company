@@ -1,7 +1,7 @@
 package com.nbu.logisticcompany.mappers;
 
 import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.dto.*;
+import com.nbu.logisticcompany.entities.dtos.*;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

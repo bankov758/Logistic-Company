@@ -2,14 +2,11 @@ package com.nbu.logisticcompany.controllers;
 
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.Office;
-import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dto.*;
+import com.nbu.logisticcompany.entities.dtos.*;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.mappers.OfficeMapper;
-import com.nbu.logisticcompany.mappers.TariffsMapper;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
-import com.nbu.logisticcompany.services.interfaces.TariffsService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -1,17 +1,17 @@
-package com.nbu.logisticcompany.entities.dto;
+package com.nbu.logisticcompany.entities.dtos;
 
 import com.nbu.logisticcompany.entities.Company;
 
-public class OfficeUpdateDto {
+public class OfficeOutDto {
 
     private int id;
     private String address;
     private Company companyId;
 
-    public OfficeUpdateDto() {
+    public OfficeOutDto() {
     }
 
-    public OfficeUpdateDto(int id, String address, Company companyId) {
+    public OfficeOutDto(int id, String address, Company companyId) {
         this.id = id;
         this.address = address;
         this.companyId = companyId;

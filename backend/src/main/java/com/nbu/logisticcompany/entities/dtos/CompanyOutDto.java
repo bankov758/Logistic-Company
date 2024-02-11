@@ -1,18 +1,16 @@
-package com.nbu.logisticcompany.entities.dto;
+package com.nbu.logisticcompany.entities.dtos;
 
-public class CompanyUpdateDto {
+public class CompanyOutDto {
 
-
+    private int id;
     private String name;
 
-    private  int id;
-
-    public CompanyUpdateDto() {
+    public CompanyOutDto() {
     }
 
-    public CompanyUpdateDto(String name, int id) {
-        this.name = name;
+    public CompanyOutDto(int id, String name) {
         this.id = id;
+        this.name = name;
     }
 
     public int getId() {

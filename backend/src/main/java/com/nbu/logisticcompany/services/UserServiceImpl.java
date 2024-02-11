@@ -1,7 +1,9 @@
 package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
+import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final String UNAUTHORIZED_UPDATE = "Only the owner of the account can make changes";
+    private static final String UNAUTHORIZED_DELETE = "Only the owner of the account can delete it";
 
     private final UserRepository userRepository;
 
@@ -44,7 +49,7 @@ public class UserServiceImpl implements UserService {
             duplicateUser = false;
         }
         if (duplicateUser) {
-            //throw new DuplicateEntityException("User", "username", user.getUsername());
+            throw new DuplicateEntityException("User", "username", user.getUsername());
         }
         userRepository.create(user);
     }
@@ -52,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User userToUpdate, User user) {
         if (userToUpdate.getId() != user.getId()) {
-            //throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE);
+            throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE);
         }
         userRepository.update(userToUpdate);
     }
@@ -60,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(int id, User user) {
         if (user.getId() != id) {
-            //throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE);
+            throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE);
         }
         userRepository.delete(id);
     }

@@ -1,14 +1,10 @@
 package com.nbu.logisticcompany.mappers;
 
 import com.nbu.logisticcompany.entities.Office;
-import com.nbu.logisticcompany.entities.Tariff;
-import com.nbu.logisticcompany.entities.dto.*;
+import com.nbu.logisticcompany.entities.dtos.*;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
