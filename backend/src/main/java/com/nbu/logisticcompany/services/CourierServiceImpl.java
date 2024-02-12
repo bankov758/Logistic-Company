@@ -4,6 +4,7 @@ import com.nbu.logisticcompany.entities.Courier;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
+import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,11 +43,13 @@ public class CourierServiceImpl implements CourierService {
 
     @Override
     public void update(Courier courierToUpdate, User updater) {
+        ValidationUtil.validateOwnerUpdate(courierToUpdate.getId(), updater.getId());
         courierRepository.update(courierToUpdate);
     }
 
     @Override
     public void delete(int courierToDeleteId, User deleter) {
+        ValidationUtil.validateOwnerDelete(courierToDeleteId, deleter.getId());
         courierRepository.delete(courierToDeleteId);
     }
 

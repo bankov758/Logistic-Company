@@ -37,20 +37,20 @@ public class CompanyController {
                                       @RequestParam(required = false) Optional<String> search) {
         authenticationHelper.tryGetUser(headers);
         return companyService.getAll(search).stream()
-                .map(companyMapper::ObjectToDTO)
+                .map(companyMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public CompanyOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
-        return companyMapper.ObjectToDTO(companyService.getById(id));
+        return companyMapper.ObjectToDto(companyService.getById(id));
     }
 
     @PostMapping
     public Company create(@Valid @RequestBody CompanyCreateDto companyCreateDTO) {
         try {
-            Company company = companyMapper.DTOtoObject(companyCreateDTO);
+            Company company = companyMapper.DtoToObject(companyCreateDTO);
             companyService.create(company);
             return company;
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class CompanyController {
     public Company update(@RequestHeader HttpHeaders headers,
                           @Valid @RequestBody CompanyUpdateDto companyUpdateDTO) {
         User updater = authenticationHelper.tryGetUser(headers);
-        Company company = companyMapper.UpdateDTOtoToCompany(companyUpdateDTO);
+        Company company = companyMapper.UpdateDtoToToCompany(companyUpdateDTO);
         companyService.update(company, updater);
         return company;
     }

@@ -12,38 +12,31 @@ import java.io.IOException;
 public class CompanyMapper {
 
     private final CompanyService companyService;
-@Autowired
+
+    @Autowired
     public CompanyMapper(CompanyService companyService) {
         this.companyService = companyService;
     }
 
-    public Company DTOtoObject(CompanyCreateDto companyCreateDTO) throws IOException {
+    public Company DtoToObject(CompanyCreateDto companyCreateDTO) throws IOException {
         Company company = new Company();
         company.setName(companyCreateDTO.getName());
-
         return company;
     }
 
-    public CompanyOutDto ObjectToDTO(Company company) {
+    public CompanyOutDto ObjectToDto(Company company) {
         CompanyOutDto companyOutDTO = new CompanyOutDto();
         companyOutDTO.setId(company.getId());
         companyOutDTO.setName(company.getName());
         return companyOutDTO;
     }
 
-    public CompanyUpdateDto objectToUpdateDto(Company company) {
-        CompanyUpdateDto companyUpdateDTO = new CompanyUpdateDto();
-
-        companyUpdateDTO.setName(company.getName());
-        return companyUpdateDTO;
-    }
-// Tova otdolu izglejda greshno
-    public Company UpdateDTOtoToCompany(CompanyUpdateDto companyUpdateDTO) {
+    public Company UpdateDtoToToCompany(CompanyUpdateDto companyUpdateDTO) {
         Company company = companyService.getByName(companyUpdateDTO.getName());
-
         if (!companyUpdateDTO.getName().isEmpty()) {
             company.setName(companyUpdateDTO.getName());
         }
         return company;
     }
+
 }

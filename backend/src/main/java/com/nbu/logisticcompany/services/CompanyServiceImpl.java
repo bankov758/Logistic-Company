@@ -2,6 +2,7 @@ package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
@@ -19,7 +21,6 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyServiceImpl(CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
     }
-
 
     @Override
     public Company getById(int id) {
@@ -45,7 +46,7 @@ public class CompanyServiceImpl implements CompanyService {
             duplicateCompany = false;
         }
         if (duplicateCompany) {
-            //throw new DuplicateEntityException("User", "username", user.getUsername());
+            throw new DuplicateEntityException(Company.class.getSimpleName(), "name", company.getName());
         }
         companyRepository.create(company);
     }
