@@ -6,7 +6,7 @@ import java.util.Set;
 @Entity
 @Table(name = "office_employee")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class OfficeEmployee extends Employee{
+public class OfficeEmployee extends Employee {
 
     @ManyToOne
     @JoinColumn(name = "office_id")
