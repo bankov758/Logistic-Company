@@ -49,4 +49,5 @@ public class CourierServiceImpl implements CourierService {
     public void delete(int courierToDeleteId, User deleter) {
         courierRepository.delete(courierToDeleteId);
     }
+
 }

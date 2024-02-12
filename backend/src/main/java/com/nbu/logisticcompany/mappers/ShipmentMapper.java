@@ -16,15 +16,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShipmentMapper {
 
-    private final ShipmentService shipmentService;
     private final UserService userService;
     private final OfficeEmployeeService officeEmployeeService;
     private final CourierService courierService;
 
     @Autowired
-    public ShipmentMapper(ShipmentService shipmentService, UserService userService,
-                          OfficeEmployeeService officeEmployeeService, CourierService courierService) {
-        this.shipmentService = shipmentService;
+    public ShipmentMapper(UserService userService, OfficeEmployeeService officeEmployeeService,
+                          CourierService courierService) {
         this.userService = userService;
         this.officeEmployeeService = officeEmployeeService;
         this.courierService = courierService;

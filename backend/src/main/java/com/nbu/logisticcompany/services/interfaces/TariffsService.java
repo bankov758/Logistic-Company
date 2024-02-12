@@ -8,6 +8,7 @@ import java.util.List;
 public interface TariffsService {
 
     Tariff getById(int id);
+
     Tariff getByCompany(Company company);
 
     List<Tariff> getAll();

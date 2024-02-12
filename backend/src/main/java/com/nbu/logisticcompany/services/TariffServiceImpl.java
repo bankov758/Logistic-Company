@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TariffsServiceImpl implements TariffsService {
+public class TariffServiceImpl implements TariffsService {
 
     private final TariffsRepository tariffsRepository;
 
     @Autowired
-    public TariffsServiceImpl(TariffsRepository tariffsRepository) {
+    public TariffServiceImpl(TariffsRepository tariffsRepository) {
         this.tariffsRepository = tariffsRepository;
     }
 

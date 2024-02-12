@@ -14,46 +14,32 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public class CourierMapper {
+public class CourierMapper extends UserMapper {
 
-    private final CourierService courierService;
     private final CompanyService companyService;
 
     @Autowired
-    public CourierMapper(CourierService courierService, CompanyService companyService) {
-        this.courierService = courierService;
+    public CourierMapper(CompanyService companyService) {
         this.companyService = companyService;
     }
 
     public Courier DtoToObject(CourierRegisterDto courierRegisterDto) {
         Courier courier = new Courier();
-        courier.setUsername(courierRegisterDto.getUsername());
-        courier.setFirstName(courierRegisterDto.getFirstName());
-        courier.setLastName(courierRegisterDto.getLastName());
-        courier.setPassword(courierRegisterDto.getPassword());
+        setUserFieldsFromDto(courier, courierRegisterDto);
         courier.setCompany(companyService.getByName(courierRegisterDto.getCompanyName()));
-        courier.setRoles(Set.of(Role.EMPLOYEE));
         return courier;
     }
 
     public CourierOutDto ObjectToDto(Courier courier) {
         CourierOutDto courierOutDto = new CourierOutDto();
-        courierOutDto.setId(courier.getId());
-        courierOutDto.setUsername(courier.getUsername());
-        courierOutDto.setFirstName(courier.getFirstName());
-        courierOutDto.setLastName(courier.getLastName());
+        setFieldsFormObjectToOutDto(courier, courierOutDto);
         courierOutDto.setCompanyName(courier.getCompany().getName());
         return courierOutDto;
     }
 
     public Courier UpdateDtoToCourier(CourierUpdateDto courierDto) {
-        Courier courier = courierService.getById(courierDto.getId());
-        courier.setFirstName(courierDto.getFirstName());
-        courier.setLastName(courierDto.getLastName());
-        courier.setCompany(companyService.getByName(courierDto.getCompanyName()));
-        if (ValidationUtil.isNotEmpty(courierDto.getNewPassword())) {
-            courier.setPassword(courierDto.getNewPassword());
-        }
+        Courier courier = new Courier();
+        setFieldsFromUpdateDtoToObject(courierDto, courier);
         return courier;
     }
 
