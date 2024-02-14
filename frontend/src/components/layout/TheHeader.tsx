@@ -1,40 +1,36 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import Link from "next/link";
+
 import "./TheHeader.css";
 
 const TheHeader: React.FC = () => {
-
-    return (
-        <nav className="navbar">
-            <ul>
-                <li>
-                    <NavLink 
-                        to='/'
-                        className={({isActive}) => isActive ? 'active' : undefined}
-                        end
-                    >
-                        Home
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink 
-                        to='/auth' 
-                        className={({isActive}) => isActive ? 'active' : undefined}
-                    >
-                        Auth
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink 
-                        to='/products' 
-                        className={({isActive}) => isActive ? 'active' : undefined}
-                    >
-                        Products
-                    </NavLink>
-                </li>
-            </ul>
-        </nav>
-    )
-}
+	return (
+		<nav className="navbar">
+			<ul>
+				<li>
+					<Link
+						href="/"
+					>
+						Home
+					</Link>
+				</li>
+				<li>
+					<Link
+						href="/auth"
+					>
+						Auth
+					</Link>
+				</li>
+				<li>
+					<Link
+						href="/products"
+					>
+						Products
+					</Link>
+				</li>
+			</ul>
+		</nav>
+	);
+};
 
 export default TheHeader;

@@ -1,0 +1,202 @@
+/* Global CSS file (must be imported in the Root Layout  */
+
+/* Add the Tailwind CSS layers that Tailwind will use to inject its generated styles and classes to a Global Stylesheet */
+
+/* for things like reset rules or default styles applied to plain HTML elements */
+@tailwind base;
+
+/* for class-based styles that you want to be able to override with utilities */
+@tailwind components;
+
+/* for small, single-purpose classes that should always take precedence over any other styles (for ex: .flex) */
+@tailwind utilities;
+
+body, html {
+    scroll-behavior: smooth;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        scale: 0.5;
+    }
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+@keyframes fade-left {
+    from {
+        opacity: 0;
+        transform: translateX(-200px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fade-right {
+    from {
+        opacity: 0;
+        transform: translateX(200px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media only screen and (max-width : 768px) {
+	.animate {
+		/*CSS transitions*/
+		-o-transition-property: none !important;
+		-moz-transition-property: none !important;
+		-ms-transition-property: none !important;
+		-webkit-transition-property: none !important;
+		transition-property: none !important;
+		/*CSS transforms*/
+		-o-transform: none !important;
+		-moz-transform: none !important;
+		-ms-transform: none !important;
+		-webkit-transform: none !important;
+		transform: none !important;
+		/*CSS animations*/
+		-webkit-animation: none !important;
+		-moz-animation: none !important;
+		-o-animation: none !important;
+		-ms-animation: none !important;
+		animation: none !important;
+	}
+}
+
+@layer base {
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-bold text-black;
+    }
+
+    /* using Tailwind's @apply directive to extract repeated utility classes to custom CSS class */
+    h1 {
+        @apply text-2xl;
+    }
+
+    h2 {
+        @apply text-xl;
+    }
+
+    h3 {
+        @apply text-lg;
+    }
+
+    h4 {
+        @apply text-base;
+    }
+
+    h5 {
+        @apply text-sm;
+    }
+
+    h6 {
+        @apply text-sm;
+    }
+
+    p {
+        @apply text-base;
+    }
+}
+
+@layer components {
+
+    .card {
+        background-color: theme('colors.white');
+        border-radius: theme('borderRadius.lg');
+        padding: theme('spacing.6');
+        box-shadow: theme('boxShadow.xl');
+    }
+
+    /* Container layout system which is Mobile-first */
+    .container,
+    .container-fluid,
+    .container-xl,
+    .container-lg,
+    .container-md,
+    .container-sm {
+        @apply w-full mx-auto px-3
+    }
+
+    @media screen and (min-width: theme('screens.sm')) {
+        .container,
+        .container-sm {
+            max-width: calc(theme('screens.sm') - 30px);
+        }
+    }
+
+    @media screen and (min-width: theme('screens.md')) {
+        .container,
+        .container-sm,
+        .container-md {
+            max-width: calc(theme('screens.md') - 30px);
+        }
+    }
+
+    @media screen and (min-width: theme('screens.lg')) {
+        .container,
+        .container-sm,
+        .container-md,
+        .container-lg {
+            max-width: calc(theme('screens.lg') - 30px);
+        }
+    }
+
+    @media screen and (min-width: theme('screens.xl')) {
+        .container,
+        .container-sm,
+        .container-md,
+        .container-lg,
+        .container-xl {
+            max-width: calc(theme('screens.xl') - 30px);
+        }
+    }
+
+    .base-btn {
+        @apply bg-orange-500 text-white text-sm font-bold py-[10px] px-[42px] rounded-[10px] shadow-md 
+                hover:bg-orange-600 
+                focus:shadow-lg 
+                disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
+    }
+
+    .accessibility {
+        clip: rect(0, 0, 0, 0);
+        @apply absolute w-[1px] h-[1px] p-0 m-[-1px] overflow-hidden whitespace-nowrap border-0;
+    }
+
+    .animate {
+        animation-direction: normal;
+        animation-fill-mode: both;
+        animation-range-start: cover;
+        animation-range-end: contain 20%;
+        animation-timeline: view();
+        animation-timing-function: linear;
+    }
+
+    .fade-in {
+        animation-name: fade-in;
+    }
+
+    .fade-left {
+        animation-name: fade-left;
+    }
+
+    .fade-right {
+        animation-name: fade-right;
+    }
+}
+
+@layer utilities {
+
+    .flex-center {
+        @apply flex justify-center items-center;
+    }
+}
