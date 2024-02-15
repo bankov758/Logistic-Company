@@ -1,13 +1,22 @@
 import React from "react";
+<<<<<<< HEAD
 import './Footer.css';
 // import "./Footer.css";
+=======
+import "./Footer.css";
+>>>>>>> b629e6f7407b22643728e3d908204e90f31d2590
 // import "../../styles/Footer.css";
 
 const Footer: React.FC = () => {
 
     return (
+<<<<<<< HEAD
         <div className='footer'>
              <div className='footer_section_padding'>
+=======
+        <div className={'footer'}>
+             <div className={'footer_section_padding'}>
+>>>>>>> b629e6f7407b22643728e3d908204e90f31d2590
                  <div className="footer_row">
                      <div className="footer_column">
                          <h4>More info:</h4>
