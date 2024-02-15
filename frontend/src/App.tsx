@@ -6,9 +6,6 @@ import router from "./util/routes";
 
 const App: React.FC = () => {
 
- let b = 5;
- let a: number = 5;
-
     return <RouterProvider router={router} /> 
 }
 
