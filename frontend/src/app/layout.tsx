@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 
 import TheHeader from "@/components/layout/TheHeader";
 import Footer from "@/components/layout/Footer";
+import { getSession } from "@/lib/auth";
 
 const source_sans_3 = Source_Sans_3({
 	weight: ["400", "600", "700"],
@@ -20,12 +21,12 @@ export const metadata: Metadata = {
 		"Professional website development for your business with an expert web developer including web design with Figma"
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-
+ const session = await getSession();
 	return (
 		<html
 			lang="en"
@@ -35,10 +36,12 @@ export default function RootLayout({
 				<div id="overlay" />
 				<div id="backdrop" />
 				<TheHeader />
+				{/* {session?<TheHeader />:null} */}
 				<main className="container flex flex-col flex-grow justify-start items-center">
 					{children}
 				</main>
 				<Footer />
+				{/* {session?<Footer />:null} */}
 			</body>
 		</html>
 	);

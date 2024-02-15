@@ -28,6 +28,13 @@ const TheHeader: React.FC = () => {
 						Products
 					</Link>
 				</li>
+				<li>
+					<Link
+						href="/login"
+					>
+						Login
+					</Link>
+				</li>
 			</ul>
 		</nav>
 	);

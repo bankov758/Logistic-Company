@@ -5,8 +5,10 @@
 .footer {
 	color: #4b4b8d;
 	background-color: #e5e5fb;
-	position: absolute;
+	position: fixed;
 	bottom: 0;
+	height: 80px;
+	padding-bottom: 20px;	
 	width: 100%;
 }
 
