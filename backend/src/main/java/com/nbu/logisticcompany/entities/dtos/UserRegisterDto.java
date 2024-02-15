@@ -1,8 +1,9 @@
-package com.nbu.logisticcompany.entities.dto;
+package com.nbu.logisticcompany.entities.dtos;
 
 import javax.validation.constraints.Size;
 
-public class UserRegisterDTO {
+public class UserRegisterDto {
+
     @Size(min = 2, max = 40, message = "Username should be between 2 and 40 symbols")
     private String username;
 
@@ -17,10 +18,10 @@ public class UserRegisterDTO {
 
     private String confirmPassword;
 
-    public UserRegisterDTO() {
+    public UserRegisterDto() {
     }
 
-    public UserRegisterDTO(String username, String firstName, String lastName, String password, String confirmPassword) {
+    public UserRegisterDto(String username, String firstName, String lastName, String password, String confirmPassword) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;

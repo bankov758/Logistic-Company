@@ -1,9 +1,9 @@
-package com.nbu.logisticcompany.entities.dto;
+package com.nbu.logisticcompany.entities.dtos;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 
-public class UserUpdateDTO {
+public class UserUpdateDto {
 
     @Positive(message = "Id should be a positive number")
     private int id;
@@ -18,10 +18,10 @@ public class UserUpdateDTO {
 
     private String newPassword;
 
-    public UserUpdateDTO() {
+    public UserUpdateDto() {
     }
 
-    public UserUpdateDTO(int id, String firstName, String lastName, String currentPassword, String newPassword) {
+    public UserUpdateDto(int id, String firstName, String lastName, String currentPassword, String newPassword) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

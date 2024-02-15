@@ -1,16 +1,19 @@
 package com.nbu.logisticcompany.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    protected int id;
 
     @Column(name = "username")
     private String username;
@@ -24,15 +27,20 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
+
     public User() {
     }
 
-    public User(int id, String username, String password, String firstName, String lastName) {
+    public User(int id, String username, String password, String firstName, String lastName, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.roles = roles;
     }
 
     public int getId() {
@@ -75,16 +83,36 @@ public class User {
         this.lastName = last_name;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id && Objects.equals(username, user.username);
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(username, user.username)
+                && Objects.equals(firstName, user.firstName)
+                && Objects.equals(lastName, user.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username);
+        return Objects.hash(username, firstName, lastName);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }

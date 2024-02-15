@@ -2,12 +2,10 @@ package com.nbu.logisticcompany.controllers;
 
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dto.UserOutDTO;
-import com.nbu.logisticcompany.entities.dto.UserRegisterDTO;
-import com.nbu.logisticcompany.entities.dto.UserUpdateDTO;
-import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
-import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
+import com.nbu.logisticcompany.entities.dtos.UserOutDto;
+import com.nbu.logisticcompany.entities.dtos.UserRegisterDto;
+import com.nbu.logisticcompany.entities.dtos.UserRole;
+import com.nbu.logisticcompany.entities.dtos.UserUpdateDto;
 import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.http.HttpHeaders;
@@ -21,9 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
@@ -36,70 +34,63 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
-    public List<UserOutDTO> getAll(@RequestHeader HttpHeaders headers,
+    public List<UserOutDto> getAll(@RequestHeader HttpHeaders headers,
                                    @RequestParam(required = false) Optional<String> search) {
-        try {
-            authenticationHelper.tryGetUser(headers);
-            return userService.getAll(search).stream()
-                    .map(userMapper::ObjectToDTO)
-                    .collect(Collectors.toList());
-        } catch (UnauthorizedOperationException u) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, u.getMessage());
-        }
+        authenticationHelper.tryGetUser(headers);
+        return userService.getAll(search).stream()
+                .map(userMapper::ObjectToDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public UserOutDTO getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-        try {
-            authenticationHelper.tryGetUser(headers);
-            return userMapper.ObjectToDTO(userService.getById(id));
-        } catch (UnauthorizedOperationException u) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, u.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public UserOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+        authenticationHelper.tryGetUser(headers);
+        return userMapper.ObjectToDto(userService.getById(id));
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+    public User create(@Valid @RequestBody UserRegisterDto userRegisterDTO) {
         try {
-            User user = userMapper.DTOtoObject(userRegisterDTO);
+            User user = userMapper.DtoToObject(userRegisterDTO);
             userService.create(user);
             return user;
-        } catch (DuplicateEntityException | IOException e) {
+        } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
-//alabala
-    @PutMapping()
+
+    @PutMapping
     public User update(@RequestHeader HttpHeaders headers,
-                       @Valid @RequestBody UserUpdateDTO userToUpdate) {
-        try {
-            User updater = authenticationHelper.tryGetUser(headers);
-            User user = userMapper.UpdateDTOtoUser(userToUpdate);
-            userService.update(user, updater);
-            return user;
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (DuplicateEntityException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+                       @Valid @RequestBody UserUpdateDto userToUpdate) {
+        User updater = authenticationHelper.tryGetUser(headers);
+        User user = userMapper.UpdateDtoToUser(userToUpdate);
+        userService.update(user, updater);
+        return user;
+    }
+
+    @PutMapping("/add-role")
+    public User addRole(@RequestHeader HttpHeaders headers,
+                       @Valid @RequestBody UserRole userRole) {
+        User updater = authenticationHelper.tryGetUser(headers);
+        User user = userService.getById(userRole.getUserId());
+        userService.addRole(user, userRole.getRole(), updater);
+        return user;
+    }
+
+    @PutMapping("/remove-role")
+    public User removeRole(@RequestHeader HttpHeaders headers,
+                       @Valid @RequestBody UserRole userRole) {
+        User updater = authenticationHelper.tryGetUser(headers);
+        User user = userService.getById(userRole.getUserId());
+        userService.removeRole(user, userRole.getRole(), updater);
+        return user;
     }
 
     @DeleteMapping("/{id}")
     public void delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        try {
-            User user = authenticationHelper.tryGetUser(headers);
-            userService.delete(id, user);
-        } catch (UnauthorizedOperationException u) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, u.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        User user = authenticationHelper.tryGetUser(headers);
+        userService.delete(id, user);
     }
 
 }

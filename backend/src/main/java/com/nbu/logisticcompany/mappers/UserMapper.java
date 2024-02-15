@@ -1,58 +1,61 @@
 package com.nbu.logisticcompany.mappers;
 
+import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dto.UserOutDTO;
-import com.nbu.logisticcompany.entities.dto.UserRegisterDTO;
-import com.nbu.logisticcompany.entities.dto.UserUpdateDTO;
-import com.nbu.logisticcompany.services.interfaces.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nbu.logisticcompany.entities.dtos.UserOutDto;
+import com.nbu.logisticcompany.entities.dtos.UserRegisterDto;
+import com.nbu.logisticcompany.entities.dtos.UserUpdateDto;
+import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Set;
 
 @Component
 public class UserMapper {
-    private final UserService userService;
 
-    @Autowired
-    public UserMapper(UserService userService) {
-        this.userService = userService;
+    public User DtoToObject(UserRegisterDto userRegisterDTO) throws IOException {
+        User user = new User();
+        setUserFieldsFromDto(user, userRegisterDTO);
+        return user;
     }
 
-    public User DTOtoObject(UserRegisterDTO userRegisterDTO) throws IOException {
-        User user = new User();
+    protected void setUserFieldsFromDto(User user, UserRegisterDto userRegisterDTO) {
         user.setUsername(userRegisterDTO.getUsername());
         user.setFirstName(userRegisterDTO.getFirstName());
         user.setLastName(userRegisterDTO.getLastName());
         user.setPassword(userRegisterDTO.getPassword());
+        user.setRoles(Set.of(Role.USER));
+    }
+
+    public UserOutDto ObjectToDto(User user) {
+        UserOutDto userOutDto = new UserOutDto();
+        setFieldsFormObjectToOutDto(user, userOutDto);
+        return userOutDto;
+    }
+
+    protected void setFieldsFormObjectToOutDto(User user, UserOutDto userOutDto) {
+        userOutDto.setId(user.getId());
+        userOutDto.setUsername(user.getUsername());
+        userOutDto.setFirstName(user.getFirstName());
+        userOutDto.setLastName(user.getLastName());
+        userOutDto.setRoles(user.getRoles());
+    }
+
+    public User UpdateDtoToUser(UserUpdateDto userDto) {
+        User user = new User();
+        setFieldsFromUpdateDtoToObject(userDto, user);
         return user;
     }
 
-    public UserOutDTO ObjectToDTO(User user) {
-        UserOutDTO userOutDTO = new UserOutDTO();
-        userOutDTO.setId(user.getId());
-        userOutDTO.setUsername(user.getUsername());
-        userOutDTO.setFirstName(user.getFirstName());
-        userOutDTO.setLastName(user.getLastName());
-        return userOutDTO;
-    }
-
-    public UserUpdateDTO objectToUpdateDto(User user) {
-        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-        userUpdateDTO.setId(user.getId());
-        userUpdateDTO.setFirstName(user.getFirstName());
-        userUpdateDTO.setLastName(user.getLastName());
-        return userUpdateDTO;
-    }
-
-    public User UpdateDTOtoUser(UserUpdateDTO userDTO) {
-        User user = userService.getById(userDTO.getId());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        if (!userDTO.getNewPassword().isEmpty()) {
-            user.setPassword(userDTO.getNewPassword());
+    protected void setFieldsFromUpdateDtoToObject(UserUpdateDto userDto, User user) {
+        user.setId(userDto.getId());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        if (ValidationUtil.isNotEmpty(userDto.getNewPassword())) {
+            user.setPassword(userDto.getNewPassword());
         }
-        return user;
     }
+
 }
 
