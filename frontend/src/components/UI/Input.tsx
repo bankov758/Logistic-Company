@@ -7,7 +7,7 @@ const Input = (
             id: string,
             type: string,
             name: string,
-            placeholder: string,
+            placeholder?: string,
             showRemoveIcon?: boolean,
             inputDisabled?: boolean,
             iconSrc?: string,
@@ -22,11 +22,11 @@ const Input = (
 ) => {
     return (
         <div
-            className='w-80 max-sm:w-60 relative inline-flex justify-start items-center gap-x-2.5 mb-4'
+            className='w-80 max-sm:w-60 relative inline-flex justify-start items-center gap-x-2.5'
         >
             {iconSrc &&
                 <div className='w-6 h-full absolute left-2 top-0 flex justify-center items-center text-black'>
-                    <Icon src={iconSrc} alt={iconAlt || ""} width={iconWidth || 0} height={iconHeight || 0}/>
+                    <Icon src={iconSrc} alt={iconAlt || ""} width={iconWidth || 24} height={iconHeight || 24}/>
                 </div>
             }
             <input
