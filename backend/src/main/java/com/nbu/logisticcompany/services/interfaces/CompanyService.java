@@ -18,7 +18,7 @@ public interface CompanyService {
 
     List<CompanyOutDto> getCompanyIncome(int companyId, LocalDateTime periodStart, LocalDateTime periodEnd);
 
-    void create(Company company);
+    void create(Company company, User creator);
 
     void update(Company companyToUpdate, User user );
 

@@ -59,10 +59,12 @@ public class CompanyController {
     }
 
     @PostMapping
-    public Company create(@Valid @RequestBody CompanyCreateDto companyCreateDTO) {
+    public Company create(@RequestHeader HttpHeaders headers,
+                          @Valid @RequestBody CompanyCreateDto companyCreateDTO) {
         try {
+            User creator = authenticationHelper.tryGetUser(headers);
             Company company = companyMapper.DtoToObject(companyCreateDTO);
-            companyService.create(company);
+            companyService.create(company, creator);
             return company;
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
