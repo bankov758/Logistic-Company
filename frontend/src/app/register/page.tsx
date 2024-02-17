@@ -21,7 +21,7 @@ const RegistrationPage = () => {
             </div>
             <div className="input-group">
                 <label className="block">Confirm password</label>
-                <input type="password" name="password_2"  className="block w-full rounded-xl border-0 py-1.5  ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></input>
+                <input type="password" name="password_2"  className="input-style"></input>
             </div>
             <div className="flex justify-center">
                 <button type="submit" className="block px-3 py-1.5 mt-1  relative rounded-xl bg-green-400 text-white border-none cursor-pointer" name="reg_user">Register</button>
