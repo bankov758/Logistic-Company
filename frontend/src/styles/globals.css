@@ -173,6 +173,29 @@ body, html {
                 disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
     }
 
+    .action_btn_green {
+        @apply ring ring-inset ring-green-600 ring-opacity-50 rounded-md
+            bg-green-50 text-green-700
+            text-sm 
+            px-2 py-1;
+    }
+
+    .action_btn_blue {
+        @apply ring ring-inset ring-blue-600 ring-opacity-50 rounded-md
+            bg-blue-50 text-blue-700
+            text-sm 
+            px-2 py-1
+            focus:shadow-sm;
+    }
+
+    .action_btn_red {
+        @apply ring ring-inset ring-red-600 ring-opacity-50 rounded-md
+            bg-red-50 text-red-700
+            text-sm 
+            px-2 py-1
+            focus:shadow-sm;
+    }
+
     .accessibility {
         clip: rect(0, 0, 0, 0);
         @apply absolute w-[1px] h-[1px] p-0 m-[-1px] overflow-hidden whitespace-nowrap border-0;

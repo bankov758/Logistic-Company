@@ -4,6 +4,8 @@ import FilterOrders from "./EmployeeInterface/FilterOrders";
 import Table from "./EmployeeInterface/Table";
 import Button from "../UI/BaseButton";
 
+import { categories, data, tableColumns } from "@/data/employee/ordersTableData";
+
 const EmployeeInterface: React.FC = () => {
 
     return (
@@ -14,7 +16,11 @@ const EmployeeInterface: React.FC = () => {
                 <Button secondary fill>Close an order</Button>
             </div>
             <FilterOrders />
-            <Table />
+            <Table
+                columns={tableColumns}
+                categories={categories}
+                data={data}
+            />
         </section>
     )
 };
