@@ -1,4 +1,3 @@
-import { categories } from "@/data/employee/ordersTableData";
 import React, { Fragment } from "react";
 
 export type column = {
@@ -14,12 +13,10 @@ export type category = {
     id: number
 }
 
-export type item = {
-    name: string;
-    code: string;
+export type item = Record<string, string | number> & {
     id: number;
     category: string;
-}
+};
 
 type TableProps = {
     columns: column[];
@@ -70,21 +67,59 @@ const Table: React.FC<TableProps> = ({
                                         {category.title}
                                     </th>
                                 </tr>
-                                <tr className="border-t text-sm font-semibold text-black">
-                                    {
-                                        data
-                                            .filter((item: item) => {
-                                                return item.category === category.code;
-                                            })
-                                            .map((item: item, index: number) => {
-                                                return (
-                                                    <td key={index} className='px-4 py-3 text-gray-500'>
-                                                        {item.name}
-                                                    </td>
-                                                )
-                                            })
-                                    }
-                                </tr>
+                                {
+                                    data
+                                        .filter((item: item) => item.category === category.code)
+                                        .map((rowItem: item, index: number) => {
+                                            return (
+                                                <tr key={index} className="border-t text-sm font-semibold text-black">
+
+                                                    {columns.map((column: column) => {
+
+                                                        if ( column.hide ) {
+
+                                                            if( column.code === 'actions' ) {
+
+                                                                return (
+                                                                    <td key={column.id} className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
+                                                                        <button 
+                                                                            className="action_btn_red"
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+
+                                                                        <button 
+                                                                            className="action_btn_blue"
+                                                                        >
+                                                                            Edit
+                                                                        </button>
+                                                                    </td>
+                                                                )
+                                                            }
+                                                        }
+
+                                                        if( column.code === 'status' ) {
+                                                            return (
+                                                                <td key={column.id} className='px-4 py-3'>
+                                                                    <button 
+                                                                        className="action_btn_green"
+                                                                    >
+                                                                        {rowItem[column.code]}
+                                                                    </button>
+                                                                </td>
+                                                            )
+                                                        }
+                                                        
+                                                        return (
+                                                            <td key={column.id} className='px-4 py-3 text-gray-500'>
+                                                                {rowItem[column.code]}
+                                                            </td>
+                                                        )
+                                                    })}
+                                                </tr>
+                                            )
+                                        })
+                                }
                             </Fragment>
                         )
                     })}
@@ -95,17 +130,3 @@ const Table: React.FC<TableProps> = ({
 };
 
 export default Table;
-
-{/* <td className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
-<button 
-    className="action_btn_red"
->
-    Delete
-</button>
-
-<button 
-    className="action_btn_blue"
->
-    Edit
-</button>
-</td> */}
