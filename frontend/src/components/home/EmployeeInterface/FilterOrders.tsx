@@ -61,7 +61,7 @@ const FilterOrders: React.FC = () => {
     }
 
     return (
-        <form className="flex gap-x-6 justify-start items-center" onSubmit={filterOrders}>
+        <form className="flex gap-x-6 justify-start items-center w-full" onSubmit={filterOrders}>
             <Input 
                 id='client_name'
                 type='text'
