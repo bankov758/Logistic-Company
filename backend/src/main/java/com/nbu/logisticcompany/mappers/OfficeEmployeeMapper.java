@@ -1,11 +1,9 @@
 package com.nbu.logisticcompany.mappers;
 
-import com.nbu.logisticcompany.entities.Courier;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
-import com.nbu.logisticcompany.entities.dtos.CourierUpdateDto;
-import com.nbu.logisticcompany.entities.dtos.OfficeEmployeeOutDto;
-import com.nbu.logisticcompany.entities.dtos.OfficeEmployeeRegisterDto;
-import com.nbu.logisticcompany.entities.dtos.OfficeEmployeeUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeRegisterDto;
+import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;

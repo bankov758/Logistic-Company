@@ -1,7 +1,9 @@
 package com.nbu.logisticcompany.mappers;
 
 import com.nbu.logisticcompany.entities.Office;
-import com.nbu.logisticcompany.entities.dtos.*;
+import com.nbu.logisticcompany.entities.dtos.office.OfficeCreateDto;
+import com.nbu.logisticcompany.entities.dtos.office.OfficeOutDto;
+import com.nbu.logisticcompany.entities.dtos.office.OfficeUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

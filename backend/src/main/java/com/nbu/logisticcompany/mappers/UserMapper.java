@@ -2,9 +2,9 @@ package com.nbu.logisticcompany.mappers;
 
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dtos.UserOutDto;
-import com.nbu.logisticcompany.entities.dtos.UserRegisterDto;
-import com.nbu.logisticcompany.entities.dtos.UserUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserRegisterDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserUpdateDto;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.stereotype.Component;
 

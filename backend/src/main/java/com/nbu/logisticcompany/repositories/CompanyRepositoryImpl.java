@@ -1,7 +1,7 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.dtos.CompanyOutDto;
+import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

@@ -1,4 +1,6 @@
-package com.nbu.logisticcompany.entities.dtos;
+package com.nbu.logisticcompany.entities.dtos.user;
+
+import com.nbu.logisticcompany.entities.dtos.user.CourierUpdateDto;
 
 public class OfficeEmployeeUpdateDto extends CourierUpdateDto {
 

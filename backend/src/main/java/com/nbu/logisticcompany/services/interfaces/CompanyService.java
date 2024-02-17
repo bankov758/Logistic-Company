@@ -2,7 +2,7 @@ package com.nbu.logisticcompany.services.interfaces;
 
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dtos.CompanyOutDto;
+import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

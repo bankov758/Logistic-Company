@@ -1,4 +1,4 @@
-package com.nbu.logisticcompany.entities.dtos;
+package com.nbu.logisticcompany.entities.dtos.shipment;
 
 import java.time.LocalDateTime;
 

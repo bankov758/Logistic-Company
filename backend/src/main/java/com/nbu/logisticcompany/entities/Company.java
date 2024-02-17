@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities;
 
-import com.nbu.logisticcompany.entities.dtos.CompanyOutDto;
+import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 
 import javax.persistence.*;
 import java.util.Objects;

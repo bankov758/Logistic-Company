@@ -1,6 +1,4 @@
-package com.nbu.logisticcompany.entities.dtos;
-
-import com.nbu.logisticcompany.entities.Role;
+package com.nbu.logisticcompany.entities.dtos.user;
 
 public class UserRole {
 

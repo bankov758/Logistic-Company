@@ -1,4 +1,4 @@
-package com.nbu.logisticcompany.entities.dtos;
+package com.nbu.logisticcompany.entities.dtos.office;
 
 import com.nbu.logisticcompany.entities.Company;
 
