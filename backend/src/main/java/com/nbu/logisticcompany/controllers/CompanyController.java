@@ -47,6 +47,14 @@ public class CompanyController {
         return companyMapper.ObjectToDto(companyService.getById(id));
     }
 
+    @GetMapping("/income")
+    public List<CompanyOutDto> getByIncome(@RequestHeader HttpHeaders headers,
+                                           @Valid @RequestBody CompanyPeriodDto CompanyPeriodDto) {
+        authenticationHelper.tryGetUser(headers);
+        return companyService.getCompanyIncome(CompanyPeriodDto.getCompanyId(),
+                CompanyPeriodDto.getPeriodStart(), CompanyPeriodDto.getPeriodEnd());
+    }
+
     @PostMapping
     public Company create(@Valid @RequestBody CompanyCreateDto companyCreateDTO) {
         try {

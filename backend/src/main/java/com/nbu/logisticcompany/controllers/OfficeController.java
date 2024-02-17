@@ -48,10 +48,8 @@ public class OfficeController {
 
     @GetMapping("/{id}")
     public OfficeOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-
         authenticationHelper.tryGetUser(headers);
         return officeMapper.ObjectToDTO(officeService.getById(id));
-
     }
 
     @PostMapping

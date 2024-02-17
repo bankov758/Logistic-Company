@@ -2,6 +2,7 @@ package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.entities.dtos.CompanyOutDto;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
@@ -9,6 +10,7 @@ import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +37,11 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<Company> getAll(Optional<String> search) {
         return companyRepository.getAll();
+    }
+
+    @Override
+    public List<CompanyOutDto> getCompanyIncome(int companyId, LocalDateTime periodStart, LocalDateTime periodEnd){
+        return companyRepository.getCompanyIncome(companyId, periodStart, periodEnd);
     }
 
     @Override
@@ -66,4 +73,5 @@ public class CompanyServiceImpl implements CompanyService {
         }*/
         companyRepository.delete(companyId);
     }
+
 }

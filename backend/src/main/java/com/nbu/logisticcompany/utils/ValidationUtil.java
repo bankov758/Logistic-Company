@@ -47,8 +47,8 @@ public class ValidationUtil {
         }
     }
 
-    public static void validateOwnerDelete(int userToUpdateId, int updaterId){
-        if (userToUpdateId != updaterId) {
+    public static void validateOwnerDelete(int userToDeleteId, int updaterId){
+        if (userToDeleteId != updaterId) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE);
         }
     }
