@@ -43,6 +43,7 @@ public class ShipmentMapper {
         shipment.setPrice(shipmentCreateDto.getPrice());
         shipment.setSentDate(shipmentCreateDto.getSentDate());
         shipment.setCourier(courierService.getById(shipmentCreateDto.getCourierId()));
+        shipment.setCompany(officeEmployee.getCompany());
         return shipment;
     }
 

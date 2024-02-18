@@ -52,12 +52,16 @@ public class Shipment {
     @JoinColumn(name = "courier_id")
     private Courier courier;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     public Shipment() {
     }
 
     public Shipment(int id, String departureAddress, String arrivalAddress, double weight, User sender, User receiver,
                     OfficeEmployee employee, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
-                    LocalDateTime sentDate, LocalDateTime receivedDate, Courier courier) {
+                    LocalDateTime sentDate, LocalDateTime receivedDate, Courier courier, Company company) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
@@ -71,6 +75,7 @@ public class Shipment {
         this.sentDate = sentDate;
         this.receivedDate = receivedDate;
         this.courier = courier;
+        this.company = company;
     }
 
     public int getId() {
@@ -175,6 +180,14 @@ public class Shipment {
 
     public void setCourier(Courier courier) {
         this.courier = courier;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     @Override
