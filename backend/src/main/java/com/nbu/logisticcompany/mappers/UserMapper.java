@@ -1,6 +1,5 @@
 package com.nbu.logisticcompany.mappers;
 
-import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserRegisterDto;
@@ -9,7 +8,6 @@ import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Set;
 
 @Component
 public class UserMapper {
@@ -25,7 +23,6 @@ public class UserMapper {
         user.setFirstName(userRegisterDTO.getFirstName());
         user.setLastName(userRegisterDTO.getLastName());
         user.setPassword(userRegisterDTO.getPassword());
-        user.setRoles(Set.of(Role.USER));
     }
 
     public UserOutDto ObjectToDto(User user) {
