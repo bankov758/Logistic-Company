@@ -9,6 +9,8 @@ import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
+import com.nbu.logisticcompany.utils.Action;
+import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,9 +54,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void create(Company company, User creator) {
-        if (!creator.getRoles().contains(Role.ADMIN)) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_CREATE);
-        }
+        ValidationUtil.validateAdminAction(creator, Company.class, Action.CREATE);
         boolean duplicateCompany = true;
         try {
             companyRepository.getByField("name", company.getName());
@@ -69,17 +69,13 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void update(Company companyToUpdate, User user) {
-        if (!user.getRoles().contains(Role.ADMIN)) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE);
-        }
+        ValidationUtil.validateAdminAction(user, Company.class, Action.UPDATE);
         companyRepository.update(companyToUpdate);
     }
 
     @Override
     public void delete(int companyId, User user) {
-        if (!user.getRoles().contains(Role.ADMIN)) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE);
-        }
+        ValidationUtil.validateAdminAction(user, Company.class, Action.DELETE);
         companyRepository.delete(companyId);
     }
 
