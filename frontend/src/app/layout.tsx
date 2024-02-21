@@ -40,7 +40,7 @@ export default async function RootLayout({
 				<main className="container flex flex-col flex-grow justify-start items-center">
 					{children}
 				</main>
-				<Footer />
+				{/*<Footer />*/}
 				{/* {session?<Footer />:null} */}
 			</body>
 		</html>

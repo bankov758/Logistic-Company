@@ -39,8 +39,8 @@ const Button: React.FC<buttonProps> = ({
                 }
                 ${secondary ? 
                     `${fill ? 
-                        "border-0 text-[#ced1d3] bg-[#54595f] hover:bg-[#424548]" :
-                        "border-0 text-[#54595f] bg-[#abb0b5] hover:bg-[#ced1d3]"
+                        "!border-0 !text-[#ced1d3] !bg-[#54595f] hover:!bg-[#424548]" :
+                        "!border-0 !text-[#54595f] !bg-[#abb0b5] hover:!bg-[#ced1d3]"
                     }` :
                     ""
                 }

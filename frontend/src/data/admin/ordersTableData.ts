@@ -1,19 +1,49 @@
 import { category, column, item } from "@/components/home/EmployeeInterface/Table";
-import { Sofia } from "next/font/google";
-export const officeColumnes: column[] = [
+
+//office columns
+export const officeColumns: column[] = [
     {
         title: "Address",
         code: "address",
         id: 1,
     },
     {
-        title: "Company name",
+        title: "Company Name",
         code: "company_name",
         id: 2,
     },
-
+    {
+        title: "Actions",
+        code: "actions",
+        hide: true,
+        id: 3,
+    },
 ]
 
+export const officeCategories: category[] = [
+    {
+        title: 'Offices',
+        code: 'offices',
+        id: 1
+    }
+];
+
+export const officeDataItems: item[] = [
+    {
+        address: "Sofia",
+        company_name: "Speedy",
+        id: 1,
+        category: 'offices'
+    },
+    {
+        address: "Varna",
+        company_name: "Econt",
+        id: 1,
+        category: 'offices'
+    },
+];
+
+//client + employee columns
 export const tableColumns: column[] = [
     {
         title: "Departure place",
@@ -48,7 +78,7 @@ export const tableColumns: column[] = [
     },
 ];
 
-
+//client + employee category
 export const categories: category[] = [
     {
         title: "Clients",
@@ -60,19 +90,9 @@ export const categories: category[] = [
         code: "employees",
         id: 2,
     },
-    {
-        title: "Offices",
-        code: "offices",
-        id: 3,
-    },
 ];
 
-export const officeDataItem: item[] = [
-    {
-        Address: ""
-    }
 
-]
 export const data: item[] = [
     {
         departure: "Sofia",
@@ -80,7 +100,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "registered",
+        category: "clients",
         id: 1,
     },
     {
@@ -89,7 +109,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "registered",
+        category: "clients",
         id: 2,
     },
     {
@@ -98,7 +118,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "registered",
+        category: "clients",
         id: 3,
     },
     {
@@ -107,7 +127,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "sent",
+        category: "employees",
         id: 4,
     },
     {
@@ -116,7 +136,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "sent",
+        category: "employees",
         id: 5,
     },
     {
@@ -125,34 +145,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "sent",
+        category: "employees",
         id: 6,
-    },
-    {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
-        category: "received",
-        id: 7,
-    },
-    {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
-        category: "received",
-        id: 8,
-    },
-    {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
-        category: "received",
-        id: 9,
     },
 ];

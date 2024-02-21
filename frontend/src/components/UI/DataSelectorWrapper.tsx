@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 
 //UI components
 import BaseArrow from "@/components/UI/BaseArrow";
