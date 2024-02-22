@@ -45,19 +45,14 @@ export const tableColumns: column[] = [
 
 export const categories: category[] = [
     {
-        title: "Registered",
-        code: "registered",
-        id: 1,
-    },
-    {
         title: "Sent",
         code: "sent",
-        id: 2,
+        id: 1,
     },
     {
         title: "Received",
         code: "received",
-        id: 3,
+        id: 2,
     },
 ];
 
@@ -68,7 +63,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "registered",
+        category: "sent",
         sent_date: "15.02.2023",
         weight: "22",
         price: "45",
@@ -80,7 +75,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "registered",
+        category: "sent",
         sent_date: "15.02.2023",
         weight: "22",
         price: "45",
@@ -92,7 +87,7 @@ export const data: item[] = [
         sender: "Antoan",
         receiver: "Beti",
         status: "Active",
-        category: "registered",
+        category: "sent",
         sent_date: "15.02.2023",
         weight: "22",
         price: "45",
