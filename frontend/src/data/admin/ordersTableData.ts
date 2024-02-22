@@ -1,4 +1,4 @@
-import { category, column, item } from "@/components/home/EmployeeInterface/Table";
+import { category, column, item } from "@/components/home/AdminInterface/Table";
 
 //office columns
 export const officeColumns: column[] = [
@@ -14,7 +14,7 @@ export const officeColumns: column[] = [
     },
     {
         title: "Actions",
-        code: "actions",
+        code: "action",
         hide: true,
         id: 3,
     },
@@ -38,7 +38,13 @@ export const officeDataItems: item[] = [
     {
         address: "Varna",
         company_name: "Econt",
-        id: 1,
+        id: 2,
+        category: 'offices'
+    },
+    {
+        address: "Stara Zagora",
+        company_name: "Econt",
+        id: 3,
         category: 'offices'
     },
 ];
@@ -46,29 +52,14 @@ export const officeDataItems: item[] = [
 //client + employee columns
 export const tableColumns: column[] = [
     {
-        title: "Departure place",
-        code: "departure",
+        title: "First name",
+        code: "first_name",
         id: 1,
     },
     {
-        title: "Arrival place",
-        code: "arrival",
+        title: "Last name",
+        code: "last_name",
         id: 2,
-    },
-    {
-        title: "Sender name",
-        code: "sender",
-        id: 3,
-    },
-    {
-        title: "Receiver name",
-        code: "receiver",
-        id: 4,
-    },
-    {
-        title: "Status",
-        code: "status",
-        id: 5,
     },
     {
         title: "Actions",
@@ -76,6 +67,7 @@ export const tableColumns: column[] = [
         hide: true,
         id: 6,
     },
+    
 ];
 
 //client + employee category
@@ -95,56 +87,43 @@ export const categories: category[] = [
 
 export const data: item[] = [
     {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
+        first_name: "John",
+        last_name: "Doe",
         category: "clients",
         id: 1,
     },
     {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
+        
+        first_name: "John",
+        last_name: "Doe",
         category: "clients",
         id: 2,
     },
     {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
+        
+        first_name: "Jane",
+        last_name: "Doe",
         category: "clients",
         id: 3,
     },
     {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
+       
+        first_name: "John",
+        last_name: "Doe",
         category: "employees",
         id: 4,
     },
     {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
+        
+        first_name: "John",
+        last_name: "Doe",
         category: "employees",
         id: 5,
     },
     {
-        departure: "Sofia",
-        arrival: "sofia",
-        sender: "Antoan",
-        receiver: "Beti",
-        status: "Active",
+       
+        first_name: "Jane",
+        last_name: "Doe",
         category: "employees",
         id: 6,
     },
