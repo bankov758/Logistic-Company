@@ -8,21 +8,17 @@ import Input from "@/components/UI/Input";
 import useInput from "@/hooks/useInput";
 
 const FilterOrders: React.FC = () => {
-    const [orderFilterType, setOrderFilterType] = useState<string>('Registered');
+    const [orderFilterType, setOrderFilterType] = useState<string>('Active');
 
     const orderFilterTypeData = useMemo(() => {
         return [
             {
-                title: 'Registered',
-                code: 'registered'
+                title: 'Active',
+                code: 'active'
             },
             {
-                title: 'Sent',
-                code: 'sent'
-            },
-            {
-                title: 'Received',
-                code: 'received'
+                title: 'Closed',
+                code: 'Closed'
             }
         ];
     }, []);
