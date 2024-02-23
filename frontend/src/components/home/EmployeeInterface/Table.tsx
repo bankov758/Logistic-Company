@@ -93,6 +93,12 @@ const Table: React.FC<TableProps> = ({
                                                                         >
                                                                             Edit
                                                                         </button>
+
+                                                                        <button 
+                                                                            className="action_btn_purple"
+                                                                        >
+                                                                            Close
+                                                                        </button>
                                                                     </td>
                                                                 )
                                                             }
