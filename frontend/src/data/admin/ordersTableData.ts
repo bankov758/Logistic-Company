@@ -1,4 +1,4 @@
-import { category, column, item } from "@/components/home/AdminInterface/Table";
+import { category, column, item } from "@/components/home/EmployeeInterface/Table";
 
 //office columns
 export const officeColumns: column[] = [
@@ -14,7 +14,7 @@ export const officeColumns: column[] = [
     },
     {
         title: "Actions",
-        code: "action",
+        code: "actionOffice",
         hide: true,
         id: 3,
     },
@@ -63,7 +63,7 @@ export const tableColumns: column[] = [
     },
     {
         title: "Actions",
-        code: "actions",
+        code: "actionTable",
         hide: true,
         id: 6,
     },

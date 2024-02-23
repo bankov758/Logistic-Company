@@ -96,6 +96,62 @@ const Table: React.FC<TableProps> = ({
                                                                     </td>
                                                                 )
                                                             }
+                                                            if( column.code === 'actionTable' && category.code === 'clients' ) {
+
+                                                                return (
+                                                                    <td key={column.id} className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
+                                                                        <button 
+                                                                            className="action_btn_red"
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+
+                                                                        <button 
+                                                                            className="action_btn_green"
+                                                                        >
+                                                                            Promote
+                                                                        </button>
+                                                                    </td>
+                                                                )
+                                                            }
+                                                            if( column.code === 'actionTable' && category.code === 'employees' ) {
+
+                                                                return (
+                                                                    <td key={column.id} className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
+                                                                        <button 
+                                                                            className="action_btn_red"
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+
+                                                                        <button 
+                                                                            className="action_btn_blue"
+                                                                        >
+                                                                            Demote
+                                                                        </button>
+                                                                    </td>
+                                                                )
+                                                            }
+                                                            if( column.code === 'actionOffice' ) {
+
+                                                                return (
+                                                                    <td key={column.id} className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
+                                                                        <button 
+                                                                            className="action_btn_red"
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+
+                                                                        <button 
+                                                                            className="action_btn_blue"
+                                                                        >
+                                                                            Edit
+                                                                        </button>
+                                                                        
+                                                                       
+                                                                    </td>
+                                                                )
+                                                            }
                                                         }
 
                                                         if( column.code === 'status' ) {

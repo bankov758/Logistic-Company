@@ -1,7 +1,7 @@
 "use client";
 import React, {useState} from "react";
 
-import Table from "./AdminInterface/Table";
+import Table from "./EmployeeInterface/Table";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import BaseDialog from "@/components/UI/BaseDialog";
 
