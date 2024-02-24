@@ -1,9 +1,9 @@
 package com.nbu.logisticcompany.mappers;
 
 import com.nbu.logisticcompany.entities.Tariff;
-import com.nbu.logisticcompany.entities.dtos.TariffCreateDto;
-import com.nbu.logisticcompany.entities.dtos.TariffOutDto;
-import com.nbu.logisticcompany.entities.dtos.TariffUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.tariff.TariffCreateDto;
+import com.nbu.logisticcompany.entities.dtos.tariff.TariffOutDto;
+import com.nbu.logisticcompany.entities.dtos.tariff.TariffUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

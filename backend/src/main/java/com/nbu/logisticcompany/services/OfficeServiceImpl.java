@@ -3,13 +3,17 @@ package com.nbu.logisticcompany.services;
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeRepository;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
+import com.nbu.logisticcompany.utils.Action;
+import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OfficeServiceImpl implements OfficeService {
@@ -42,23 +46,32 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
-    public void create(Office office) {
+    public void create(Office office, User creator) {
+        ValidationUtil.validateAdminAction(creator, Office.class, Action.CREATE);
         boolean duplicateOffice = true;
         try {
-            officeRepository.getByField("id", office.getId());
+            officeRepository.filter(Optional.ofNullable(office.getAddress()),
+                    Optional.of(office.getCompany().getId()),
+                    Optional.empty());
         } catch (EntityNotFoundException e) {
             duplicateOffice = false;
+        }
+        if (duplicateOffice) {
+            throw new DuplicateEntityException(String.format("An office for %s already exists at address - %s",
+                    office.getCompany().getName(), office.getAddress()) );
         }
         officeRepository.create(office);
     }
 
     @Override
-    public void update(Office officeToUpdate, User user) {
+    public void update(Office officeToUpdate, User updater) {
+        ValidationUtil.validateAdminAction(updater, Office.class, Action.UPDATE);
         officeRepository.update(officeToUpdate);
     }
 
     @Override
-    public void delete(int officeId, User user) {
+    public void delete(int officeId, User destroyer) {
+        ValidationUtil.validateAdminAction(destroyer, Office.class, Action.DELETE);
         officeRepository.delete(officeId);
     }
 

@@ -1,5 +1,7 @@
 package com.nbu.logisticcompany.utils;
 
+import com.nbu.logisticcompany.entities.Role;
+import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.exceptions.ValidationException;
 import org.springframework.validation.BindingResult;
@@ -12,9 +14,10 @@ import java.util.stream.Collectors;
 
 public class ValidationUtil {
 
-    private static final String UNAUTHORIZED_UPDATE = "Only the owner of the account can make changes";
-
-    private static final String UNAUTHORIZED_DELETE = "Only the owner of the account can delete it";
+    private static final String UNAUTHORIZED_DEFAULT = "Unauthorized action";
+    private static final String UNAUTHORIZED_USER_UPDATE = "Only the owner of the account can make changes";
+    private static final String UNAUTHORIZED_USER_DELETE = "Only the owner of the account can delete it";
+    private static final String UNAUTHORIZED_ADMIN_ACTION = "Only Admins can %s %s entities";
 
     public static void validate(BindingResult result) {
         if (result.hasErrors()) {
@@ -33,23 +36,36 @@ public class ValidationUtil {
         return !isEmpty(string);
     }
 
-    public static boolean isEmpty(Collection collection) {
+    public static <T> boolean isEmpty(Collection<T> collection) {
         return collection == null || collection.isEmpty();
     }
 
-    public static boolean isNotEmpty(Collection collection) {
+    public static <T> boolean isNotEmpty(Collection<T> collection) {
         return !isEmpty(collection);
     }
 
-    public static void validateOwnerUpdate(int userToUpdateId, int updaterId){
+    public static void validateOwnerUpdate(int userToUpdateId, int updaterId) {
         if (userToUpdateId != updaterId) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE);
+            throw new UnauthorizedOperationException(UNAUTHORIZED_USER_UPDATE);
         }
     }
 
-    public static void validateOwnerDelete(int userToUpdateId, int updaterId){
-        if (userToUpdateId != updaterId) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE);
+    public static void validateOwnerDelete(int userToDeleteId, int destroyerId) {
+        if (userToDeleteId != destroyerId) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_USER_DELETE);
+        }
+    }
+
+    public static <T> void validateAdminAction(User user, Class<T> clsss, Action action) {
+        String errorMessage;
+        if (user == null || clsss == null || action == null) {
+            errorMessage = UNAUTHORIZED_DEFAULT;
+        } else {
+            errorMessage = String.format(UNAUTHORIZED_ADMIN_ACTION,
+                    action.toString().toLowerCase(), clsss.getSimpleName());
+        }
+        if (user != null && isNotEmpty(user.getRoles()) && !user.getRoles().contains(Role.ADMIN)) {
+            throw new UnauthorizedOperationException(errorMessage);
         }
     }
 

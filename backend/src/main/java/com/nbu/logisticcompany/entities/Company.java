@@ -1,25 +1,23 @@
 package com.nbu.logisticcompany.entities;
 
+import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@SqlResultSetMapping(name = CompanyOutDto.RESULT_SET_MAPPING_NAME,
+        classes = {@ConstructorResult(targetClass = CompanyOutDto.class,
+        columns = {@ColumnResult(name = "id"), @ColumnResult(name = "name"), @ColumnResult(name = "income")})})
 public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id ;
+    private int id;
 
     @Column(name = "name")
     private String name;
-
-    //TODO Employee to be mapped
-
-    //TODO Clients to be mapped
-
-    //TODO Shipment to be mapped
-
 
     public Company() {
     }

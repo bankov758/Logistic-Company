@@ -1,4 +1,4 @@
-package com.nbu.logisticcompany.entities.dtos;
+package com.nbu.logisticcompany.entities.dtos.user;
 
 import javax.validation.constraints.Size;
 

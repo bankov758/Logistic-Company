@@ -2,10 +2,10 @@ package com.nbu.logisticcompany.controllers;
 
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dtos.UserOutDto;
-import com.nbu.logisticcompany.entities.dtos.UserRegisterDto;
-import com.nbu.logisticcompany.entities.dtos.UserRole;
-import com.nbu.logisticcompany.entities.dtos.UserUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserRegisterDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserRole;
+import com.nbu.logisticcompany.entities.dtos.user.UserUpdateDto;
 import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.http.HttpHeaders;

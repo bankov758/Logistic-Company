@@ -3,7 +3,10 @@ package com.nbu.logisticcompany.controllers;
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dtos.*;
+import com.nbu.logisticcompany.entities.dtos.company.CompanyCreateDto;
+import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
+import com.nbu.logisticcompany.entities.dtos.company.CompanyPeriodDto;
+import com.nbu.logisticcompany.entities.dtos.company.CompanyUpdateDto;
 import com.nbu.logisticcompany.mappers.CompanyMapper;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import org.springframework.http.HttpHeaders;
@@ -47,11 +50,21 @@ public class CompanyController {
         return companyMapper.ObjectToDto(companyService.getById(id));
     }
 
+    @GetMapping("/income")
+    public List<CompanyOutDto> getByIncome(@RequestHeader HttpHeaders headers,
+                                           @Valid @RequestBody CompanyPeriodDto CompanyPeriodDto) {
+        authenticationHelper.tryGetUser(headers);
+        return companyService.getCompanyIncome(CompanyPeriodDto.getCompanyId(),
+                CompanyPeriodDto.getPeriodStart(), CompanyPeriodDto.getPeriodEnd());
+    }
+
     @PostMapping
-    public Company create(@Valid @RequestBody CompanyCreateDto companyCreateDTO) {
+    public Company create(@RequestHeader HttpHeaders headers,
+                          @Valid @RequestBody CompanyCreateDto companyCreateDTO) {
         try {
+            User creator = authenticationHelper.tryGetUser(headers);
             Company company = companyMapper.DtoToObject(companyCreateDTO);
-            companyService.create(company);
+            companyService.create(company, creator);
             return company;
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());

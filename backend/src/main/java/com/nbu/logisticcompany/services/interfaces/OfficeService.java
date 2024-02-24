@@ -16,10 +16,10 @@ public interface OfficeService {
 
     List<Office> getAll();
 
-    void create(Office office);
+    void create(Office office, User creator);
 
-    void update(Office officeToUpdate, User user);
+    void update(Office officeToUpdate, User updater);
 
-    void delete(int officeId, User user);
+    void delete(int officeId, User destroyer);
 
 }

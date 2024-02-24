@@ -3,12 +3,11 @@ package com.nbu.logisticcompany.mappers;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dtos.ShipmentCreateDto;
-import com.nbu.logisticcompany.entities.dtos.ShipmentOutDto;
-import com.nbu.logisticcompany.entities.dtos.ShipmentUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentCreateDto;
+import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
+import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
-import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,6 +43,7 @@ public class ShipmentMapper {
         shipment.setPrice(shipmentCreateDto.getPrice());
         shipment.setSentDate(shipmentCreateDto.getSentDate());
         shipment.setCourier(courierService.getById(shipmentCreateDto.getCourierId()));
+        shipment.setCompany(officeEmployee.getCompany());
         return shipment;
     }
 

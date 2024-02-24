@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateEntityException("User", "username", user.getUsername());
         }
         userRepository.create(user);
+        addRole(getById(user.getId()), Role.USER.name(), getById(user.getId()));
     }
 
     @Override
