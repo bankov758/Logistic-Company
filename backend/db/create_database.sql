@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`shipment`
     `sender_id`             INT         NOT NULL,
     `receiver_id`           INT         NOT NULL,
     `is_sent_from_office`   TINYINT     NOT NULL,
-    `is_recieved_in_office` TINYINT     NOT NULL,
+    `is_received_in_office` TINYINT     NOT NULL,
     `office_employee_id`    INT         NOT NULL,
     `price`                 FLOAT       NOT NULL,
     `sent_date`             DATETIME    NOT NULL,
