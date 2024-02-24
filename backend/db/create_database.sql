@@ -37,6 +37,60 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`company`
     UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE
 )
     ENGINE = InnoDB
+    AUTO_INCREMENT = 5
+    DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `logistic_company`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `logistic_company`.`user`
+(
+    `id`         INT         NOT NULL AUTO_INCREMENT,
+    `username`   VARCHAR(45) NOT NULL,
+    `password`   VARCHAR(45) NOT NULL,
+    `first_name` VARCHAR(45) NOT NULL,
+    `last_name`  VARCHAR(45) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE
+)
+    ENGINE = InnoDB
+    AUTO_INCREMENT = 5
+    DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `logistic_company`.`employee`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `logistic_company`.`employee`
+(
+    `id`         INT NOT NULL,
+    `company_id` INT NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `fk_employee_company1_idx` (`company_id` ASC) INVISIBLE,
+    CONSTRAINT `fk_employee_company1`
+        FOREIGN KEY (`company_id`)
+            REFERENCES `logistic_company`.`company` (`id`),
+    CONSTRAINT `fk_employee_user1`
+        FOREIGN KEY (`id`)
+            REFERENCES `logistic_company`.`user` (`id`)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `logistic_company`.`courier`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `logistic_company`.`courier`
+(
+    `id` INT NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_courier_employee1`
+        FOREIGN KEY (`id`)
+            REFERENCES `logistic_company`.`employee` (`id`)
+)
+    ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -56,47 +110,8 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`office`
             REFERENCES `logistic_company`.`company` (`id`)
 )
     ENGINE = InnoDB
+    AUTO_INCREMENT = 2
     DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
--- Table `logistic_company`.`user`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`user`
-(
-    `id`         INT         NOT NULL AUTO_INCREMENT,
-    `username`   VARCHAR(45) NOT NULL,
-    `password`   VARCHAR(45) NOT NULL,
-    `first_name` VARCHAR(45) NOT NULL,
-    `last_name`  VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
--- Table `logistic_company`.`employee`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`employee`
-(
-    `id`         INT NOT NULL,
-    `company_id` INT NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `fk_employee_company1_idx` (`company_id` ASC) INVISIBLE,
-    CONSTRAINT `fk_employee_user1`
-        FOREIGN KEY (`id`)
-            REFERENCES `logistic_company`.`user` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_employee_company1`
-        FOREIGN KEY (`company_id`)
-            REFERENCES `logistic_company`.`company` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -110,32 +125,13 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`office_employee`
     INDEX `fk_office_employee_office1_idx` (`office_id` ASC) VISIBLE,
     CONSTRAINT `fk_office_employee_employee1`
         FOREIGN KEY (`id`)
-            REFERENCES `logistic_company`.`employee` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
+            REFERENCES `logistic_company`.`employee` (`id`),
     CONSTRAINT `fk_office_employee_office1`
         FOREIGN KEY (`office_id`)
             REFERENCES `logistic_company`.`office` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
 )
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `logistic_company`.`courier`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`courier`
-(
-    `id` INT NOT NULL,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_courier_employee1`
-        FOREIGN KEY (`id`)
-            REFERENCES `logistic_company`.`employee` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
@@ -154,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`shipment`
     `office_employee_id`    INT         NOT NULL,
     `price`                 FLOAT       NOT NULL,
     `sent_date`             DATETIME    NOT NULL,
-    `received_date`         DATETIME    NULL,
+    `received_date`         DATETIME    NULL DEFAULT NULL,
     `courier_id`            INT         NOT NULL,
     `company_id`            INT         NOT NULL,
     PRIMARY KEY (`id`),
@@ -163,29 +159,24 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`shipment`
     INDEX `fk_shipment_office_employee1_idx` (`office_employee_id` ASC) VISIBLE,
     INDEX `fk_shipment_courier1_idx` (`courier_id` ASC) VISIBLE,
     INDEX `fk_shipment_company1_idx` (`company_id` ASC) VISIBLE,
+    CONSTRAINT `fk_shipment_company1`
+        FOREIGN KEY (`company_id`)
+            REFERENCES `logistic_company`.`company` (`id`),
+    CONSTRAINT `fk_shipment_courier1`
+        FOREIGN KEY (`courier_id`)
+            REFERENCES `logistic_company`.`courier` (`id`),
+    CONSTRAINT `fk_shipment_office_employee1`
+        FOREIGN KEY (`office_employee_id`)
+            REFERENCES `logistic_company`.`office_employee` (`id`),
     CONSTRAINT `fk_shipment_user1`
         FOREIGN KEY (`sender_id`)
             REFERENCES `logistic_company`.`user` (`id`),
     CONSTRAINT `fk_shipment_user2`
         FOREIGN KEY (`receiver_id`)
-            REFERENCES `logistic_company`.`user` (`id`),
-    CONSTRAINT `fk_shipment_office_employee1`
-        FOREIGN KEY (`office_employee_id`)
-            REFERENCES `logistic_company`.`office_employee` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_shipment_courier1`
-        FOREIGN KEY (`courier_id`)
-            REFERENCES `logistic_company`.`courier` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_shipment_company1`
-        FOREIGN KEY (`company_id`)
-            REFERENCES `logistic_company`.`company` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
+            REFERENCES `logistic_company`.`user` (`id`)
 )
     ENGINE = InnoDB
+    AUTO_INCREMENT = 5
     DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -199,8 +190,8 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`tariff`
     `office_discount` FLOAT NOT NULL,
     `company_id`      INT   NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `fk_tariffs_company_idx` (`company_id` ASC) INVISIBLE,
     UNIQUE INDEX `unique_tariff_combination` (`price_per_kg` ASC, `office_discount` ASC, `company_id` ASC) VISIBLE,
+    INDEX `fk_tariffs_company_idx` (`company_id` ASC) INVISIBLE,
     CONSTRAINT `fk_tarriffs_company1`
         FOREIGN KEY (`company_id`)
             REFERENCES `logistic_company`.`company` (`id`)
@@ -215,15 +206,14 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`tariff`
 CREATE TABLE IF NOT EXISTS `logistic_company`.`user_roles`
 (
     `user_id` INT         NOT NULL,
-    `role`    VARCHAR(45) NULL,
+    `roles`   VARCHAR(45) NULL DEFAULT NULL,
     INDEX `fk_user_roles_user1_idx` (`user_id` ASC) VISIBLE,
     CONSTRAINT `fk_user_roles_user1`
         FOREIGN KEY (`user_id`)
             REFERENCES `logistic_company`.`user` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
 )
-    ENGINE = InnoDB;
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
 
 USE `transport_company`;
 
