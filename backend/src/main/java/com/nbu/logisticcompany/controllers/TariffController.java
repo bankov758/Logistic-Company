@@ -28,7 +28,8 @@ public class TariffController {
     private final AuthenticationHelper authenticationHelper;
     private final TariffsMapper tariffsMapper;
 
-    public TariffController(TariffsService tariffsService, AuthenticationHelper authenticationHelper, TariffsMapper tariffsMapper) {
+    public TariffController(TariffsService tariffsService, AuthenticationHelper authenticationHelper,
+                            TariffsMapper tariffsMapper) {
         this.tariffsService = tariffsService;
         this.authenticationHelper = authenticationHelper;
         this.tariffsMapper = tariffsMapper;
