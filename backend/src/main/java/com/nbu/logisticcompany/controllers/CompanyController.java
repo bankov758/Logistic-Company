@@ -7,6 +7,7 @@ import com.nbu.logisticcompany.entities.dtos.company.CompanyCreateDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyPeriodDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.mappers.CompanyMapper;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import org.springframework.http.HttpHeaders;
@@ -56,6 +57,13 @@ public class CompanyController {
         authenticationHelper.tryGetUser(headers);
         return companyService.getCompanyIncome(CompanyPeriodDto.getCompanyId(),
                 CompanyPeriodDto.getPeriodStart(), CompanyPeriodDto.getPeriodEnd());
+    }
+
+    @GetMapping("/{id}/employees")
+    public List<UserOutDto> getCompanyEmployees(@RequestHeader HttpHeaders headers,
+                                                @PathVariable int id) {
+        User creator = authenticationHelper.tryGetUser(headers);
+        return companyService.getCompanyEmployees(id, creator);
     }
 
     @PostMapping

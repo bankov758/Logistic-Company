@@ -1,7 +1,9 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Company;
+import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,4 +34,17 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
         }
     }
 
+    public List<UserOutDto> getCompanyEmployees (int companyId, User user) {
+
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.UserOutDto " +
+                            " ( employee.id,employee.username, employee.firstName, employee.lastName,  employee.roles) from Employee employee " +
+                            " join employee.company c " +
+                            " where c.id = :companyId", UserOutDto.class)
+
+                    .setParameter("companyId", companyId).getResultList();
+
+
+        }
+    }
 }
