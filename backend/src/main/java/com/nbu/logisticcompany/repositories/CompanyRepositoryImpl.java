@@ -3,6 +3,7 @@ package com.nbu.logisticcompany.repositories;
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import org.hibernate.Session;
@@ -34,12 +35,12 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
         }
     }
 
-    public List<UserOutDto> getCompanyEmployees(int companyId, User user) {
+    public List<CompanyEmployeesDto> getCompanyEmployees(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.UserOutDto " +
+            return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto " +
                             " (employee.id, employee.username, employee.firstName," +
                             " employee.lastName, employee.company.name) from Employee employee " +
-                            " where employee.company.id = :companyId", UserOutDto.class)
+                            " where employee.company.id = :companyId", CompanyEmployeesDto.class)
                     .setParameter("companyId", companyId)
                     .getResultList();
         }

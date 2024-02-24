@@ -4,6 +4,7 @@ import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
@@ -22,12 +23,7 @@ import java.util.Optional;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-    private static final String UNAUTHORIZED_CREATE = "Only Admins can create companies";
-    private static final String UNAUTHORIZED_UPDATE = "Only Admins can update companies";
-    private static final String UNAUTHORIZED_DELETE = "Only Admins can delete companies";
-
     private final CompanyRepository companyRepository;
-
 
     @Autowired
     public CompanyServiceImpl(CompanyRepository companyRepository) {
@@ -53,10 +49,10 @@ public class CompanyServiceImpl implements CompanyService {
     public List<CompanyOutDto> getCompanyIncome(int companyId, LocalDateTime periodStart, LocalDateTime periodEnd) {
         return companyRepository.getCompanyIncome(companyId, periodStart, periodEnd);
     }
-    @Override
-    public List<UserOutDto> getCompanyEmployees(int companyId, User user){
-        return companyRepository.getCompanyEmployees(companyId, user);
 
+    @Override
+    public List<CompanyEmployeesDto> getCompanyEmployees(int companyId, User user){
+        return companyRepository.getCompanyEmployees(companyId, user);
     }
 
     @Override
