@@ -192,7 +192,7 @@ CREATE TABLE `shipment`
     `sender_id`             int         NOT NULL,
     `receiver_id`           int         NOT NULL,
     `is_sent_from_office`   tinyint     NOT NULL,
-    `is_recieved_in_office` tinyint     NOT NULL,
+    `is_received_in_office` tinyint     NOT NULL,
     `office_employee_id`    int         NOT NULL,
     `price`                 float       NOT NULL,
     `sent_date`             datetime    NOT NULL,
