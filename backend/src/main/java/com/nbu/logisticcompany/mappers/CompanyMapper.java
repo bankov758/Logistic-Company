@@ -34,7 +34,7 @@ public class CompanyMapper {
     }
 
     public Company UpdateDtoToToCompany(CompanyUpdateDto companyUpdateDTO) {
-        Company company = companyService.getByName(companyUpdateDTO.getName());
+        Company company = companyService.getById(companyUpdateDTO.getId());
         if (!companyUpdateDTO.getName().isEmpty()) {
             company.setName(companyUpdateDTO.getName());
         }

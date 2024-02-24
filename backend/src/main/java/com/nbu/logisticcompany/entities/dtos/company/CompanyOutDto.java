@@ -11,7 +11,7 @@ public class CompanyOutDto {
     public CompanyOutDto() {
     }
 
-    public CompanyOutDto(int id, String name, Long income) {
+    public CompanyOutDto(int id, String name, double income) {
         this.id = id;
         this.name = name;
         this.income = (double) income;
