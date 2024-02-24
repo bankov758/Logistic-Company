@@ -10,6 +10,7 @@ import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -50,28 +51,28 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody UserRegisterDto userRegisterDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody UserRegisterDto userRegisterDTO) {
         try {
             User user = userMapper.DtoToObject(userRegisterDTO);
             userService.create(user);
-            return user;
+            return ResponseEntity.ok().body(userRegisterDTO);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
 
     @PutMapping
-    public User update(@RequestHeader HttpHeaders headers,
-                       @Valid @RequestBody UserUpdateDto userToUpdate) {
+    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers,
+                                    @Valid @RequestBody UserUpdateDto userToUpdate) {
         User updater = authenticationHelper.tryGetUser(headers);
         User user = userMapper.UpdateDtoToUser(userToUpdate);
         userService.update(user, updater);
-        return user;
+        return ResponseEntity.ok().body(userToUpdate);
     }
 
     @PutMapping("/add-role")
     public User addRole(@RequestHeader HttpHeaders headers,
-                       @Valid @RequestBody UserRole userRole) {
+                        @Valid @RequestBody UserRole userRole) {
         User updater = authenticationHelper.tryGetUser(headers);
         User user = userService.getById(userRole.getUserId());
         userService.addRole(user, userRole.getRole(), updater);
@@ -80,7 +81,7 @@ public class UserController {
 
     @PutMapping("/remove-role")
     public User removeRole(@RequestHeader HttpHeaders headers,
-                       @Valid @RequestBody UserRole userRole) {
+                           @Valid @RequestBody UserRole userRole) {
         User updater = authenticationHelper.tryGetUser(headers);
         User user = userService.getById(userRole.getUserId());
         userService.removeRole(user, userRole.getRole(), updater);

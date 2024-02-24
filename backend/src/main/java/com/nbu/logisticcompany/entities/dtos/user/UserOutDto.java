@@ -11,7 +11,6 @@ public class UserOutDto {
     private String firstName;
     private String lastName;
     private Set<Role> roles;
-    private String companyName;
 
     public UserOutDto() {
     }
@@ -22,14 +21,6 @@ public class UserOutDto {
         this.firstName = firstName;
         this.lastName = lastName;
         this.roles = roles;
-    }
-
-    public UserOutDto(int id, String username, String firstName, String lastName,String companyName) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.companyName = companyName;
     }
 
     public int getId() {
@@ -72,11 +63,4 @@ public class UserOutDto {
         this.roles = roles;
     }
 
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
 }

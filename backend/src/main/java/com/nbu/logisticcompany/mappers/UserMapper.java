@@ -4,6 +4,7 @@ import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserRegisterDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserUpdateDto;
+import com.nbu.logisticcompany.services.interfaces.UserService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,12 @@ import java.io.IOException;
 
 @Component
 public class UserMapper {
+
+    private final UserService userService;
+
+    public UserMapper(UserService userService) {
+        this.userService = userService;
+    }
 
     public User DtoToObject(UserRegisterDto userRegisterDTO) throws IOException {
         User user = new User();
@@ -40,7 +47,7 @@ public class UserMapper {
     }
 
     public User UpdateDtoToUser(UserUpdateDto userDto) {
-        User user = new User();
+        User user = userService.getById(userDto.getId());
         setFieldsFromUpdateDtoToObject(userDto, user);
         return user;
     }
