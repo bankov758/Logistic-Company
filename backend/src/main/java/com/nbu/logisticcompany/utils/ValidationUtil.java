@@ -7,9 +7,7 @@ import com.nbu.logisticcompany.exceptions.ValidationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ValidationUtil {
@@ -64,7 +62,8 @@ public class ValidationUtil {
             errorMessage = String.format(UNAUTHORIZED_ADMIN_ACTION,
                     action.toString().toLowerCase(), clsss.getSimpleName());
         }
-        if (user != null && isNotEmpty(user.getRoles()) && !user.getRoles().contains(Role.ADMIN)) {
+        Set<Role> userRoles = user == null || user.getRoles() == null ? Collections.emptySet() : user.getRoles();
+        if (!userRoles.contains(Role.ADMIN)) {
             throw new UnauthorizedOperationException(errorMessage);
         }
     }

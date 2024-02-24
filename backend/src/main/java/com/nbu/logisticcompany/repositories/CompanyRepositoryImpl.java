@@ -29,23 +29,6 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
                     .setParameter("periodStart", periodStart)
                     .setParameter("periodEnd", periodEnd)
                     .setParameter("companyId", companyId).getResultList();
-//            companies = session.createNativeQuery(
-//                            " SELECT shipment.company_id AS id, company.name AS name, SUM(coalesce(price, 0)) AS income " +
-//                                    " FROM shipment " +
-//                                    " LEFT JOIN company ON shipment.company_id = company.id " +
-//                                    " WHERE shipment.received_date > :periodStart " +
-//                                    " AND shipment.received_date < :periodEnd " +
-//                                    " AND shipment.company_id = :companyId " +
-//                                    " GROUP BY company.id, company.name", CompanyOutDto.RESULT_SET_MAPPING_NAME)
-//                    .setParameter("periodStart", periodStart)
-//                    .setParameter("periodEnd", periodEnd)
-//                    .setParameter("companyId", companyId)
-//                    .unwrap(org.hibernate.query.NativeQuery.class)
-//                    .addScalar("id", IntegerType.INSTANCE)
-//                    .addScalar("name", StringType.INSTANCE)
-//                    .addScalar("income", DoubleType.INSTANCE)
-//                    .setResultTransformer(Transformers.aliasToBean(CompanyOutDto.class))
-//                    .getResultList();
         }
     }
 
