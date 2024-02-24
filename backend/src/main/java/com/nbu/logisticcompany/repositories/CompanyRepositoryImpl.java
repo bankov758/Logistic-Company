@@ -34,17 +34,14 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
         }
     }
 
-    public List<UserOutDto> getCompanyEmployees (int companyId, User user) {
-
+    public List<UserOutDto> getCompanyEmployees(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.UserOutDto " +
-                            " ( employee.id,employee.username, employee.firstName, employee.lastName,  employee.roles) from Employee employee " +
-                            " join employee.company c " +
-                            " where c.id = :companyId", UserOutDto.class)
-
-                    .setParameter("companyId", companyId).getResultList();
-
-
+                            " (employee.id, employee.username, employee.firstName," +
+                            " employee.lastName, employee.company.name) from Employee employee " +
+                            " where employee.company.id = :companyId", UserOutDto.class)
+                    .setParameter("companyId", companyId)
+                    .getResultList();
         }
     }
 }
