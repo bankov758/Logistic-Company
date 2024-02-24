@@ -4,6 +4,7 @@ import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.dtos.tariff.TariffCreateDto;
 import com.nbu.logisticcompany.entities.dtos.tariff.TariffOutDto;
 import com.nbu.logisticcompany.entities.dtos.tariff.TariffUpdateDto;
+import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,14 +15,16 @@ import java.io.IOException;
 public class TariffsMapper {
 
     private final TariffsService tariffsService;
+    private final CompanyService companyService;
 
     @Autowired
-    public TariffsMapper(TariffsService tariffsService){
+    public TariffsMapper(TariffsService tariffsService, CompanyService companyService){
         this.tariffsService=tariffsService;
+        this.companyService = companyService;
     }
     public Tariff DTOtoObject(TariffCreateDto tariffCreateDto) throws IOException{
         Tariff tariff = new Tariff();
-        tariff.setCompanyID(tariffCreateDto.getCompanyID());
+        tariff.setCompanyID(companyService.getById(tariffCreateDto.getCompanyID()));
         tariff.setOfficeDiscount(tariffCreateDto.getOfficeDiscount());
         tariff.setPricePerKG(tariffCreateDto.getPricePerKG());
         return tariff;

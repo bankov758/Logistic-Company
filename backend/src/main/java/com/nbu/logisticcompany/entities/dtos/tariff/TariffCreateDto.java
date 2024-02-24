@@ -10,12 +10,12 @@ public class TariffCreateDto {
 
     private float officeDiscount;
 
-    private Company companyID;
+    private int companyID;
 
     public TariffCreateDto() {
     }
 
-    public TariffCreateDto(float pricePerKG, float officeDiscount, Company companyID) {
+    public TariffCreateDto(float pricePerKG, float officeDiscount, int companyID) {
         this.pricePerKG = pricePerKG;
         this.officeDiscount = officeDiscount;
         this.companyID = companyID;
@@ -37,11 +37,11 @@ public class TariffCreateDto {
         this.officeDiscount = officeDiscount;
     }
 
-    public Company getCompanyID() {
+    public int getCompanyID() {
         return companyID;
     }
 
-    public void setCompanyID(Company companyID) {
+    public void setCompanyID(int     companyID) {
         this.companyID = companyID;
     }
 }
