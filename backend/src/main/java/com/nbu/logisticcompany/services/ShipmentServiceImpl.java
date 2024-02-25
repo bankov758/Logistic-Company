@@ -50,6 +50,11 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
+    public  List<Shipment> getNotDelivered(int companyId) {
+        return shipmentRepository.getNotDelivered( companyId);
+    }
+
+    @Override
     public List<Shipment> getAll() {
         return shipmentRepository.getAll();
     }

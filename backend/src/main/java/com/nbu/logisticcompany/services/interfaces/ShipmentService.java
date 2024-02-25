@@ -20,6 +20,8 @@ public interface ShipmentService {
 
     Shipment getByEmployeeId(int employeeId);
 
+    List<Shipment> getNotDelivered(int companyId);
+
     List<Shipment> getAll() ;
 
     void create(Shipment shipment, User creator) throws IOException;
