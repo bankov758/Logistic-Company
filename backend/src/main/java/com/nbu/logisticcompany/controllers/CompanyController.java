@@ -7,6 +7,7 @@ import com.nbu.logisticcompany.entities.dtos.company.CompanyCreateDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyPeriodDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.mappers.CompanyMapper;
@@ -66,6 +67,13 @@ public class CompanyController {
                                                          @PathVariable int id) {
         User creator = authenticationHelper.tryGetUser(headers);
         return companyService.getCompanyEmployees(id, creator);
+    }
+
+    @GetMapping("/{id}/clients")
+    public List<ClientOutDto> getCompanyClients(@RequestHeader HttpHeaders headers,
+                                                @PathVariable int id) {
+        User creator = authenticationHelper.tryGetUser(headers);
+        return companyService.getCompanyClients(id, creator);
     }
 
     @PostMapping

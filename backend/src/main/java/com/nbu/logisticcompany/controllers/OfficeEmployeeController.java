@@ -3,11 +3,14 @@ package com.nbu.logisticcompany.controllers;
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeRegisterDto;
 import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeUpdateDto;
 import com.nbu.logisticcompany.mappers.OfficeEmployeeMapper;
+import com.nbu.logisticcompany.mappers.ShipmentMapper;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
+import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +30,19 @@ public class OfficeEmployeeController {
     private final OfficeEmployeeService officeEmployeeService;
     private final AuthenticationHelper authenticationHelper;
     private final OfficeEmployeeMapper officeEmployeeMapper;
+    private final ShipmentMapper shipmentMapper;
+
+
+    private final ShipmentService shipmentService;
 
     public OfficeEmployeeController(OfficeEmployeeService officeEmployeeService,
                                     AuthenticationHelper authenticationHelper,
-                                    OfficeEmployeeMapper officeEmployeeMapper) {
+                                    OfficeEmployeeMapper officeEmployeeMapper, ShipmentMapper shipmentMapper, ShipmentService shipmentService) {
         this.officeEmployeeService = officeEmployeeService;
         this.authenticationHelper = authenticationHelper;
         this.officeEmployeeMapper = officeEmployeeMapper;
+        this.shipmentMapper = shipmentMapper;
+        this.shipmentService = shipmentService;
     }
 
     @GetMapping
@@ -45,11 +54,20 @@ public class OfficeEmployeeController {
                 .collect(Collectors.toList());
     }
 
+
     @GetMapping("/{id}")
     public OfficeEmployeeOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
         return officeEmployeeMapper.ObjectToDto(officeEmployeeService.getById(id));
     }
+
+    @GetMapping("/{id}/shipments")
+    public ShipmentOutDto getByEmployeeId(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+        authenticationHelper.tryGetUser(headers);
+        return shipmentMapper.ObjectToDto(shipmentService.getById(id));
+
+    }
+
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody OfficeEmployeeRegisterDto officeEmployeeRegisterDto,
