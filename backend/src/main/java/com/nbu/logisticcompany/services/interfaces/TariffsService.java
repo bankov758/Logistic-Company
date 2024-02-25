@@ -9,7 +9,7 @@ public interface TariffsService {
 
     Tariff getById(int id);
 
-    Tariff getByCompany(Company company);
+    Tariff getByCompany(int companyId);
 
     List<Tariff> getAll();
 

@@ -3,6 +3,7 @@ package com.nbu.logisticcompany.services;
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.TariffsRepository;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
@@ -21,15 +22,14 @@ public class TariffServiceImpl implements TariffsService {
         this.tariffsRepository = tariffsRepository;
     }
 
-
     @Override
     public Tariff getById(int id) {
         return tariffsRepository.getById(id);
     }
 
     @Override
-    public Tariff getByCompany(Company company) {
-        return tariffsRepository.getByField("company", company);
+    public Tariff getByCompany(int companyId) {
+        return tariffsRepository.getByCompany(companyId);
     }
 
     @Override
@@ -40,11 +40,13 @@ public class TariffServiceImpl implements TariffsService {
     @Override
     public void create(Tariff tariff) {
         boolean duplicateTariff = true;
-        try{
-            tariffsRepository.getByField("id", tariff.getId());
-        }
-        catch (EntityNotFoundException e) {
+        try {
+            tariffsRepository.getByCompany(tariff.getCompany().getId());
+        } catch (EntityNotFoundException e) {
             duplicateTariff = false;
+        }
+        if (duplicateTariff) {
+            throw new DuplicateEntityException("Tariff", "company", tariff.getCompany().getName());
         }
         tariffsRepository.create(tariff);
     }
@@ -58,4 +60,5 @@ public class TariffServiceImpl implements TariffsService {
     public void delete(int tariffId, User user) {
         tariffsRepository.delete(tariffId);
     }
+
 }

@@ -49,8 +49,7 @@ public class OfficeServiceImpl implements OfficeService {
     public void create(Office office, User creator) {
         ValidationUtil.validateAdminAction(creator, Office.class, Action.CREATE);
         List<Office> existingOffices = officeRepository.filter(Optional.ofNullable(office.getAddress()),
-                Optional.of(office.getCompany().getId()),
-                Optional.empty());
+                Optional.of(office.getCompany().getId()), Optional.empty());
         if (ValidationUtil.isNotEmpty(existingOffices)) {
             throw new DuplicateEntityException(String.format("An office for %s already exists at address - %s",
                     office.getCompany().getName(), office.getAddress()));

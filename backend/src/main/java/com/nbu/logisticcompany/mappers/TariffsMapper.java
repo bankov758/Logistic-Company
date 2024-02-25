@@ -24,7 +24,7 @@ public class TariffsMapper {
     }
     public Tariff DTOtoObject(TariffCreateDto tariffCreateDto) throws IOException{
         Tariff tariff = new Tariff();
-        tariff.setCompanyID(companyService.getById(tariffCreateDto.getCompanyID()));
+        tariff.setCompany(companyService.getById(tariffCreateDto.getCompanyID()));
         tariff.setOfficeDiscount(tariffCreateDto.getOfficeDiscount());
         tariff.setPricePerKG(tariffCreateDto.getPricePerKG());
         return tariff;
@@ -33,7 +33,7 @@ public class TariffsMapper {
     public TariffOutDto ObjectToDTO(Tariff tariff){
         TariffOutDto tariffOutDto = new TariffOutDto();
         tariffOutDto.setId(tariff.getId());
-        tariffOutDto.setCompanyID(tariff.getCompanyID());
+        tariffOutDto.setCompanyID(tariff.getCompany());
         tariffOutDto.setOfficeDiscount(tariff.getOfficeDiscount());
         tariffOutDto.setPricePerKG(tariff.getPricePerKG());
         return tariffOutDto;
@@ -41,7 +41,7 @@ public class TariffsMapper {
 
     private TariffUpdateDto objectToUpdateDTO(Tariff tariff){
         TariffUpdateDto tariffUpdateDto = new TariffUpdateDto();
-        tariffUpdateDto.setCompanyID(tariff.getCompanyID());
+        tariffUpdateDto.setCompanyID(tariff.getCompany());
         tariffUpdateDto.setOfficeDiscount(tariff.getOfficeDiscount());
         tariffUpdateDto.setPricePerKG(tariff.getPricePerKG());
         return tariffUpdateDto;
@@ -52,7 +52,7 @@ public class TariffsMapper {
         tariff.setPricePerKG(tariffUpdateDto.getPricePerKG());
         tariff.setOfficeDiscount(tariffUpdateDto.getOfficeDiscount());
         tariff.setId(tariffUpdateDto.getId());
-        tariff.setCompanyID(tariffUpdateDto.getCompanyID());
+        tariff.setCompany(tariffUpdateDto.getCompanyID());
 
         return tariff;
 

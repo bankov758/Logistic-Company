@@ -14,6 +14,7 @@ import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

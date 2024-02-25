@@ -26,7 +26,7 @@ public interface ShipmentService {
 
     void create(Shipment shipment, User creator) throws IOException;
 
-    void update(Shipment shipment, User user);
+    void update(Shipment shipment, User updater);
 
-    void delete(int shipmentId, User user);
+    void delete(int shipmentId, User destroyer);
 }

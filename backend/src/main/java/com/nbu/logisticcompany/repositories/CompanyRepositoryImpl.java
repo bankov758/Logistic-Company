@@ -49,14 +49,16 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
     public List<ClientOutDto> getCompanyClients(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(
-                            " select new com.nbu.logisticcompany.entities.dtos.user.ClientOutDto   " +
-                                    " (user.firstName, user.lastName ) from User user" +
-                                    " where user.id in (select distinct shipment.sender.id from Shipment shipment where shipment.company.id =:companyId ) or " +
-                                    " user.id in (select distinct shipment.receiver.id from Shipment shipment  where shipment.company.id =:companyId ) ", ClientOutDto.class)
+                            " select new com.nbu.logisticcompany.entities.dtos.user.ClientOutDto(user.firstName, user.lastName) " +
+                                    " from User user " +
+                                    " where user.id in (select distinct shipment.sender.id from Shipment shipment " +
+                                    "                   where shipment.company.id =:companyId) or " +
+                                    " user.id in (select distinct shipment.receiver.id from Shipment shipment " +
+                                    "             where shipment.company.id =:companyId) ",
+                            ClientOutDto.class)
                     .setParameter("companyId", companyId)
                     .getResultList();
         }
     }
-
 
 }

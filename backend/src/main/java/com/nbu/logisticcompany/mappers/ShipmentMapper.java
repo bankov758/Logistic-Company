@@ -38,9 +38,8 @@ public class ShipmentMapper {
         shipment.setSender(sender);
         shipment.setReceiver(receiver);
         shipment.setEmployee(officeEmployee);
-        shipment.setSentFromOffice(shipmentCreateDto.isSentFromOffice());
-        shipment.setReceivedFromOffice(shipmentCreateDto.isReceivedFromOffice());
-        shipment.setPrice(shipmentCreateDto.getPrice());
+        shipment.setSentFromOffice(shipmentCreateDto.sentFromOffice());
+        shipment.setReceivedFromOffice(shipmentCreateDto.receivedFromOffice());
         shipment.setSentDate(shipmentCreateDto.getSentDate());
         shipment.setCourier(courierService.getById(shipmentCreateDto.getCourierId()));
         shipment.setCompany(officeEmployee.getCompany());

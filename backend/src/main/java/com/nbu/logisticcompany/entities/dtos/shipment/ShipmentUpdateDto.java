@@ -26,4 +26,5 @@ public class ShipmentUpdateDto extends ShipmentCreateDto {
     public void setReceivedDate(LocalDateTime receivedDate) {
         this.receivedDate = receivedDate;
     }
+
 }
