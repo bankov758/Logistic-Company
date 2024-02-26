@@ -1,22 +1,16 @@
 package com.nbu.logisticcompany.services;
 
-import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
-import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
-import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ShipmentServiceImpl implements ShipmentService {
