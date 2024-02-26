@@ -50,10 +50,12 @@ public class TariffController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody TariffCreateDto tariffCreateDto) {
+    public ResponseEntity<?> create(@RequestHeader HttpHeaders headers,
+                                    @Valid @RequestBody TariffCreateDto tariffCreateDto) {
         try {
+            User creator = authenticationHelper.tryGetUser(headers);
             Tariff tariff = tariffsMapper.DTOtoObject(tariffCreateDto);
-            tariffsService.create(tariff);
+            tariffsService.create(tariff, creator);
             return ResponseEntity.ok().body(tariffCreateDto);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());

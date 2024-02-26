@@ -10,6 +10,7 @@ import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
+import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,20 +21,16 @@ import java.util.Set;
 @Service
 public class ShipmentServiceImpl implements ShipmentService {
 
-    private static final String UNAUTHORIZED_SHIPMENT_ACTION = "Only office employees from the same company as the shipment can modify it";
-
     private final ShipmentRepository shipmentRepository;
-    private final CourierService courierService;
-    private final UserRepository userRepository;
     private final TariffsService tariffsService;
+    private final ValidationUtil validationUtil;
 
     @Autowired
-    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, CourierService courierService,
-                               UserRepository userRepository, TariffsService tariffsService) {
+    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, TariffsService tariffsService,
+                               ValidationUtil validationUtil) {
         this.shipmentRepository = shipmentRepository;
-        this.courierService = courierService;
-        this.userRepository = userRepository;
         this.tariffsService = tariffsService;
+        this.validationUtil = validationUtil;
     }
 
     @Override
@@ -78,13 +75,14 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     @Override
     public void create(Shipment shipment, User creator) {
+        validationUtil.authorizeOfficeEmployeeAction(shipment.getCompany().getId(), creator, Shipment.class);
         applyTariff(shipment);
         shipmentRepository.create(shipment);
     }
 
     @Override
     public void update(Shipment shipmentToUpdate, User updater) {
-        authorizeShipmentAction(shipmentToUpdate.getCompany().getId(), updater);
+        validationUtil.authorizeOfficeEmployeeAction(shipmentToUpdate.getCompany().getId(), updater, Shipment.class);
         applyTariff(shipmentToUpdate);
         shipmentRepository.update(shipmentToUpdate);
     }
@@ -92,7 +90,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public void delete(int shipmentId, User destroyer) {
         Shipment shipment = shipmentRepository.getById(shipmentId);
-        authorizeShipmentAction(shipment.getCompany().getId(), destroyer);
+        validationUtil.authorizeOfficeEmployeeAction(shipment.getCompany().getId(), destroyer, Shipment.class);
         shipmentRepository.delete(shipmentId);
     }
 
@@ -106,15 +104,6 @@ public class ShipmentServiceImpl implements ShipmentService {
         }
         double shipmentPrice = shipment.getWeight() * tariff.getPricePerKG() - shipment.getWeight() * tariff.getPricePerKG() * discountMultiplier;
         shipment.setPrice(shipmentPrice);
-    }
-
-    private void authorizeShipmentAction(int shipmentCompanyId, User user) {
-        Set<Role> userRoles = user == null || user.getRoles() == null ? Collections.emptySet() : user.getRoles();
-        if (!userRoles.contains(Role.EMPLOYEE)
-                || courierService.getById(user.getId()) != null
-                || userRepository.getEmployeeCompany(user.getId()).getId() != shipmentCompanyId) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_SHIPMENT_ACTION);
-        }
     }
 
 }
