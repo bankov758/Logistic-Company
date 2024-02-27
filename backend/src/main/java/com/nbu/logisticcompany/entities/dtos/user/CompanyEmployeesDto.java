@@ -1,26 +1,20 @@
 package com.nbu.logisticcompany.entities.dtos.user;
 
-import com.nbu.logisticcompany.entities.Role;
-
-import java.util.Set;
-
-public class UserOutDto {
+public class CompanyEmployeesDto {
 
     private int id;
     private String username;
     private String firstName;
     private String lastName;
-    private Set<Role> roles;
 
-    public UserOutDto() {
-    }
+    private String companyName;
 
-    public UserOutDto(int id, String username, String firstName, String lastName, Set<Role> roles) {
+    public CompanyEmployeesDto(int id, String username, String firstName, String lastName, String companyName) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.roles = roles;
+        this.companyName = companyName;
     }
 
     public int getId() {
@@ -55,12 +49,11 @@ public class UserOutDto {
         this.lastName = lastName;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
-
 }

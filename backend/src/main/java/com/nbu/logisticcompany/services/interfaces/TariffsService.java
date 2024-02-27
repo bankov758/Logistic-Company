@@ -9,14 +9,14 @@ public interface TariffsService {
 
     Tariff getById(int id);
 
-    Tariff getByCompany(Company company);
+    Tariff getByCompany(int companyId);
 
     List<Tariff> getAll();
 
-    void create(Tariff tariff);
+    void create(Tariff tariff, User creator);
 
-    void update(Tariff tariffToUpdate, User user);
+    void update(Tariff tariffToUpdate, User updater);
 
-    void delete(int tariffId, User user);
+    void delete(int tariffId, User destroyer);
 
 }

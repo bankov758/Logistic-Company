@@ -60,7 +60,6 @@ public class OfficeController {
             Office office = officeMapper.DTOtoObject(officeCreateDto);
             officeService.create(office, creator);
             return ResponseEntity.ok().body(officeCreateDto);
-            //return office;
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
@@ -74,7 +73,6 @@ public class OfficeController {
         Office office = officeMapper.UpdateDTOtoOffice(officeUpdateDto);
         officeService.update(office, updater);
         return ResponseEntity.ok().body(officeUpdateDto);
-        //return office;
     }
 
     @DeleteMapping("/{id}")

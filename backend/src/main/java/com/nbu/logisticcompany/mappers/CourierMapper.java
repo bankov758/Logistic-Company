@@ -5,6 +5,8 @@ import com.nbu.logisticcompany.entities.dtos.user.CourierOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.CourierRegisterDto;
 import com.nbu.logisticcompany.entities.dtos.user.CourierUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
+import com.nbu.logisticcompany.services.interfaces.CourierService;
+import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +14,13 @@ import org.springframework.stereotype.Component;
 public class CourierMapper extends UserMapper {
 
     private final CompanyService companyService;
+    private final CourierService courierService;
 
     @Autowired
-    public CourierMapper(CompanyService companyService) {
+    public CourierMapper(CompanyService companyService, CourierService courierService, UserService userService) {
+        super(userService);
         this.companyService = companyService;
+        this.courierService = courierService;
     }
 
     public Courier DtoToObject(CourierRegisterDto courierRegisterDto) {
@@ -33,8 +38,9 @@ public class CourierMapper extends UserMapper {
     }
 
     public Courier UpdateDtoToCourier(CourierUpdateDto courierDto) {
-        Courier courier = new Courier();
+        Courier courier = courierService.getById(courierDto.getId());
         setFieldsFromUpdateDtoToObject(courierDto, courier);
+        courier.setCompany(companyService.getByName(courierDto.getCompanyName()));
         return courier;
     }
 

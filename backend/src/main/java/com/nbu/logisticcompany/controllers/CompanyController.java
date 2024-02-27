@@ -7,10 +7,16 @@ import com.nbu.logisticcompany.entities.dtos.company.CompanyCreateDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyPeriodDto;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyUpdateDto;
+import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
 import com.nbu.logisticcompany.mappers.CompanyMapper;
+import com.nbu.logisticcompany.mappers.ShipmentMapper;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
+import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,11 +34,16 @@ public class CompanyController {
     private final CompanyService companyService;
     private final AuthenticationHelper authenticationHelper;
     private final CompanyMapper companyMapper;
+    private  final ShipmentMapper shipmentMapper;
 
-    public CompanyController(CompanyService companyService, AuthenticationHelper authenticationHelper, CompanyMapper companyMapper) {
+    private ShipmentService shipmentService;
+
+    public CompanyController(CompanyService companyService, AuthenticationHelper authenticationHelper, CompanyMapper companyMapper, ShipmentMapper shipmentMapper, ShipmentService shipmentService) {
         this.companyService = companyService;
         this.authenticationHelper = authenticationHelper;
         this.companyMapper = companyMapper;
+        this.shipmentMapper = shipmentMapper;
+        this.shipmentService = shipmentService;
     }
 
     @GetMapping
@@ -58,26 +69,49 @@ public class CompanyController {
                 CompanyPeriodDto.getPeriodStart(), CompanyPeriodDto.getPeriodEnd());
     }
 
+    @GetMapping("/{id}/employees")
+    public List<CompanyEmployeesDto> getCompanyEmployees(@RequestHeader HttpHeaders headers,
+                                                         @PathVariable int id) {
+        User creator = authenticationHelper.tryGetUser(headers);
+        return companyService.getCompanyEmployees(id, creator);
+    }
+
+    @GetMapping("/{id}/clients")
+    public List<ClientOutDto> getCompanyClients(@RequestHeader HttpHeaders headers,
+                                                @PathVariable int id) {
+        User creator = authenticationHelper.tryGetUser(headers);
+        return companyService.getCompanyClients(id, creator);
+    }
+
+    @GetMapping("/{id}/not-delivered")
+    public List<ShipmentOutDto> getNotDelivered(@RequestHeader HttpHeaders headers,
+                                                  @PathVariable int id) {
+        User creator = authenticationHelper.tryGetUser(headers);
+        return shipmentService.getNotDelivered(id).stream()
+                .map(shipmentMapper::ObjectToDto)
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
-    public Company create(@RequestHeader HttpHeaders headers,
-                          @Valid @RequestBody CompanyCreateDto companyCreateDTO) {
+    public ResponseEntity<?> create(@RequestHeader HttpHeaders headers,
+                                    @Valid @RequestBody CompanyCreateDto companyCreateDTO) {
         try {
             User creator = authenticationHelper.tryGetUser(headers);
             Company company = companyMapper.DtoToObject(companyCreateDTO);
             companyService.create(company, creator);
-            return company;
+            return ResponseEntity.ok().body(companyCreateDTO);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
 
     @PutMapping()
-    public Company update(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers,
                           @Valid @RequestBody CompanyUpdateDto companyUpdateDTO) {
         User updater = authenticationHelper.tryGetUser(headers);
         Company company = companyMapper.UpdateDtoToToCompany(companyUpdateDTO);
         companyService.update(company, updater);
-        return company;
+        return ResponseEntity.ok().body(companyUpdateDTO);
     }
 
     @DeleteMapping("/{id}")

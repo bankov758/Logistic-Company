@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.services.interfaces;
 
+import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 

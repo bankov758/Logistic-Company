@@ -11,28 +11,28 @@ public class Tariff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id ;
+    private int id;
 
     @Column(name = "price_per_kg")
     @Positive
-    private float pricePerKG ;
+    private float pricePerKG;
 
     @Column(name = "office_discount")
     @Positive
-    private float officeDiscount ;
+    private float officeDiscount;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
-    private Company companyID;
+    private Company company;
 
     public Tariff() {
     }
 
-    public Tariff(int id, float pricePerKG, float officeDiscount, Company companyID) {
+    public Tariff(int id, float pricePerKG, float officeDiscount, Company company) {
         this.id = id;
         this.pricePerKG = pricePerKG;
         this.officeDiscount = officeDiscount;
-        this.companyID = companyID;
+        this.company = company;
     }
 
     public int getId() {
@@ -59,12 +59,12 @@ public class Tariff {
         this.officeDiscount = officeDiscount;
     }
 
-    public Company getCompanyID() {
-        return companyID;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setCompanyID(Company companyID) {
-        this.companyID = companyID;
+    public void setCompany(Company companyID) {
+        this.company = companyID;
     }
 
     @Override
@@ -72,11 +72,14 @@ public class Tariff {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tariff tariff = (Tariff) o;
-        return Float.compare(pricePerKG, tariff.pricePerKG) == 0 && Float.compare(officeDiscount, tariff.officeDiscount) == 0 && Objects.equals(companyID, tariff.companyID);
+        return Float.compare(pricePerKG, tariff.pricePerKG) == 0
+                && Float.compare(officeDiscount, tariff.officeDiscount) == 0
+                && Objects.equals(company, tariff.company);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pricePerKG, officeDiscount, companyID);
+        return Objects.hash(pricePerKG, officeDiscount, company);
     }
+
 }

@@ -1,18 +1,21 @@
 package com.nbu.logisticcompany.entities.dtos.shipment;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public class ShipmentCreateDto {
 
-    private String arrivalAddress;
     private String departureAddress;
+    private String arrivalAddress;
     private double weight;
     private int senderId;
     private int receiverId;
     private int employeeId;
-    private boolean isSentFromOffice;
-    private boolean isReceivedFromOffice;
-    private double price;
+    @JsonProperty("sentFromOffice")
+    private boolean sentFromOffice;
+    @JsonProperty("receivedFromOffice")
+    private boolean receivedFromOffice;
     private LocalDateTime sentDate;
     private int courierId;
 
@@ -43,16 +46,12 @@ public class ShipmentCreateDto {
         return employeeId;
     }
 
-    public boolean isSentFromOffice() {
-        return isSentFromOffice;
+    public boolean sentFromOffice() {
+        return sentFromOffice;
     }
 
-    public boolean isReceivedFromOffice() {
-        return isReceivedFromOffice;
-    }
-
-    public double getPrice() {
-        return price;
+    public boolean receivedFromOffice() {
+        return receivedFromOffice;
     }
 
     public LocalDateTime getSentDate() {

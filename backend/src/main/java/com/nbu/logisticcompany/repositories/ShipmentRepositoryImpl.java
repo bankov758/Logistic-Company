@@ -1,11 +1,14 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Shipment;
+import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class ShipmentRepositoryImpl extends AbstractRepository<Shipment> implements ShipmentRepository {
@@ -47,6 +50,20 @@ public class ShipmentRepositoryImpl extends AbstractRepository<Shipment> impleme
                     .uniqueResultOptional()
                     .orElseThrow(() -> new EntityNotFoundException(Shipment.class.getSimpleName(),
                             "employeeId", String.valueOf(employeeId)));
+        }
+    }
+
+    @Override
+    public List<Shipment> getNotDelivered(int companyId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session
+                    .createQuery(" from Shipment shipment where company.id = :companyId " +
+                                             "  and receivedDate is null  "
+                            , Shipment.class)
+                    .setParameter("companyId", companyId).getResultList()
+
+
+                    ;
         }
     }
 
