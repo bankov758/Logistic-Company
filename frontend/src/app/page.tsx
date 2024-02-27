@@ -5,8 +5,6 @@ import EmployeeInterface from "@/components/home/EmployeeInterface";
 import AdminInterface from "@/components/home/AdminInterface";
 
 const Home: React.FC = () => {
-//    const session = await getSession();
- 
   return (
 		<Fragment>
 			<ClientInterface/>
