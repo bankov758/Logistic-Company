@@ -1,7 +1,5 @@
 package com.nbu.logisticcompany.entities.dtos.shipment;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.LocalDateTime;
 
 public class ShipmentCreateDto {
@@ -12,54 +10,82 @@ public class ShipmentCreateDto {
     private int senderId;
     private int receiverId;
     private int employeeId;
-    @JsonProperty("sentFromOffice")
-    private boolean sentFromOffice;
-    @JsonProperty("receivedFromOffice")
-    private boolean receivedFromOffice;
     private LocalDateTime sentDate;
     private int courierId;
+    private int companyId;
 
     public ShipmentCreateDto() {
-    }
-
-    public String getArrivalAddress() {
-        return arrivalAddress;
     }
 
     public String getDepartureAddress() {
         return departureAddress;
     }
 
+    public void setDepartureAddress(String departureAddress) {
+        this.departureAddress = departureAddress;
+    }
+
+    public String getArrivalAddress() {
+        return arrivalAddress;
+    }
+
+    public void setArrivalAddress(String arrivalAddress) {
+        this.arrivalAddress = arrivalAddress;
+    }
+
     public double getWeight() {
         return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
     public int getSenderId() {
         return senderId;
     }
 
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
+    }
+
     public int getReceiverId() {
         return receiverId;
+    }
+
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
     }
 
     public int getEmployeeId() {
         return employeeId;
     }
 
-    public boolean sentFromOffice() {
-        return sentFromOffice;
-    }
-
-    public boolean receivedFromOffice() {
-        return receivedFromOffice;
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 
     public LocalDateTime getSentDate() {
         return sentDate;
     }
 
+    public void setSentDate(LocalDateTime sentDate) {
+        this.sentDate = sentDate;
+    }
+
     public int getCourierId() {
         return courierId;
     }
 
+    public void setCourierId(int courierId) {
+        this.courierId = courierId;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
+    }
 }

@@ -4,7 +4,6 @@ import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeRepository;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.utils.Action;
@@ -38,6 +37,11 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public Office getByCompany(Company company) {
         return officeRepository.getByField("company", company);
+    }
+
+    @Override
+    public List<Office> filter(Optional<String> address, Optional<Integer> companyId, Optional<String> sort) {
+        return officeRepository.filter(address, companyId, sort);
     }
 
     @Override

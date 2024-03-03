@@ -6,6 +6,7 @@ import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentCreateDto;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentUpdateDto;
+import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.services.interfaces.UserService;
@@ -18,13 +19,15 @@ public class ShipmentMapper {
     private final UserService userService;
     private final OfficeEmployeeService officeEmployeeService;
     private final CourierService courierService;
+    private final CompanyService companyService;
 
     @Autowired
     public ShipmentMapper(UserService userService, OfficeEmployeeService officeEmployeeService,
-                          CourierService courierService) {
+                          CourierService courierService, CompanyService companyService) {
         this.userService = userService;
         this.officeEmployeeService = officeEmployeeService;
         this.courierService = courierService;
+        this.companyService = companyService;
     }
 
     public Shipment createDtoToObject(ShipmentCreateDto shipmentCreateDto) {
@@ -38,11 +41,9 @@ public class ShipmentMapper {
         shipment.setSender(sender);
         shipment.setReceiver(receiver);
         shipment.setEmployee(officeEmployee);
-        shipment.setSentFromOffice(shipmentCreateDto.sentFromOffice());
-        shipment.setReceivedFromOffice(shipmentCreateDto.receivedFromOffice());
         shipment.setSentDate(shipmentCreateDto.getSentDate());
         shipment.setCourier(courierService.getById(shipmentCreateDto.getCourierId()));
-        shipment.setCompany(officeEmployee.getCompany());
+        shipment.setCompany(companyService.getById(shipmentCreateDto.getCompanyId()));
         return shipment;
     }
 
