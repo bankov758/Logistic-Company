@@ -30,6 +30,20 @@ export const login = async (initialState: any, formData: FormData) => {
 
 	try {
 		//make an API call to the server to login the user
+		const response = await fetch('http://localhost:8080/api/auth/login', {
+			method: "POST",
+			body: JSON.stringify(fields),
+		})
+
+		if( !response.ok ) {
+			throw new Error("Something went wrong! Sign up process was unsuccessfull!")
+		}
+		const data = await response.json();
+
+		return {
+			errors: '',
+			message: data
+		}
 
 	} catch (error) {
 		if( error instanceof Error ) {

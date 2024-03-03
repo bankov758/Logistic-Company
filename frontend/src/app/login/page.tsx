@@ -1,13 +1,33 @@
+"use client"; 
+import { login } from "@/lib/actions";
 import Link from "next/link";
+import { Fragment } from "react";
+import { useFormState } from "react-dom";
 
 const LoginPage = () => {
+    const [loginState, loginAction] = useFormState(login, { message: null, errors: '' })
+    console.log(loginState)
     return (
+    <Fragment>
+        {loginState.errors && typeof loginState.errors === 'string' &&
+            <div>{loginState.errors}</div>
+        }
+        {loginState.errors && typeof loginState.errors === 'object' &&
+            <div>
+                {
+                    loginState.errors
+                        .map((error, index)=>
+                            <p key={index}>{error.message}</p>
+                        )
+                }
+            </div>
+        }
         <div>
             <div className="bg-white p-40 rounded-xl shadow-md text-center">
                 <div className="mb-5">
                     <h2>Login</h2>
                 </div>
-                <form>
+                <form action={loginAction}>
                     <div className="input-group">
                         <label className="block">Username</label>
                         <input type="text" name="username"
@@ -30,6 +50,7 @@ const LoginPage = () => {
                 </form>
             </div>
         </div>
+        </Fragment>
     )
 }
 export default LoginPage;
