@@ -4,6 +4,8 @@ import {Source_Sans_3} from "next/font/google";
 import "@/styles/globals.css";
 
 import TheHeader from "@/components/layout/TheHeader";
+import {getSession} from "@/lib/auth";
+import {redirect} from "next/navigation";
 
 const source_sans_3 = Source_Sans_3({
     weight: ["400", "600", "700"],
