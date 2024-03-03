@@ -5,6 +5,7 @@ import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OfficeService {
 
@@ -13,6 +14,8 @@ public interface OfficeService {
     Office getByAddress(String address);
 
     Office getByCompany(Company company);
+
+    List<Office> filter(Optional<String> address, Optional<Integer> companyId, Optional<String> sort);
 
     List<Office> getAll();
 
