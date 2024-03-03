@@ -74,7 +74,7 @@ const AdminInterface: React.FC = () => {
         (<BaseDialog title="Create a company" tryClose={() => setShowCreateDialog(false)}>
             <div className="flex items-center justify-center gap-x-3 pb-3">
                 <label className="block  text-gray-500">Company name:</label>
-                <input type="text"  id="company_name_add" className="input-info-dialog" placeholder="  Speedy "></input><br/>
+                <input type="text"  id="company_name_add" className="input-info-dialog" placeholder="Speedy "></input><br/>
                 <div  className='flex gap-x-2 px-5 py-3 text-gray-500'>                   
                     <button
                         className="action_btn_green px-6 py-2"
@@ -89,9 +89,9 @@ const AdminInterface: React.FC = () => {
         {showDialog &&
             (
                 <BaseDialog  title={selectedCompany.title} tryClose={() => setShowDialog(false)}>
-                <div className="flex flex-row items-center  gap-x-2 pb-3">
+                <div className="flex flex-row items-center  gap-x-2 pt-4 pb-6">
                     <label className="block  text-gray-500">Company name:</label>
-                    <input type="text" id="company_name_edit" className="input-info-dialog" placeholder="  Speedy "></input><br />
+                    <input type="text" id="company_name_edit" className="input-info-dialog" placeholder="Speedy "></input><br />
                     <div className='flex py-3 text-gray-500'>
                         <button
                             className="action_btn_green px-6 py-2"
@@ -104,9 +104,9 @@ const AdminInterface: React.FC = () => {
 
                     <div className="flex-column w-1/3">
                         <label className="block  text-gray-500">Employee's first name:</label>
-                        <input type="text" id="employee_first_name" className="input-info-dialog" placeholder="  John "></input>
+                        <input type="text" id="employee_first_name" className="input-info-dialog" placeholder="John "></input>
                         <label className="block  text-gray-500">Employee's last name:</label>
-                        <input type="text" id="employee_last_nname" className="input-info-dialog" placeholder="   Doe"></input>
+                        <input type="text" id="employee_last_nname" className="input-info-dialog" placeholder="Doe"></input>
                         <div className='flex py-3 text-gray-500'>
 
                             <button
@@ -119,9 +119,9 @@ const AdminInterface: React.FC = () => {
 
                     <div className=" flex-column w-1/3">
                         <label className="block  text-gray-500">Client's first name:</label>
-                        <input type="text" id="client_first_name" className="input-info-dialog" placeholder="  Jane"></input>
+                        <input type="text" id="client_first_name" className="input-info-dialog" placeholder="Jane"></input>
                         <label className="block  text-gray-500">Client's last name:</label>
-                        <input type="text" id="client_last_name" className="input-info-dialog" placeholder="  Doe"></input>
+                        <input type="text" id="client_last_name" className="input-info-dialog" placeholder="Doe"></input>
                         <div className='flex py-3 text-gray-500'>
                             <button
                                 className="action_btn_blue px-3 py-1.5"
@@ -132,7 +132,7 @@ const AdminInterface: React.FC = () => {
                     </div>
                     <div className=" flex-column w-1/3">
                         <label className="block  text-gray-500">Office location:</label>
-                        <input type="text" id="office_location" className="input-info-dialog" placeholder="  Sofia"></input>
+                        <input type="text" id="office_location" className="input-info-dialog" placeholder="Sofia"></input>
                         <div className='flex py-3 text-gray-500'>
                             <button
                                 className="action_btn_blue px-3 py-1.5"

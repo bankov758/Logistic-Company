@@ -139,7 +139,9 @@ const BaseDialog: React.FC<ModalProps> = ({
                     titleColor={titleColor}
                     tryClose={tryClose}
                 >
-                    {children}
+                    <div style={{ maxHeight: "70vh", overflowY: "auto" }}>
+                        {children}
+                    </div>
                 </Modal>,
                 overlay
             )}
