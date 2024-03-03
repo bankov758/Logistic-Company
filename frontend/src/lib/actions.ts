@@ -1,9 +1,11 @@
 "use server"; //module level Server Actions defined by 'use server' React directive
 
 import { z } from "zod";
+import {signIn} from "@/lib/auth";
+import {redirect} from "next/navigation";
 
 const loginSchema = z.object({
-	username: z.string().trim().email({ message: "Invalid email address!" }),
+	username: z.string().trim().min(4, { message: "Username must be at least 4 characters!" }),
 	password: z
 		.string()
 		.trim()
@@ -21,7 +23,7 @@ export const login = async (initialState: any, formData: FormData) => {
 		password: fields.password
 	});
 
-	if (validateFields.success === false) {
+	if (!validateFields.success) {
 		return {
 			errors: validateFields.error.issues,
 			message: ""
@@ -33,12 +35,16 @@ export const login = async (initialState: any, formData: FormData) => {
 		const response = await fetch('http://localhost:8080/api/auth/login', {
 			method: "POST",
 			body: JSON.stringify(fields),
+			headers: {
+				'Content-Type': "application/json",
+			}
 		})
 
 		if( !response.ok ) {
 			throw new Error("Something went wrong! Sign up process was unsuccessfull!")
 		}
 		const data = await response.json();
+		await signIn(data.username, data.roles)
 
 		return {
 			errors: '',
@@ -58,11 +64,6 @@ export const login = async (initialState: any, formData: FormData) => {
 			message: ""
 		};
 	}
-
-	return {
-		errors: null,
-		message: "You've successfully logged in!"
-	};
 }
 
 const registerSchema = z.object({
@@ -102,7 +103,6 @@ export const register = async (initialState: any, formData: FormData) => {
 
 	const validateSchema = registerSchema.safeParse(fields);
 
-
 	if (!validateSchema.success ) {
 		return {
 			message: "",
@@ -112,7 +112,7 @@ export const register = async (initialState: any, formData: FormData) => {
 
 	try {
 		//make an API call to the server to login the user
-		const response = await fetch('http://localhost:8080/api/users', {
+		const response = await fetch('http://localhost:8080/api/auth/signup', {
 			method: "POST",
 			body: JSON.stringify(fields),
 			headers: {
@@ -126,6 +126,7 @@ export const register = async (initialState: any, formData: FormData) => {
 		}
 
 		const data = await response.json();
+		await signIn(data.username, data.roles);
 
 		return {
 			errors: '',

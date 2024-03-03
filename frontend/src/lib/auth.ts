@@ -22,9 +22,9 @@ export async function decrypt(session: string): Promise<any> {
 	return payload;
 }
 
-export async function signIn(email: string): Promise<void> {
-	const expires = new Date(Date.now() + 3600 * 1000);
-	const session = await encrypt({ email, expires });
+export async function signIn(username: string, roles: string[]): Promise<void> {
+	const expires = new Date(Date.now() + (60 * 60 * 1000));
+	const session = await encrypt({ username, roles, expires });
 
 	cookies().set("session", session, { expires, httpOnly: true });
 }

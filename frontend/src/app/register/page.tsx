@@ -1,23 +1,29 @@
 "use client";
-import {Fragment} from "react";
+import {Fragment, useEffect} from "react";
 
 import Link from "next/link";
 import { useFormState } from "react-dom";
 
 import {register} from "@/lib/actions";
+import {redirect} from "next/navigation";
 
 const RegistrationPage = () => {
-    const [formState, registerAction] = useFormState(register, { message: null, errors: '' })
-    console.log(formState)
+    const [registerState, registerAction] = useFormState(register, { message: null, errors: '' })
+
+    useEffect(() => {
+        if(registerState.message?.username) {
+            redirect("/");
+        }
+    }, [registerState]);
     return (
         <Fragment>
-            {formState.errors && typeof formState.errors === 'string' &&
-                <div>{formState.errors}</div>
+            {registerState.errors && typeof registerState.errors === 'string' &&
+                <div>{registerState.errors}</div>
             }
-            {formState.errors && typeof formState.errors === 'object' &&
+            {registerState.errors && typeof registerState.errors === 'object' &&
                 <div>
                     {
-                        formState.errors
+                        registerState.errors
                             .map((error, index)=>
                                 <p key={index}>{error.message}</p>
                             )
