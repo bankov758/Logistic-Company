@@ -1,40 +1,40 @@
 package com.nbu.logisticcompany.entities.dtos.user;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class UserLoginDto {
 
-//    @JsonProperty("username")
-//    @NotNull(message = "Username can't be empty")
-//    @Size(min = 2, max = 40, message = "Username should be between 2 and 40 symbols")
-    private String usernamef;
+    @NotNull(message = "Username can't be empty")
+    @Size(min = 2, max = 40, message = "Username should be between 2 and 40 symbols")
+    private String username;
 
-//    @JsonProperty("password")
-//    @NotNull(message = "Password can't be empty")
-//    @Size(min = 8, message = "Password should be longer than 8 symbols")
-    private String passwordf;
+    @NotNull(message = "Password can't be empty")
+    @Size(min = 8, message = "Password should be longer than 8 symbols")
+    private String password;
 
     public UserLoginDto() {
     }
 
-    public UserLoginDto(String _usernamef, String _passwordf) {
-        usernamef = _usernamef;
-        passwordf = _passwordf;
+    public UserLoginDto(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public String getUsernamef() {
-        return usernamef;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUsernamef(String username) {
-        this.usernamef = username;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getPasswordf() {
-        return passwordf;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordf(String password) {
-        this.passwordf = password;
+    public void setPassword(String password) {
+        this.password = password;
     }
-
 
 }

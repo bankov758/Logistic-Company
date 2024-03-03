@@ -1,10 +1,5 @@
 package com.nbu.logisticcompany.controllers;
 
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
-import java.io.IOException;
-
 import com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.user.UserLoginDto;
@@ -14,12 +9,19 @@ import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -37,46 +39,52 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public void handleLogin(@Valid UserLoginDto userLoginDto, BindingResult errors,
-        HttpSession session) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDto userLoginDto,
+                                   BindingResult errors, HttpSession session) {
         try {
             if (errors.hasErrors()) {
-                //return "login";
+                return ResponseEntity.badRequest().body(getDefaultMessages(errors));
             }
-            User loggedUser = authenticationHelper.verifyAuthentication(userLoginDto.getUsernamef(), userLoginDto.getPasswordf());
+            User loggedUser = authenticationHelper.verifyAuthentication(userLoginDto.getUsername(), userLoginDto.getPassword());
             session.setAttribute("currentUser", loggedUser);
+            return ResponseEntity.ok().body(userMapper.ObjectToDto(loggedUser));
         } catch (AuthenticationFailureException e) {
             errors.rejectValue("username", "auth.error", e.getMessage());
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
         }
     }
 
     @GetMapping("/logout")
-    public void handleLogout(HttpSession session) {
+    public void logout(HttpSession session) {
         session.removeAttribute("currentUser");
     }
 
     @PostMapping("/signup")
-    public void handleRegister(@Valid @ModelAttribute("register") UserRegisterDto register,
-        BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            //return "signup";
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDto register, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
         }
 
         if (!register.getPassword().equals(register.getConfirmPassword())) {
-            bindingResult.rejectValue("confirmPassword", "password_error",
+            errors.rejectValue("confirmPassword", "password_error",
                                       "Password confirmation should match password.");
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
         }
 
         try {
             User user = userMapper.DtoToObject(register);
             userService.create(user);
-        } catch (DuplicateEntityException | EntityNotFoundException d) {
-            String[] exceptionMessage = d.getMessage().split(" ");
+            return ResponseEntity.ok().body(userMapper.ObjectToDto(user));
+        } catch (DuplicateEntityException | EntityNotFoundException | IOException ex) {
+            String[] exceptionMessage = ex.getMessage().split(" ");
             String fieldName = exceptionMessage[2];
-            bindingResult.rejectValue(fieldName, "user_error", d.getMessage());
-        } catch (IOException i) {
-            bindingResult.rejectValue("avatar", "avatar_error", i.getMessage());
+            errors.rejectValue(fieldName, "user_error", ex.getMessage());
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
         }
+    }
+
+    private Stream<String> getDefaultMessages(BindingResult errors) {
+        return errors.getFieldErrors().stream().map(FieldError::getDefaultMessage);
     }
 
 }
