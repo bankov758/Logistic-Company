@@ -1,16 +1,15 @@
 "use client";
 import React, { useState } from "react";
 
-import FilterOrders from "./EmployeeInterface/FilterOrders";
-import Table from "./EmployeeInterface/Table";
-import Button from "../UI/BaseButton";
+import FilterOrders from "./FilterOrders";
+import Table from "../Table";
+import Button from "../../UI/BaseButton";
+import BaseDialog from "../../UI/BaseDialog";
 
 import { categories, data, tableColumns } from "@/data/employee/ordersTableData";
-import BaseDialog from "../UI/BaseDialog";
 
 const EmployeeInterface: React.FC = () => {
     const [showCreateOrderDialog, setShowCreateOrderDialog] = useState<boolean>(false)
-
 
     return (
         <section className="flex flex-col justify-start items-start gap-y-6 w-full">

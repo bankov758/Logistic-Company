@@ -1,4 +1,4 @@
-import { category, column, item } from "@/components/home/EmployeeInterface/Table";
+import { category, column, item } from "@/components/home/Table";
 
 //office columns
 export const officeColumns: column[] = [

@@ -1,14 +1,14 @@
-import { category, column, item } from "@/components/home/EmployeeInterface/Table";
+import { category, column, item } from "@/components/home/Table";
 
 export const tableColumns: column[] = [
     {
         title: "Departure place",
-        code: "departure_address",
+        code: "departureAddress",
         id: 1,
     },
     {
         title: "Arrival place",
-        code: "arrival_address",
+        code: "arrivalAddress",
         id: 2,
     },
     {
@@ -28,7 +28,7 @@ export const tableColumns: column[] = [
     },
     {
         title: "Date",
-        code: "sent_date",
+        code: "sentDate",
         id: 6,
     },
     {
