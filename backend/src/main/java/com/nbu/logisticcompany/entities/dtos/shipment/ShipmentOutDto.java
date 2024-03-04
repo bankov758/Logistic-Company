@@ -13,6 +13,7 @@ public class ShipmentOutDto {
     private boolean isSentFromOffice;
     private boolean isReceivedFromOffice;
     private double price;
+    private double weight;
     private LocalDateTime sentDate;
     private LocalDateTime receivedDate;
     private int courierId;
@@ -22,7 +23,7 @@ public class ShipmentOutDto {
 
     public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, int senderId, int receiverId,
                           int employeeId, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
-                          LocalDateTime sentDate, LocalDateTime receivedDate, int courierId) {
+                          double weight, LocalDateTime sentDate, LocalDateTime receivedDate, int courierId) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
@@ -32,6 +33,7 @@ public class ShipmentOutDto {
         this.isSentFromOffice = isSentFromOffice;
         this.isReceivedFromOffice = isReceivedFromOffice;
         this.price = price;
+        this.weight = weight;
         this.sentDate = sentDate;
         this.receivedDate = receivedDate;
         this.courierId = courierId;
@@ -107,6 +109,14 @@ public class ShipmentOutDto {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
     public LocalDateTime getSentDate() {
