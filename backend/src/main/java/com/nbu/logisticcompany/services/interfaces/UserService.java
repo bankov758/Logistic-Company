@@ -1,7 +1,5 @@
 package com.nbu.logisticcompany.services.interfaces;
 
-import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 
 import java.util.List;
@@ -15,7 +13,7 @@ public interface UserService {
 
     List<User> getAll(Optional<String> search);
 
-    void create(User user);
+    User create(User user);
 
     void update(User userToUpdate, User updater);
 
