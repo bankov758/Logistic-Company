@@ -84,7 +84,6 @@ const EmployeeInterface: React.FC = () => {
                 </BaseDialog>)
             }
 
-
             <FilterOrders />
             {data &&
             <Table

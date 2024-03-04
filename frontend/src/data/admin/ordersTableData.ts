@@ -14,7 +14,7 @@ export const officeColumns: column[] = [
     },
     {
         title: "Actions",
-        code: "actionOffice",
+        code: "adminInterfaceActions",
         hide: true,
         id: 3,
     },
@@ -63,7 +63,7 @@ export const tableColumns: column[] = [
     },
     {
         title: "Actions",
-        code: "actionTable",
+        code: "actions",
         hide: true,
         id: 6,
     },

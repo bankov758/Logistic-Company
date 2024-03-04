@@ -48,7 +48,7 @@ export const tableColumns: column[] = [
     },    
     {
         title: "Actions",
-        code: "actions",
+        code: "employeeInterfaceActions",
         hide: true,
         id: 10,
     },
