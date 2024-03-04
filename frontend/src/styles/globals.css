@@ -178,6 +178,12 @@ body, html {
                 focus:shadow-lg 
                 disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
     }
+    .base-btn-blue {
+        @apply bg-blue-500 text-white text-sm font-bold py-[10px] px-[42px] rounded-[10px] shadow-md 
+                hover:bg-blue-600 
+                focus:shadow-lg 
+                disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
+    }
 
     .action_btn_green {
         @apply ring ring-inset ring-green-600 ring-opacity-50 rounded-md

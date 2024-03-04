@@ -27,11 +27,11 @@ const Home: React.FC = () => {
             })
     }, []);
 
-    useEffect(() => {
-        if( !session && isResolved) {
-            redirect("/login")
-        }
-    }, [session, isResolved]);
+    // useEffect(() => {
+    //     if( !session && isResolved) {
+    //         redirect("/login")
+    //     }
+    // }, [session, isResolved]);
 
     const selectInterface = (selectedInterface: string) => {
         setSelectedInterface(selectedInterface)
@@ -40,22 +40,34 @@ const Home: React.FC = () => {
 
     return (
         <Fragment>
-            {	session && showDialog &&
+            {/* {	session && showDialog &&
                 (
 					session.roles.includes("EMPLOYEE") && !session.roles.includes("ADMIN") ?
-						<BaseDialog title="Choose an interface">
-							<button onClick={() => selectInterface('user')}>User</button>
-							<button onClick={() => selectInterface('employee')}>Employee</button>
+						<BaseDialog title="Choose an administrative role">
+                            <td className="flex gap-x-3 items-center">
+                                <button className="base-btn-blue" onClick={() => selectInterface('user')}>User</button>
+                                <button className="base-btn-blue" onClick={() => selectInterface('employee')}>Employee</button>
+                            </td>
 						</BaseDialog> :
 					session.roles.includes("ADMIN") ?
-                        <BaseDialog title="Choose an interface">
-                            <button onClick={() => selectInterface('user')}>User</button>
-                            <button onClick={() => selectInterface('employee')}>Employee</button>
-                            <button onClick={() => selectInterface("admin")}>Admin</button>
+                        <BaseDialog title="Choose an administrative role">
+                            <td className="flex gap-x-3 items-center">
+                                <button className="base-btn-blue" onClick={() => selectInterface('user')}>User</button>
+                                <button className="base-btn-blue" onClick={() => selectInterface('employee')}>Employee</button>
+                                <button className="base-btn-blue" onClick={() => selectInterface("admin")}>Admin</button>
+                            </td>
                         </BaseDialog> :
                         null
                 )
-            }
+            } */}
+            <BaseDialog title="Choose an administrative role" >
+                <td className="flex gap-x-3 items-center">
+                    <button className="base-btn-blue" onClick={() => selectInterface('user')}>User</button>
+                    <button className="base-btn-blue" onClick={() => selectInterface('employee')}>Employee</button>
+                    <button className="base-btn-blue" onClick={() => selectInterface("admin")}>Admin</button>
+                </td>
+            </BaseDialog> 
+            
             {
                 selectedInterface === "user" ?
                     <ClientInterface /> :
