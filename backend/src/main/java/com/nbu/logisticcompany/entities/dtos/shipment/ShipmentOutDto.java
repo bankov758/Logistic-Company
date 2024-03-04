@@ -1,6 +1,6 @@
 package com.nbu.logisticcompany.entities.dtos.shipment;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class ShipmentOutDto {
 
@@ -14,16 +14,14 @@ public class ShipmentOutDto {
     private boolean isReceivedFromOffice;
     private double price;
     private double weight;
-    private LocalDateTime sentDate;
-    private LocalDateTime receivedDate;
+    private LocalDate sentDate;
+    private LocalDate receivedDate;
     private String courier;
 
     public ShipmentOutDto() {
     }
 
-    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, String sender, String receiver,
-                          String employee, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
-                          double weight, LocalDateTime sentDate, LocalDateTime receivedDate, String courier) {
+    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, String sender, String receiver, String employee, boolean isSentFromOffice, boolean isReceivedFromOffice, double price, double weight, LocalDate sentDate, LocalDate receivedDate, String courier) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
@@ -119,19 +117,19 @@ public class ShipmentOutDto {
         this.weight = weight;
     }
 
-    public LocalDateTime getSentDate() {
+    public LocalDate getSentDate() {
         return sentDate;
     }
 
-    public void setSentDate(LocalDateTime sentDate) {
+    public void setSentDate(LocalDate sentDate) {
         this.sentDate = sentDate;
     }
 
-    public LocalDateTime getReceivedDate() {
+    public LocalDate getReceivedDate() {
         return receivedDate;
     }
 
-    public void setReceivedDate(LocalDateTime receivedDate) {
+    public void setReceivedDate(LocalDate receivedDate) {
         this.receivedDate = receivedDate;
     }
 
@@ -142,4 +140,9 @@ public class ShipmentOutDto {
     public void setCourier(String courier) {
         this.courier = courier;
     }
+
 }
+
+
+
+
