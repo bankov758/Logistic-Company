@@ -1,42 +1,40 @@
 package com.nbu.logisticcompany.entities.dtos.shipment;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class ShipmentOutDto {
 
     private int id;
     private String departureAddress;
     private String arrivalAddress;
-    private int senderId;
-    private int receiverId;
-    private int employeeId;
+    private String sender;
+    private String receiver;
+    private String employee;
     private boolean isSentFromOffice;
     private boolean isReceivedFromOffice;
     private double price;
     private double weight;
-    private LocalDateTime sentDate;
-    private LocalDateTime receivedDate;
-    private int courierId;
+    private LocalDate sentDate;
+    private LocalDate receivedDate;
+    private String courier;
 
     public ShipmentOutDto() {
     }
 
-    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, int senderId, int receiverId,
-                          int employeeId, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
-                          double weight, LocalDateTime sentDate, LocalDateTime receivedDate, int courierId) {
+    public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, String sender, String receiver, String employee, boolean isSentFromOffice, boolean isReceivedFromOffice, double price, double weight, LocalDate sentDate, LocalDate receivedDate, String courier) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
-        this.senderId = senderId;
-        this.receiverId = receiverId;
-        this.employeeId = employeeId;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.employee = employee;
         this.isSentFromOffice = isSentFromOffice;
         this.isReceivedFromOffice = isReceivedFromOffice;
         this.price = price;
         this.weight = weight;
         this.sentDate = sentDate;
         this.receivedDate = receivedDate;
-        this.courierId = courierId;
+        this.courier = courier;
     }
 
     public int getId() {
@@ -63,28 +61,28 @@ public class ShipmentOutDto {
         this.arrivalAddress = arrivalAddress;
     }
 
-    public int getSenderId() {
-        return senderId;
+    public String getSender() {
+        return sender;
     }
 
-    public void setSenderId(int senderId) {
-        this.senderId = senderId;
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
-    public int getReceiverId() {
-        return receiverId;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setReceiverId(int receiverId) {
-        this.receiverId = receiverId;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
-    public int getEmployeeId() {
-        return employeeId;
+    public String getEmployee() {
+        return employee;
     }
 
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
+    public void setEmployee(String employee) {
+        this.employee = employee;
     }
 
     public boolean isSentFromOffice() {
@@ -119,27 +117,32 @@ public class ShipmentOutDto {
         this.weight = weight;
     }
 
-    public LocalDateTime getSentDate() {
+    public LocalDate getSentDate() {
         return sentDate;
     }
 
-    public void setSentDate(LocalDateTime sentDate) {
+    public void setSentDate(LocalDate sentDate) {
         this.sentDate = sentDate;
     }
 
-    public LocalDateTime getReceivedDate() {
+    public LocalDate getReceivedDate() {
         return receivedDate;
     }
 
-    public void setReceivedDate(LocalDateTime receivedDate) {
+    public void setReceivedDate(LocalDate receivedDate) {
         this.receivedDate = receivedDate;
     }
 
-    public int getCourierId() {
-        return courierId;
+    public String getCourier() {
+        return courier;
     }
 
-    public void setCourierId(int courierId) {
-        this.courierId = courierId;
+    public void setCourier(String courier) {
+        this.courier = courier;
     }
+
 }
+
+
+
+

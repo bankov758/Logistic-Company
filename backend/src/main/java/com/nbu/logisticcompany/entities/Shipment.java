@@ -1,6 +1,7 @@
 package com.nbu.logisticcompany.entities;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -43,10 +44,10 @@ public class Shipment {
     private double price;
 
     @Column(name = "sent_date")
-    private LocalDateTime sentDate;
+    private LocalDate sentDate;
 
     @Column(name = "received_date")
-    private LocalDateTime receivedDate;
+    private LocalDate receivedDate;
 
     @ManyToOne
     @JoinColumn(name = "courier_id")
@@ -61,7 +62,7 @@ public class Shipment {
 
     public Shipment(int id, String departureAddress, String arrivalAddress, double weight, User sender, User receiver,
                     OfficeEmployee employee, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
-                    LocalDateTime sentDate, LocalDateTime receivedDate, Courier courier, Company company) {
+                    LocalDate sentDate, LocalDate receivedDate, Courier courier, Company company) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
@@ -158,19 +159,19 @@ public class Shipment {
         this.price = price;
     }
 
-    public LocalDateTime getSentDate() {
+    public LocalDate getSentDate() {
         return sentDate;
     }
 
-    public void setSentDate(LocalDateTime sentDate) {
+    public void setSentDate(LocalDate sentDate) {
         this.sentDate = sentDate;
     }
 
-    public LocalDateTime getReceivedDate() {
+    public LocalDate getReceivedDate() {
         return receivedDate;
     }
 
-    public void setReceivedDate(LocalDateTime receivedDate) {
+    public void setReceivedDate(LocalDate receivedDate) {
         this.receivedDate = receivedDate;
     }
 

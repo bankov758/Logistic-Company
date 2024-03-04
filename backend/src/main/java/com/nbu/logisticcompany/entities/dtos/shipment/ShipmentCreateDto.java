@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.entities.dtos.shipment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ShipmentCreateDto {
@@ -10,7 +11,7 @@ public class ShipmentCreateDto {
     private int senderId;
     private int receiverId;
     private int employeeId;
-    private LocalDateTime sentDate;
+    private LocalDate sentDate;
     private int courierId;
     private int companyId;
 
@@ -65,11 +66,11 @@ public class ShipmentCreateDto {
         this.employeeId = employeeId;
     }
 
-    public LocalDateTime getSentDate() {
+    public LocalDate getSentDate() {
         return sentDate;
     }
 
-    public void setSentDate(LocalDateTime sentDate) {
+    public void setSentDate(LocalDate sentDate) {
         this.sentDate = sentDate;
     }
 
