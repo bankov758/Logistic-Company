@@ -69,6 +69,7 @@ public class ShipmentMapper {
         shipmentOutDto.setSentDate(shipment.getSentDate());
         shipmentOutDto.setReceivedDate(shipment.getReceivedDate());
         shipmentOutDto.setCourier(shipment.getCourier().getUsername());
+        shipmentOutDto.setCompanyName(shipment.getCompany().getName());
         return shipmentOutDto;
     }
 
