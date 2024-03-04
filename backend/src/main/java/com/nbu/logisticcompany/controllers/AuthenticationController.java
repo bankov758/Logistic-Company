@@ -73,8 +73,7 @@ public class AuthenticationController {
 
         try {
             User user = userMapper.DtoToObject(register);
-            userService.create(user);
-            return ResponseEntity.ok().body(userMapper.ObjectToDto(user));
+            return ResponseEntity.ok().body(userMapper.ObjectToDto(userService.create(user)));
         } catch (DuplicateEntityException | EntityNotFoundException | IOException ex) {
             String[] exceptionMessage = ex.getMessage().split(" ");
             String fieldName = exceptionMessage[2];

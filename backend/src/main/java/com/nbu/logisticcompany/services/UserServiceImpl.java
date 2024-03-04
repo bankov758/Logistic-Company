@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         boolean duplicateUser = true;
         try {
             userRepository.getByField("username", user.getUsername());
@@ -55,7 +55,9 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateEntityException("User", "username", user.getUsername());
         }
         userRepository.create(user);
-        addRole(getById(user.getId()), Role.USER.name(), getById(user.getId()));
+        User alreadySaved = getById(user.getId());
+        addRole(alreadySaved, Role.USER.name(), getById(user.getId()));
+        return alreadySaved;
     }
 
     @Override

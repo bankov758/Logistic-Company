@@ -65,6 +65,7 @@ public class ShipmentMapper {
         shipmentOutDto.setReceivedFromOffice(shipment.isReceivedFromOffice());
         shipmentOutDto.setSentFromOffice(shipment.isSentFromOffice());
         shipmentOutDto.setPrice(shipment.getPrice());
+        shipmentOutDto.setWeight(shipment.getWeight());
         shipmentOutDto.setSentDate(shipment.getSentDate());
         shipmentOutDto.setReceivedDate(shipment.getReceivedDate());
         shipmentOutDto.setCourierId(shipment.getCourier().getId());
