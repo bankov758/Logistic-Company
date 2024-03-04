@@ -59,16 +59,16 @@ public class ShipmentMapper {
         shipmentOutDto.setId(shipment.getId());
         shipmentOutDto.setArrivalAddress(shipment.getArrivalAddress());
         shipmentOutDto.setDepartureAddress(shipment.getDepartureAddress());
-        shipmentOutDto.setEmployeeId(shipment.getEmployee().getId());
-        shipmentOutDto.setReceiverId(shipment.getReceiver().getId());
-        shipmentOutDto.setSenderId(shipment.getSender().getId());
+        shipmentOutDto.setEmployee(shipment.getEmployee().getUsername());
+        shipmentOutDto.setReceiver(shipment.getReceiver().getUsername());
+        shipmentOutDto.setSender(shipment.getSender().getUsername());
         shipmentOutDto.setReceivedFromOffice(shipment.isReceivedFromOffice());
         shipmentOutDto.setSentFromOffice(shipment.isSentFromOffice());
         shipmentOutDto.setPrice(shipment.getPrice());
         shipmentOutDto.setWeight(shipment.getWeight());
         shipmentOutDto.setSentDate(shipment.getSentDate());
         shipmentOutDto.setReceivedDate(shipment.getReceivedDate());
-        shipmentOutDto.setCourierId(shipment.getCourier().getId());
+        shipmentOutDto.setCourier(shipment.getCourier().getUsername());
         return shipmentOutDto;
     }
 
