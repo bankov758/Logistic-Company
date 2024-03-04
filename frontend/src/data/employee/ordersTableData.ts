@@ -3,21 +3,21 @@ import { category, column, item } from "@/components/home/Table";
 export const tableColumns: column[] = [
     {
         title: "Departure place",
-        code: "departure",
+        code: "departureAddress",
         id: 1,
     },
     {
         title: "Arrival place",
-        code: "arrival",
+        code: "arrivalAddress",
         id: 2,
     },
     {
-        title: "Sender name",
+        title: "Sender",
         code: "sender",
         id: 3,
     },
     {
-        title: "Receiver name",
+        title: "Receiver",
         code: "receiver",
         id: 4,
     },
@@ -28,7 +28,7 @@ export const tableColumns: column[] = [
     },
     {
         title: "Date",
-        code: "sent_date",
+        code: "sentDate",
         id: 6,
     }, 
     {

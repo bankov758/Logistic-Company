@@ -101,19 +101,19 @@ const Table: React.FC<TableProps> = ({
                             <h3 className="flex justify-center">Edit an order:</h3><br/>
                             <div className="order-div">
                                 <label className="block  text-gray-500">Sender:</label>
-                                <input type="text"  id="sender" className="input-info-dialog" placeholder={selectedItem?.sender.toString() ?? "Name:"}></input><br/>
+                                <input type="text"  id="sender" className="input-info-dialog" placeholder={selectedItem?.sender?.toString() ?? "Name:"}></input><br/>
                             </div>
                             <div className="order-div">    
                                 <label className="block  text-gray-500">Receiver:</label>           
-                                <input type="text"  id="receiver" className="input-info-dialog" placeholder={selectedItem?.receiver.toString() ?? "Name:"}></input><br/>
+                                <input type="text"  id="receiver" className="input-info-dialog" placeholder={selectedItem?.receiver?.toString() ?? "Name:"}></input><br/>
                             </div>
                             <div className="order-div">    
                                 <label className="block  text-gray-500">Departure location:</label>           
-                                <input type="text"  id="departureAddress" className="input-info-dialog" placeholder={selectedItem?.departure.toString() ?? "Departure location:"}></input><br/>
+                                <input type="text"  id="departureAddress" className="input-info-dialog" placeholder={selectedItem?.departure?.toString() ?? "Departure location:"}></input><br/>
                             </div>
                             <div className="order-div">    
                                 <label className="block  text-gray-500">Arrival location:</label>
-                                <input type="text"  id="arrivalAddress" className="input-info-dialog" placeholder={selectedItem?.arrival.toString() ?? "Arrival location:"}></input><br/>                   
+                                <input type="text"  id="arrivalAddress" className="input-info-dialog" placeholder={selectedItem?.arrival?.toString() ?? "Arrival location:"}></input><br/>                   
                             </div>                  
                             <div className="order-div">    
                                 <label className="block  text-gray-500">Date:</label>
@@ -125,11 +125,11 @@ const Table: React.FC<TableProps> = ({
                             </div>
                             <div className="order-div">    
                                 <label className="block  text-gray-500">Weight (in kilodram):</label>
-                                <input type="text"  id="weight" className="input-info-dialog" placeholder={selectedItem?.weight.toString() ?? "Weight:"}></input><br/>
+                                <input type="text"  id="weight" className="input-info-dialog" placeholder={selectedItem?.weight?.toString() ?? "Weight:"}></input><br/>
                             </div>
                             <div className="order-div ">
                                 <label className="block  text-gray-500">Employee:</label>
-                                <input type="text"  id="employee" className="input-info-dialog" placeholder={selectedItem?.employee.toString() ?? "Employee:"}></input><br/>
+                                <input type="text"  id="employee" className="input-info-dialog" placeholder={selectedItem?.employee?.toString() ?? "Employee:"}></input><br/>
                             </div>
                             <div className='flex justify-center py-3 text-gray-500'>
                                 <button
