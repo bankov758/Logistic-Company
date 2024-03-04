@@ -35,8 +35,7 @@ public class CompanyController {
     private final AuthenticationHelper authenticationHelper;
     private final CompanyMapper companyMapper;
     private  final ShipmentMapper shipmentMapper;
-
-    private ShipmentService shipmentService;
+    private final ShipmentService shipmentService;
 
     public CompanyController(CompanyService companyService, AuthenticationHelper authenticationHelper, CompanyMapper companyMapper, ShipmentMapper shipmentMapper, ShipmentService shipmentService) {
         this.companyService = companyService;
@@ -86,7 +85,7 @@ public class CompanyController {
     @GetMapping("/{id}/not-delivered")
     public List<ShipmentOutDto> getNotDelivered(@RequestHeader HttpHeaders headers,
                                                   @PathVariable int id) {
-        User creator = authenticationHelper.tryGetUser(headers);
+        authenticationHelper.tryGetUser(headers);
         return shipmentService.getNotDelivered(id).stream()
                 .map(shipmentMapper::ObjectToDto)
                 .collect(Collectors.toList());
