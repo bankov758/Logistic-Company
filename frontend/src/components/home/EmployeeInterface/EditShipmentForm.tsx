@@ -20,7 +20,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item}> = ({ selectedItem }) => 
             <div className="order-div">
                 <label className="block  text-gray-500">Sender:</label>
                 <input type="text" id="sender" className="input-info-dialog"
-                       placeholder={selectedItem?.sender ?? "Name:"}></input><br/>
+                       placeholder={selectedItem?.sender ?? "Name:"} />
             </div>
             <div className="order-div">
                 <label className="block  text-gray-500">Receiver:</label>

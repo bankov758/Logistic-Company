@@ -18,7 +18,7 @@ export type category = {
     id: number
 }
 
-export type item = Record<string, string> & {
+export type item = Record<string, string | number> & {
     id: number;
     category: string;
 };

@@ -6,7 +6,7 @@ import Table, { item } from "../Table";
 import Button from "../../UI/BaseButton";
 import BaseDialog from "../../UI/BaseDialog";
 
-import { categories, data, tableColumns } from "@/data/employee/ordersTableData";
+import { categories, tableColumns } from "@/data/employee/ordersTableData";
 import { getSession } from "@/lib/auth";
 
 const EmployeeInterface: React.FC = () => {
