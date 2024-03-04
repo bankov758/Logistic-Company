@@ -72,9 +72,9 @@ public class ShipmentMapper {
         shipmentOutDto.setCourier(shipment.getCourier().getUsername());
         shipmentOutDto.setCompanyName(shipment.getCompany().getName());
         if (shipment.getReceivedDate() == null) {
-            shipmentOutDto.setShipmentStatus(ShipmentStatus.ACTIVE.toString());
+            shipmentOutDto.setStatus(ShipmentStatus.ACTIVE.toString());
         } else {
-            shipmentOutDto.setShipmentStatus(ShipmentStatus.CLOSED.toString());
+            shipmentOutDto.setStatus(ShipmentStatus.CLOSED.toString());
         }
         return shipmentOutDto;
     }

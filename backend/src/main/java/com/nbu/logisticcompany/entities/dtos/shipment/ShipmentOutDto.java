@@ -18,7 +18,7 @@ public class ShipmentOutDto {
     private LocalDate receivedDate;
     private String courier;
     private String companyName;
-    private String shipmentStatus;
+    private String status;
 
     public ShipmentOutDto() {
     }
@@ -26,7 +26,7 @@ public class ShipmentOutDto {
     public ShipmentOutDto(int id, String departureAddress, String arrivalAddress, String sender, String receiver,
                           String employee, boolean isSentFromOffice, boolean isReceivedFromOffice, double price,
                           double weight, LocalDate sentDate, LocalDate receivedDate, String courier, String companyName,
-                          String shipmentStatus) {
+                          String status) {
         this.id = id;
         this.departureAddress = departureAddress;
         this.arrivalAddress = arrivalAddress;
@@ -41,7 +41,7 @@ public class ShipmentOutDto {
         this.receivedDate = receivedDate;
         this.courier = courier;
         this.companyName = companyName;
-        this.shipmentStatus = shipmentStatus;
+        this.status = status;
     }
 
     public int getId() {
@@ -156,12 +156,12 @@ public class ShipmentOutDto {
         this.companyName = companyName;
     }
 
-    public String getShipmentStatus() {
-        return shipmentStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setShipmentStatus(String shipmentStatus) {
-        this.shipmentStatus = shipmentStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 
