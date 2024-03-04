@@ -2,6 +2,7 @@ package com.nbu.logisticcompany.mappers;
 
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.Shipment;
+import com.nbu.logisticcompany.entities.ShipmentStatus;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentCreateDto;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
@@ -69,6 +70,12 @@ public class ShipmentMapper {
         shipmentOutDto.setSentDate(shipment.getSentDate());
         shipmentOutDto.setReceivedDate(shipment.getReceivedDate());
         shipmentOutDto.setCourier(shipment.getCourier().getUsername());
+        shipmentOutDto.setCompanyName(shipment.getCompany().getName());
+        if (shipment.getReceivedDate() == null) {
+            shipmentOutDto.setStatus(ShipmentStatus.ACTIVE.toString());
+        } else {
+            shipmentOutDto.setStatus(ShipmentStatus.CLOSED.toString());
+        }
         return shipmentOutDto;
     }
 
