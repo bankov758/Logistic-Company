@@ -36,7 +36,7 @@ const EmployeeInterface: React.FC = () => {
 
     return (
         <section className="flex flex-col justify-start items-start gap-y-6 w-full">
-            <h1>Welcome, Antoan</h1>
+            <h3>Welcome, {session?.username || "user"}! You&apos;re logged in as employee.</h3>
             <div className="flex gap-x-4">
                 <Button fill
                 onClick={() => setShowCreateOrderDialog(true)}>Create an order</Button>
@@ -91,7 +91,7 @@ const EmployeeInterface: React.FC = () => {
                 categories={categories}
                 data={data.map((item) => {
                        return {
-                           ...item,//spread operator
+                           ...item,
                            category: "registered"
                        }
                 })}

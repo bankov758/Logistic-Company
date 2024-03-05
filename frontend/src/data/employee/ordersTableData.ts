@@ -45,12 +45,22 @@ export const tableColumns: column[] = [
         title: "Employee",
         code: "employee",
         id: 9,
-    },    
+    },
+    {
+        title: "Courier",
+        code: "courier",
+        id: 10,
+    },
+    {
+        title: "Company",
+        code: "companyName",
+        id: 11,
+    },
     {
         title: "Actions",
         code: "employeeInterfaceActions",
         hide: true,
-        id: 10,
+        id: 12,
     },
 ];
 

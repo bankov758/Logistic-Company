@@ -9,7 +9,7 @@ export const officeColumns: column[] = [
     },
     {
         title: "Company Name",
-        code: "company_name",
+        code: "name",
         id: 2,
     },
     {
@@ -32,17 +32,17 @@ export const officeCategories: category[] = [
 export const tableColumns: column[] = [
     {
         title: "First name",
-        code: "first_name",
+        code: "firstName",
         id: 1,
     },
     {
         title: "Last name",
-        code: "last_name",
+        code: "lastName",
         id: 2,
     },
     {
         title: "Actions",
-        code: "actions",
+        code: "adminInterfaceActions",
         hide: true,
         id: 6,
     },
