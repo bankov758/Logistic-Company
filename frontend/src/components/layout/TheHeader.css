@@ -4,7 +4,7 @@
 
 .navbar ul {
   display: flex;
-  justify-content: start;
+  justify-content: end;
   gap: 15px;
   padding: 1em;
   list-style-type: none;

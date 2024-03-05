@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 
 import "./TheHeader.css";
+import {signOut} from "@/lib/auth";
 
 const TheHeader: React.FC = () => {
 	return (
@@ -12,20 +13,6 @@ const TheHeader: React.FC = () => {
 						href="/"
 					>
 						Home
-					</Link>
-				</li>
-				<li>
-					<Link
-						href="/auth"
-					>
-						Auth
-					</Link>
-				</li>
-				<li>
-					<Link
-						href="/products"
-					>
-						Products
 					</Link>
 				</li>
 				<li>
