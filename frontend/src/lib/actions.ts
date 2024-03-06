@@ -111,7 +111,6 @@ export const register = async (initialState: any, formData: FormData) => {
 	}
 
 	try {
-		//make an API call to the server to login the user
 		const response = await fetch('http://localhost:8080/api/auth/signup', {
 			method: "POST",
 			body: JSON.stringify(fields),

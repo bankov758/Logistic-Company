@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import Table, {item} from "./Table";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import BaseDialog from "@/components/UI/BaseDialog";
+import {Company, deleteCompany, editCompany, getCompanyId, handleAddCompany} from "@/lib/adminActions"
 
 import InfoIcon from '../../../public/icons/info.svg';
 
@@ -16,6 +17,7 @@ import {
 import Image from "next/image";
 import Button from "../UI/BaseButton";
 import {getSession} from "@/lib/auth";
+
 
 interface Client {
     id: number;
@@ -52,11 +54,14 @@ const AdminInterface: React.FC = () => {
     const [error, setError] = useState<Error | null>(null);
 
     const [selectorItemData, setSelectorItemData] = useState<selectorItem[]>([]);
+    const [companyData, setCompanyData] = useState<Company[]>([]);
 
     const [selectedCompany, setSelectedCompany] = useState(selectorData[0]);
     const [showDialog, setShowDialog] = useState<boolean>(false)
     const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
 
+    const [newCompanyName, setNewCompanyName] = useState('');
+    const [updatedCompanyName, setUpdatedCompanyName] = useState('');
 
 
     const updateSelectedCompany = (data: selectorItem) => {
@@ -72,6 +77,7 @@ const AdminInterface: React.FC = () => {
 
                 const dynamicClients = `localhost:8080/api/companies/${selectedCompany.title}/clients`;
                 const dynamicEmployees = `localhost:8080/api/companies/${selectedCompany.title}/employees`;
+                //const companyId =getCompanyId (selectedCompany.title,companyData);
 
                 Promise.all([
                     fetch("http://localhost:8080/api/companies/1/clients", {
@@ -126,9 +132,12 @@ const AdminInterface: React.FC = () => {
                     .then(companyData => {
                         const updatedSelectorData = companyData.map((company: any) => ({
                             title: company.name,
-                            code: company.code
+                            id: company.id,
+                            name: company.name,
+                            income: company.income,
                         }));
                         setSelectorItemData(updatedSelectorData);
+                        setCompanyData(companyData);
                     })
                     .catch(error => setError(error));
             });
@@ -137,10 +146,7 @@ const AdminInterface: React.FC = () => {
     return <>
         <h3 className="flex justify-start w-full">
             Welcome {session?.username || "user"}! You&apos;re logged in as admin.
-        </h3>
-
-        <br/>
-
+        </h3><br/>
         <div className='flex justify-center items-center gap-x-10'>
             <DataSelectorWrapper
                 hasInitialPlaceholderValue
@@ -165,10 +171,11 @@ const AdminInterface: React.FC = () => {
                 <div className="flex items-center justify-center gap-x-3 pb-3">
                     <label className="block  text-gray-500">Company name:</label>
                     <input type="text" id="company_name_add" className="input-info-dialog"
-                           placeholder="Speedy "></input><br/>
+                           placeholder="Speedy" onChange={(e) => setNewCompanyName(e.target.value)}></input><br/>
                     <div className='flex gap-x-2 px-5 py-3 text-gray-500'>
                         <button
                             className="action_btn_green px-6 py-2"
+                            onClick={() => handleAddCompany(newCompanyName, session )}
                         >
                             Add
                         </button>
@@ -180,13 +187,25 @@ const AdminInterface: React.FC = () => {
         {showDialog &&
             (
                 <BaseDialog title={selectedCompany.title} tryClose={() => setShowDialog(false)}>
+                    <div className="flex items-center  gap-x-2 pt-4 pb-3">
+                        <label className="block  text-gray-500">Delete this company:</label>
+                        <button
+                            className="action_btn_red px-12 py-1.5 "
+                            onClick={() => deleteCompany(selectedCompany.title,companyData, session )}
+                        >
+                            DELETE COMPANY
+                        </button>
+                    </div>
                     <div className="flex flex-row items-center  gap-x-2 pt-4 pb-6">
                         <label className="block  text-gray-500">Company name:</label>
                         <input type="text" id="company_name_edit" className="input-info-dialog"
+                               onChange={(e) => setUpdatedCompanyName(e.target.value)}
                                placeholder="Speedy "></input><br/>
                         <div className='flex py-3 text-gray-500'>
                             <button
                                 className="action_btn_green px-6 py-2"
+                                onClick={() => editCompany(selectedCompany.title,updatedCompanyName, companyData, session )}
+
                             >
                                 Edit
                             </button>
@@ -197,7 +216,7 @@ const AdminInterface: React.FC = () => {
                         <div className="flex-column w-1/3">
                             <label className="block  text-gray-500">Employee's first name:</label>
                             <input type="text" id="employee_first_name" className="input-info-dialog"
-                                   placeholder="John "></input>
+                                   placeholder="John"></input>
                             <label className="block  text-gray-500">Employee's last name:</label>
                             <input type="text" id="employee_last_nname" className="input-info-dialog"
                                    placeholder="Doe"></input>
@@ -242,15 +261,12 @@ const AdminInterface: React.FC = () => {
                     </div>
 
 
-                    <button
-                        className="action_btn_red px-6 py-1.5 fixed bottom-5 right-8"
-                    >
-                        DELETE COMPANY
-                    </button>
 
                 </BaseDialog>
             )
         }
+
+
 
         {/*/!* clients + employees *!/*/}
 
