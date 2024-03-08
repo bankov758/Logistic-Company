@@ -9,7 +9,8 @@ import BaseArrow from "@/components/UI/BaseArrow";
 export type selectorItem = {
     title: string,
     code: string,
-    href?: string
+    href?: string;
+	id?: number | string;
 }
 
 type DataSelectorWrapperProps = {
@@ -37,13 +38,14 @@ const DataSelectorWrapper: React.FC<DataSelectorWrapperProps> = ({
 		setIsSelectorClicked((prevState) => !prevState);
 	};
 
-	const switchData = (title: string, code: string, href?: string) => {
+	const switchData = (title: string, code: string, href?: string, id?: string | number) => {
 		setIsSelectorClicked(false);
 
 		onResubForNewData({
 			title,
 			code,
-			href
+			href,
+			id
 		});
 
 		if (href) {
@@ -100,7 +102,8 @@ const DataSelectorWrapper: React.FC<DataSelectorWrapperProps> = ({
 									null,
 									item.title,
 									item.code,
-									item.href ?? undefined
+									item.href ?? undefined,
+									item.id ?? undefined
 								)}
 								className={`
 									w-full leading-[45px] pl-[15px] pr-[10px] cursor-pointer
