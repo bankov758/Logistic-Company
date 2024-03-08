@@ -4,6 +4,9 @@ import React, {Fragment, useState} from "react";
 import BaseDialog from "@/components/UI/BaseDialog";
 import EditShipmentForm from "@/components/home/EmployeeInterface/EditShipmentForm";
 import EditOfficeForm from "@/components/home/AdminInterface/EditOfficeForm";
+import {getSession} from "@/lib/auth";
+import {deleteEmployee, deleteOffice} from "@/lib/adminActions";
+import AddRoleForm from "@/components/home/AdminInterface/AddRoleForm";
 
 export type column = {
     title: string;
@@ -39,12 +42,29 @@ const Table: React.FC<TableProps> = ({
 
     const [editShipment, setEditShipment] = useState<boolean>(false);
     const [editOffice, setEditOffice] = useState<boolean>(false);
+    const [addRole, setAddRole] = useState<boolean>(false);
 
-    const handleClick = (item: item, type: "editShipment" | "editOffice") => {
+    const handleAction = async (item:item, type: "demoteEmployee" | "promoteUser" | "deleteUser" | "deleteEmployee" | "deleteOffice") => {
+        const session = await getSession()
+        if( type === "deleteOffice") {
+           await deleteOffice(item, session);
+        } else if(type === "deleteEmployee") {
+            await deleteEmployee(item, session);
+        }else if(type === "deleteUser") {
+            await deleteEmployee(item, session);
+        }else if(type === "promoteUser") {
+            await deleteEmployee(item, session);
+        }else if(type === "demoteEmployee") {
+            await deleteEmployee(item, session);
+        }
+    };
+    const handleClick = (item: item, type: "editShipment" | "editOffice" | "addRole") => {
         if( type === "editShipment" ) {
             setEditShipment(true);
         } else if( type === "editOffice" ) {
             setEditOffice(true);
+        } else if( type ==="addRole") {
+            setAddRole(true);
         }
 
         setSelectedItem(item);
@@ -69,6 +89,9 @@ const Table: React.FC<TableProps> = ({
                         }
                         {editOffice && selectedItem &&
                             <EditOfficeForm selectedItem={selectedItem} />
+                        }
+                        {addRole && selectedItem &&
+                            <AddRoleForm selectedItem={selectedItem} />
                         }
                     </BaseDialog>
                 }
@@ -145,12 +168,16 @@ const Table: React.FC<TableProps> = ({
                                                                             className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
                                                                             <button
                                                                                 className="action_btn_red"
+                                                                                onClick={() => handleAction(rowItem, "deleteUser")}
+
                                                                             >
                                                                                 Delete
                                                                             </button>
 
                                                                             <button
                                                                                 className="action_btn_green"
+                                                                                onClick={() => handleAction(rowItem, "promoteUser")}
+
                                                                             >
                                                                                 Promote
                                                                             </button>
@@ -162,16 +189,22 @@ const Table: React.FC<TableProps> = ({
                                                                             className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
                                                                             <button
                                                                                 className="action_btn_red"
+                                                                                onClick={() => handleAction(rowItem, "deleteEmployee")}
+
                                                                             >
                                                                                 Delete
                                                                             </button>
                                                                             <button
                                                                                 className="action_btn_blue"
+                                                                                onClick={() => handleAction(rowItem, "demoteEmployee")}
+
                                                                             >
                                                                                 Demote
                                                                             </button>
                                                                             <button
                                                                                 className="action_btn_green"
+                                                                                onClick={() => handleClick(rowItem, "addRole")}
+
                                                                             >
                                                                                 Add role
                                                                             </button>
@@ -183,6 +216,7 @@ const Table: React.FC<TableProps> = ({
                                                                             className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
                                                                             <button
                                                                                 className="action_btn_red"
+                                                                                onClick={() => handleAction(rowItem, "deleteOffice")}
                                                                             >
                                                                                 Delete
                                                                             </button>

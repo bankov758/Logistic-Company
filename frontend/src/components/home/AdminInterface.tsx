@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import Table, {item} from "./Table";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import BaseDialog from "@/components/UI/BaseDialog";
-import {Company, deleteCompany, editCompany, getCompanyId, handleAddCompany} from "@/lib/adminActions"
+import {Company, deleteCompany, editCompany, createCompany, addOffice} from "@/lib/adminActions"
 
 import InfoIcon from '../../../public/icons/info.svg';
 
@@ -35,12 +35,12 @@ interface Office {
 }
 let selectorData: selectorItem[] = [
     {
-        title: 'Econt',
-        code: 'econt',
-    },
-    {
         title: "Speedy",
         code: "speedy"
+    },
+    {
+        title: 'Econt',
+        code: 'econt',
     },
     {
         title: "DHL",
@@ -54,14 +54,15 @@ const AdminInterface: React.FC = () => {
     const [error, setError] = useState<Error | null>(null);
 
     const [selectorItemData, setSelectorItemData] = useState<selectorItem[]>([]);
-    const [companyData, setCompanyData] = useState<Company[]>([]);
-
     const [selectedCompany, setSelectedCompany] = useState(selectorData[0]);
+
     const [showDialog, setShowDialog] = useState<boolean>(false)
     const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
 
+    const [companyData, setCompanyData] = useState<Company[]>([]);
     const [newCompanyName, setNewCompanyName] = useState('');
     const [updatedCompanyName, setUpdatedCompanyName] = useState('');
+    const [officeLocation, setofficeLocation] =useState('');
 
 
     const updateSelectedCompany = (data: selectorItem) => {
@@ -144,7 +145,7 @@ const AdminInterface: React.FC = () => {
     }, []);
 
     return <>
-        <h3 className="flex justify-start w-full">
+        <h3 className="flex justify-start w-full px-2 py-2">
             Welcome {session?.username || "user"}! You&apos;re logged in as admin.
         </h3><br/>
         <div className='flex justify-center items-center gap-x-10'>
@@ -175,7 +176,7 @@ const AdminInterface: React.FC = () => {
                     <div className='flex gap-x-2 px-5 py-3 text-gray-500'>
                         <button
                             className="action_btn_green px-6 py-2"
-                            onClick={() => handleAddCompany(newCompanyName, session )}
+                            onClick={() => createCompany(newCompanyName, session )}
                         >
                             Add
                         </button>
@@ -186,8 +187,8 @@ const AdminInterface: React.FC = () => {
         {/* company info dialog */}
         {showDialog &&
             (
-                <BaseDialog title={selectedCompany.title} tryClose={() => setShowDialog(false)}>
-                    <div className="flex items-center  gap-x-2 pt-4 pb-3">
+                <BaseDialog title={ "Edit company " + selectedCompany.title + "'s information"} tryClose={() => setShowDialog(false)}>
+                    <div className="flex items-center  gap-x-2 pt-3 pb-4">
                         <label className="block  text-gray-500">Delete this company:</label>
                         <button
                             className="action_btn_red px-12 py-1.5 "
@@ -196,8 +197,8 @@ const AdminInterface: React.FC = () => {
                             DELETE COMPANY
                         </button>
                     </div>
-                    <div className="flex flex-row items-center  gap-x-2 pt-4 pb-6">
-                        <label className="block  text-gray-500">Company name:</label>
+                    <div className="flex items-center  gap-x-2 pb-4">
+                        <label className="block  text-gray-500">Change company name:</label>
                         <input type="text" id="company_name_edit" className="input-info-dialog"
                                onChange={(e) => setUpdatedCompanyName(e.target.value)}
                                placeholder="Speedy "></input><br/>
@@ -211,55 +212,20 @@ const AdminInterface: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="flex flex-row">
-
-                        <div className="flex-column w-1/3">
-                            <label className="block  text-gray-500">Employee's first name:</label>
-                            <input type="text" id="employee_first_name" className="input-info-dialog"
-                                   placeholder="John"></input>
-                            <label className="block  text-gray-500">Employee's last name:</label>
-                            <input type="text" id="employee_last_nname" className="input-info-dialog"
-                                   placeholder="Doe"></input>
-                            <div className='flex py-3 text-gray-500'>
-
-                                <button
-                                    className="action_btn_blue px-3 py-1.5"
-                                >
-                                    Add
-                                </button>
-                            </div>
+                    <div className="flex items-center gap-x-2 pb-4">
+                        <label className="block  text-gray-500">Add a new office location:</label>
+                        <input type="text" id="office_location" className="input-info-dialog"
+                               onChange={(e) => setofficeLocation(e.target.value)}
+                               placeholder="Sofia"></input>
+                        <div className='flex py-3 text-gray-500'>
+                            <button
+                                className="action_btn_blue px-3 py-1.5"
+                                onClick={() => addOffice(selectedCompany.title,officeLocation, companyData, session )}
+                            >
+                                Add
+                            </button>
                         </div>
-
-                        <div className=" flex-column w-1/3">
-                            <label className="block  text-gray-500">Client's first name:</label>
-                            <input type="text" id="client_first_name" className="input-info-dialog"
-                                   placeholder="Jane"></input>
-                            <label className="block  text-gray-500">Client's last name:</label>
-                            <input type="text" id="client_last_name" className="input-info-dialog"
-                                   placeholder="Doe"></input>
-                            <div className='flex py-3 text-gray-500'>
-                                <button
-                                    className="action_btn_blue px-3 py-1.5"
-                                >
-                                    Add
-                                </button>
-                            </div>
-                        </div>
-                        <div className=" flex-column w-1/3">
-                            <label className="block  text-gray-500">Office location:</label>
-                            <input type="text" id="office_location" className="input-info-dialog"
-                                   placeholder="Sofia"></input>
-                            <div className='flex py-3 text-gray-500'>
-                                <button
-                                    className="action_btn_blue px-3 py-1.5"
-                                >
-                                    Add
-                                </button>
-                            </div>
-                        </div>
-
                     </div>
-
 
 
                 </BaseDialog>

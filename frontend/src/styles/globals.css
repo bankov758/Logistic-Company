@@ -119,7 +119,7 @@ body, html {
         @apply block rounded-xl border-2 p-2  placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line
     }
     .order-div {
-        @apply flex items-center justify-items-center gap-x-4 pb-3 ml-96
+        @apply flex items-center justify-items-center justify-center gap-x-4 pb-3 mx-auto
     }
     .input-style {
         @apply block px-2 w-full rounded-xl border-0 py-1.5  ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6
