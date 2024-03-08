@@ -1,11 +1,13 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 import Table, {item} from "./Table";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import BaseDialog from "@/components/UI/BaseDialog";
+import Button from "@/components/UI/BaseButton";
+import {useFormState} from "react-dom";
 import {Company, deleteCompany, editCompany, createCompany, addOffice} from "@/lib/adminActions"
-
 import InfoIcon from '../../../public/icons/info.svg';
 
 import {
@@ -14,8 +16,7 @@ import {
     officeColumns,
     tableColumns
 } from "@/data/admin/ordersTableData";
-import Image from "next/image";
-import Button from "../UI/BaseButton";
+
 import {getSession} from "@/lib/auth";
 
 
@@ -33,159 +34,157 @@ interface Office {
     id: number;
     location: string;
 }
-let selectorData: selectorItem[] = [
-    {
-        title: "Speedy",
-        code: "speedy"
-    },
-    {
-        title: 'Econt',
-        code: 'econt',
-    },
-    {
-        title: "DHL",
-        code: "dhl"
-    }
-];
+
+async function getCompanies(session: { username: string; } | null) {
+   const response = await fetch("http://localhost:8080/api/companies", {
+        headers: {
+            "Authorization": session?.username || "",
+            "Content-Type": "application/json",
+            Accept: "*/*"
+        }
+    })
+
+   const data = await response.json()
+
+   if( data ) {
+       const updatedSelectorData = data.map((company: any) => ({
+           title: company.name,
+           code: company.name,
+           id: company.id,
+       }));
+
+   }
+
+   return data;
+}
 
 const AdminInterface: React.FC = () => {
-    const [session, setSession] = useState<null | {username: string; roles: string[]}>();
+    const [session, setSession] = useState<null | {username: string; roles: string[]}>(null);
     const [data, setData] = useState<item[] | null>(null);
     const [error, setError] = useState<Error | null>(null);
 
     const [selectorItemData, setSelectorItemData] = useState<selectorItem[]>([]);
-    const [selectedCompany, setSelectedCompany] = useState(selectorData[0]);
+    const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
 
     const [showDialog, setShowDialog] = useState<boolean>(false)
     const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
 
     const [companyData, setCompanyData] = useState<Company[]>([]);
-    const [newCompanyName, setNewCompanyName] = useState('');
     const [updatedCompanyName, setUpdatedCompanyName] = useState('');
     const [officeLocation, setofficeLocation] =useState('');
-
-
-    const updateSelectedCompany = (data: selectorItem) => {
-        console.log(data);
-        setSelectedCompany(data);
-    }
-
 
     useEffect(() => {
         getSession()
             .then((response) => {
                 setSession(response)
-
-                const dynamicClients = `localhost:8080/api/companies/${selectedCompany.title}/clients`;
-                const dynamicEmployees = `localhost:8080/api/companies/${selectedCompany.title}/employees`;
-                //const companyId =getCompanyId (selectedCompany.title,companyData);
-
-                Promise.all([
-                    fetch("http://localhost:8080/api/companies/1/clients", {
-                        headers: {
-                            "Authorization": response?.username,
-                            "Content-Type": "application/json",
-                            Accept: "*/*"
-                        }
-                    }),
-                    fetch("http://localhost:8080/api/companies/1/employees", {
-                        headers: {
-                            "Authorization": response?.username,
-                            "Content-Type": "application/json",
-                            Accept: "*/*"
-                        }
-                    }),
-                    fetch("http://localhost:8080/api/offices", {
-                        headers: {
-                            "Authorization": response?.username,
-                            "Content-Type": "application/json",
-                            Accept: "*/*"
-                        }
-                    })
-                ])
-                        .then(responses => Promise.all(responses.map(response => response.json())))
-                        .then(([clientsData, employeesData, officesData]) => {
-                            const combinedData = [
-                                ...clientsData.map((client: Client) => ({ ...client, category: "clients" })),
-                                ...employeesData.map((employee: Employee) => ({ ...employee, category: "employees" })),
-                                ...officesData.map((office: Office) => ({ ...office, category: "offices" }))
-                            ];
-
-                            setData(combinedData);
-                        })
-                        .catch(error => setError(error));
-                    })
-    }, []);
-
-    useEffect(() => {
-        getSession()
-            .then((response) => {
-                setSession(response);
-
-                fetch("http://localhost:8080/api/companies", {
-                    headers: {
-                        "Authorization": response?.username,
-                        "Content-Type": "application/json",
-                        Accept: "*/*"
-                    }
-                })
-                    .then(response => response.json())
-                    .then(companyData => {
-                        const updatedSelectorData = companyData.map((company: any) => ({
-                            title: company.name,
-                            id: company.id,
-                            name: company.name,
-                            income: company.income,
-                        }));
-                        setSelectorItemData(updatedSelectorData);
-                        setCompanyData(companyData);
-                    })
-                    .catch(error => setError(error));
+                setCompanyData(getCompanies(response));
             });
     }, []);
+
+    const updateSelectedCompany = (data: selectorItem) => {
+        setSelectedCompany(data);
+        Promise.all([
+            //clients
+            fetch(`http://localhost:8080/api/companies/${data.id}/clients`, {
+                headers: {
+                    "Authorization": session?.username || "",
+                    "Content-Type": "application/json",
+                    Accept: "*/*"
+                }
+            }),
+            //employees
+            fetch(`http://localhost:8080/api/companies/${data.id}/employees`, {
+                headers: {
+                    "Authorization": session?.username || "",
+                    "Content-Type": "application/json",
+                    Accept: "*/*"
+                }
+            }),
+            //offices
+            fetch("http://localhost:8080/api/offices", {
+                headers: {
+                    "Authorization": session?.username || "",
+                    "Content-Type": "application/json",
+                    Accept: "*/*"
+                }
+            })
+        ])
+            .then(responses => Promise.all(responses.map(response => response.json())))
+            .then(([clientsData, employeesData, officesData]) => {
+                const combinedData = [
+                    ...clientsData.map((client: Client) => ({ ...client, category: "clients" })),
+                    ...employeesData.map((employee: Employee) => ({ ...employee, category: "employees" })),
+                    ...officesData.map((office: Office) => ({ ...office, category: "offices" }))
+                ];
+                console.log(combinedData)
+                setData(combinedData);
+            })
+            .catch(error => setError(error));
+    }
+    const [createCompanyState, createCompanyAction] = useFormState(createCompany.bind(session), { message: "", errors: "" })
+
+    // useEffect(() => {
+    //     setShowDialog(false);
+    //     setSelectedCompany(null);
+    //     setCompanyData(getCompanies(session));
+    // }, [createCompanyState]);
 
     return <>
         <h3 className="flex justify-start w-full px-2 py-2">
             Welcome {session?.username || "user"}! You&apos;re logged in as admin.
-        </h3><br/>
+        </h3>
+        <br/>
         <div className='flex justify-center items-center gap-x-10'>
             <DataSelectorWrapper
                 hasInitialPlaceholderValue
-                placeholderValue={selectedCompany.title}
+                placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select a company"}
                 selectorData={selectorItemData}
                 onResubForNewData={updateSelectedCompany}
             />
-
-            <Image
-                src={InfoIcon}
-                alt='Message'
-                className='cursor-pointer'
-                onClick={() => setShowDialog(true)}
-            />
-            <Button fill
-                    onClick={() => setShowCreateDialog(true)}
-            >Create a company</Button>
+            { selectedCompany &&
+                <Image
+                    src={InfoIcon}
+                    alt='Message'
+                    className='cursor-pointer'
+                    onClick={() => setShowDialog(true)}
+                />
+            }
+            <Button
+                fill
+                onClick={() => setShowCreateDialog(true)}
+            >
+                Create a company
+            </Button>
         </div>
         {/* create company dialog  */}
         {showCreateDialog &&
             (<BaseDialog title="Create a company" tryClose={() => setShowCreateDialog(false)}>
-                <div className="flex items-center justify-center gap-x-3 pb-3">
-                    <label className="block  text-gray-500">Company name:</label>
-                    <input type="text" id="company_name_add" className="input-info-dialog"
-                           placeholder="Speedy" onChange={(e) => setNewCompanyName(e.target.value)}></input><br/>
+                <form
+                    action={createCompanyAction}
+                    className="flex items-center justify-center gap-x-3 pb-3"
+                >
+                    <label className="block text-gray-500" htmlFor='company_name'>Company name</label>
+                    <input
+                        type="text"
+                        id="company_name"
+                        className="input-info-dialog"
+                        name='company_name'
+                        placeholder="Speedy"
+                    />
+                    <br/>
                     <div className='flex gap-x-2 px-5 py-3 text-gray-500'>
                         <button
+                            type='submit'
                             className="action_btn_green px-6 py-2"
-                            onClick={() => createCompany(newCompanyName, session )}
                         >
                             Add
                         </button>
                     </div>
-                </div>
+                </form>
             </BaseDialog>)
         }
         {/* company info dialog */}
-        {showDialog &&
+        {showDialog && selectedCompany &&
             (
                 <BaseDialog title={ "Edit company " + selectedCompany.title + "'s information"} tryClose={() => setShowDialog(false)}>
                     <div className="flex items-center  gap-x-2 pt-3 pb-4">
@@ -232,11 +231,8 @@ const AdminInterface: React.FC = () => {
             )
         }
 
-
-
         {/*/!* clients + employees *!/*/}
-
-        {data &&
+        {data && selectedCompany && Object.keys(selectedCompany).length > 0 &&
             <Table
                 columns={tableColumns}
                 categories={categories}
@@ -258,8 +254,9 @@ const AdminInterface: React.FC = () => {
 
             />
         }
+
         {/*offices */}
-        {data &&
+        {data && selectedCompany && Object.keys(selectedCompany).length > 0 &&
             <Table
                 columns={officeColumns}
                 categories={officeCategories}

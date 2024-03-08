@@ -7,14 +7,20 @@ export interface Company {
     income: number;
 }
 export const createCompany = async (
-    newCompanyName: any,
+    initialState: { message: string; errors: [] | string; },
+    formData: FormData,
     session: { username: string; roles: string[]; } | null | undefined
 ) => {
+    const newCompanyName = formData.get("company_name") as string;
+
     try {
         if (!newCompanyName.trim()) {
-            console.error('Company name cannot be empty');
-            return;
+            return {
+                message: null,
+                errors: "Company name cannot be empty!"
+            }
         }
+
         const requestData = {
             name: newCompanyName.trim(),
         };
@@ -31,7 +37,9 @@ export const createCompany = async (
         });
 
         if (response.ok) {
-            console.log('Company created successfully');
+            return {
+                message: "You've successfully create a company! "
+            }
         } else {
             console.error('Failed to create company:', response.statusText);
         }
