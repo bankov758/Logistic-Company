@@ -3,7 +3,7 @@ import {item} from "@/components/home/Table";
 
 const EditOfficeForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
 
-    const submitForm = (e) => {
+    const submitForm = (e:any) => {
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
     }

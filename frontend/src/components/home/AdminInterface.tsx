@@ -263,7 +263,8 @@ const AdminInterface: React.FC = () => {
                 data={data
                     .filter(item => item?.address !== undefined )
                     .map((item) => {
-                        const companyId = item.companyId as any;
+                        const companyId = item.companyId as any;end
+
                         if (companyId?.name === selectedCompany.title) {
                             return {
                                 ...item,

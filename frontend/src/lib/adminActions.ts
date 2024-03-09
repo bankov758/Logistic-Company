@@ -38,13 +38,21 @@ export const createCompany = async (
 
         if (response.ok) {
             return {
-                message: "You've successfully create a company! "
+                message: "You've successfully create a company! ",
+                errors: ""
             }
         } else {
-            console.error('Failed to create company:', response.statusText);
+            return {
+                message: '',
+                errors: 'Failed to create company:'+ response.statusText }
         }
+
     } catch (error) {
         console.error('Error creating company:', error);
+        return {
+            message: '',
+            errors: 'Error creating company! '
+        };
     }
 };
 
@@ -65,14 +73,26 @@ export const deleteCompany = async (
             },
 
         });
-        if(!response.ok){
-            console.log("Failed to delete company")
-        }else {
+        if(response.ok){
             console.log("Company successfully deleted!")
+            return {
+                message: "Company was successfully deleted!",
+                errors: ""
+            }
+        }else {
+            console.log("Failed to delete company")
+            return {
+                message: '',
+                errors: 'Failed to delete company '
+            };
 
         }
     } catch (error) {
-        console.error("Failed to delete the company", error);
+        console.error("Failed to delete the company!", error);
+        return {
+            message: '',
+            errors: 'Failed to delete the company!'
+        };
     }
 }
 export const getCompanyId = (companyName: string, companyData: Company[]) => {
@@ -108,12 +128,23 @@ export const editCompany = async (
         });
         if(!response.ok){
             console.log("Failed to update company")
+            return {
+                message: '',
+                errors: 'Failed to update company'
+            };
         }else {
-            console.log("Company successfully updated!")
-
+            console.log("Company was successfully updated!")
+            return {
+                message: "Company was successfully updated! ",
+                errors: ""
+            }
         }
     } catch (error) {
         console.error("Failed to update the company", error);
+        return {
+            message: '',
+            errors: 'Failed to update the company'
+        };
     }
 }
 
@@ -143,12 +174,23 @@ export const addOffice = async (
         });
         if(!response.ok){
             console.log("Failed to add office!")
+            return {
+                message: '',
+                errors: 'Failed to add office!'
+            };
         }else {
-            console.log("New office successfully added!")
-
+            console.log("New office was successfully added!")
+            return {
+                message: "New office was successfully added! ",
+                errors: ""
+            }
         }
     } catch (error) {
         console.error("Failed to add a new office to the company!", error);
+        return {
+            message: '',
+            errors: 'Failed to add a new office to the company!'
+        };
     }
 }
 export const deleteOffice = async (
@@ -171,12 +213,23 @@ export const deleteOffice = async (
         });
         if(!response.ok){
             console.log("Failed to delete office!")
+            return {
+                message: '',
+                errors: 'Failed to delete office!'
+            };
         }else {
-            console.log("Office successfully deleted!")
-
+            console.log("Office was successfully deleted!")
+            return {
+                message: "Office was successfully deleted! ",
+                errors: ""
+            }
         }
     } catch (error) {
-        console.error("Failed to deletd the chosen office!", error);
+        console.error("Failed to delete the chosen office!", error);
+        return {
+            message: '',
+            errors: 'Failed to delete the chosen office!'
+        };
     }
 }
 export const deleteEmployee = async (
@@ -199,12 +252,23 @@ export const deleteEmployee = async (
         });
         if(!response.ok){
             console.log("Failed to delete employee!")
+            return {
+                message: '',
+                errors: 'Failed to delete employee!'
+            };
         }else {
-            console.log("Employee successfully deleted!")
-
+            console.log("Employee was successfully deleted!")
+            return {
+                message: "Employee was successfully deleted! ",
+                errors: ""
+            }
         }
     } catch (error) {
         console.error("Failed to deleted the chosen employee!", error);
+        return {
+            message: '',
+            errors: 'Failed to deleted the chosen employee!'
+        };
     }
 }
 export const promoteUser = async (
@@ -229,12 +293,23 @@ export const promoteUser = async (
         });
         if(!response.ok){
             console.log("Failed to promote user!")
+            return {
+                message: '',
+                errors: 'Failed to promote user!'
+            };
         }else {
-            console.log("User successfully promoted!")
-
+            console.log("User was successfully promoted!")
+            return {
+                message: "User was successfully promoted! ",
+                errors: ""
+            }
         }
     } catch (error) {
         console.error("Failed to promote the chosen user!", error);
+        return {
+            message: '',
+            errors: 'Failed to promote the chosen user!'
+        };
     }
 }
 export const demoteEmployee = async (
@@ -259,11 +334,22 @@ export const demoteEmployee = async (
         });
         if(!response.ok){
             console.log("Failed to demote employee!")
+            return {
+                message: '',
+                errors: 'Failed to demote employee!!'
+            };
         }else {
-            console.log("Employee successfully demoted!")
-
+            console.log("Employee was successfully demoted!")
+            return {
+                message: "Employee was successfully demoted! ",
+                errors: ""
+            }
         }
     } catch (error) {
         console.error("Failed to demote the chosen employee!", error);
+        return {
+            message: '',
+            errors: 'Failed to demote the chosen employee!'
+        };
     }
 }
