@@ -3,6 +3,12 @@
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 
+export type Session = {
+	username: string;
+	roles: string[];
+	expires: Date;
+}
+
 const secretKey = process.env["JTW_SECRET"];
 const key = new TextEncoder().encode(secretKey);
 
@@ -33,8 +39,8 @@ export async function signOut() {
 	cookies().set("session", "", { expires: new Date(0) });
 }
 
-export async function getSession(): Promise<any | null> {
-	const session = cookies().get("session")?.value;
+export async function getSession(): Promise<Session | null> {
+	const session: string | undefined = cookies().get("session")?.value;
 
 	if (!session) return null;
 

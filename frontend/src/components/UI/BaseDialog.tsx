@@ -88,7 +88,7 @@ const Modal: React.FC<ModalProps> = ({
 						</div>
 					)}
 					<header
-						className={`w-full pt-8 pb-2 px-4 ${titleColor ?? "bg-green-500"}`}
+						className={`w-full text-center pt-8 pb-2 px-4 ${titleColor ?? "bg-green-500"}`}
 					>
 						<h2 className="text-white text-lg lg:text-xl font-bold">{title}</h2>
 					</header>
