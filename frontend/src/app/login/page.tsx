@@ -1,11 +1,20 @@
 "use client";
-import {login} from "@/lib/actions";
-import Link from "next/link";
-import {Fragment, useEffect} from "react";
+import React, {Fragment, useEffect} from "react";
+import Notification from "@/components/UI/Notification";
 import {useFormState} from "react-dom";
-import {redirect} from "next/navigation";
+import Link from "next/link";
 
-const LoginPage = () => {
+import {redirect} from "next/navigation";
+import {login} from "@/lib/actions";
+import {ZodError} from "zod";
+import SubmitButton from "@/components/UI/SubmitButton";
+
+type FormState = {
+    message: null | string;
+    errors: ZodError | null | string;
+}
+
+const LoginPage: React.FC = () => {
     const [loginState, loginAction] = useFormState(login, {message: null, errors: ''})
 
     useEffect(() => {
@@ -14,20 +23,23 @@ const LoginPage = () => {
         }
     }, [loginState]);
 
+    //TODO: modify
     return (
         <Fragment>
             {loginState.errors && typeof loginState.errors === 'string' &&
-                <div>{loginState.errors}</div>
+                <Notification status='error'>
+                    {loginState.errors}
+                </Notification>
             }
             {loginState.errors && typeof loginState.errors === 'object' &&
-                <div>
+                <Notification status='error'>
                     {
                         loginState.errors
                             .map((error, index) =>
                                 <p key={index}>{error.message}</p>
                             )
                     }
-                </div>
+                </Notification>
             }
             <div>
                 <div className="bg-white p-40 rounded-xl shadow-md text-center">
@@ -46,13 +58,11 @@ const LoginPage = () => {
                                    className="input-style"></input>
                         </div>
                         <div className="flex justify-center">
-                            <button type="submit"
-                                    className="block px-3 py-1.5 mt-1  relative rounded-xl bg-green-400 text-white border-none cursor-pointer"
-                                    name="login_user">Login
-                            </button>
+                            <SubmitButton />
                         </div>
                         <p>
-                            Not a member yet? <Link href="/register">Sign up</Link>
+                            Not a member yet?
+                            <Link href="/register">Sign up</Link>
                         </p>
                     </form>
                 </div>

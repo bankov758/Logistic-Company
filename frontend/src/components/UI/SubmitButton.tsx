@@ -1,10 +1,11 @@
 "use client";
 
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import { useFormStatus } from "react-dom";
 
 type SubmitButtonProps = {
 	buttonStyle?: string;
+	type?: string;
 };
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
