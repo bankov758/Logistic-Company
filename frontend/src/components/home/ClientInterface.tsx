@@ -28,10 +28,7 @@ const ClientInterface: React.FC = () => {
                     }
                 })
                     .then(response => response.json())
-                    .then(data => {
-                        setData(data)
-                        console.log(data);
-                    })
+                    .then(data => setData(data))
                     .catch(error => setError(error));
             })
     }, [tryAgain]);

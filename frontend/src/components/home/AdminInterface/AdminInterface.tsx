@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {useFormState} from "react-dom";
 import Image from "next/image";
 
 import Table, {item} from "../Table";
@@ -10,14 +9,9 @@ import Button from "@/components/UI/BaseButton";
 
 import InfoIcon from '../../../../public/icons/info.svg';
 
-import {Company, deleteCompany, editCompany, createCompany, addOffice} from "@/lib/adminActions"
-
 import {
+    adminCategories,
     adminColumns,
-    categories,
-    officeCategories,
-    officeColumns,
-    tableColumns
 } from "@/data/admin/ordersTableData";
 
 import {getSession, Session} from "@/lib/auth";
@@ -41,23 +35,34 @@ interface Office {
 }
 
 async function getCompanies(session: { username: string; } | null): Promise<selectorItem[] | null> {
-   const response = await fetch("http://localhost:8080/api/companies", {
-        headers: {
-            "Authorization": session?.username || "",
-            "Content-Type": "application/json",
-            Accept: "*/*"
-        }
-    })
+   try {
+       const response = await fetch("http://localhost:8080/api/companies", {
+           headers: {
+               "Authorization": session?.username || "",
+               "Content-Type": "application/json",
+               Accept: "*/*"
+           }
+       })
 
-   const data = await response.json()
+       if( !response.ok ) {
+           throw new Error("Something went wrong!");
+       }
 
-   if( data ) {
+       const data = await response.json()
 
-       return data.map((company: any) => ({
-           title: company.name,
-           code: company.name,
-           id: company.id,
-       }));
+       if( data ) {
+
+           return data.map((company: any) => ({
+               title: company.name,
+               code: company.name,
+               id: company.id,
+           }));
+       }
+       return null;
+   } catch (err) {
+       if( err instanceof Error ) {
+           throw err;
+       }
    }
 
    return null;
@@ -66,32 +71,37 @@ async function getCompanies(session: { username: string; } | null): Promise<sele
 const AdminInterface: React.FC = () => {
     const [session, setSession] = useState<null | Session>(null);
     const [data, setData] = useState<item[][] | null>(null);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useState<Error | null | string>(null);
     const [tryAgain, setTryAgain] = useState<boolean>(false);
 
-    const [selectorItemData, setSelectorItemData] = useState<selectorItem[]>([]);
+    const [companies, setCompanies] = useState<selectorItem[]>([]);
     const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
 
     const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
     const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
 
-    const [companyData, setCompanyData] = useState<selectorItem[] | null>(null);
-    const [updatedCompanyName, setUpdatedCompanyName] = useState('');
-    const [officeLocation, setofficeLocation] =useState('');
-
     useEffect(() => {
         getSession()
             .then( async (response) => {
                 setSession(response)
-                const companies = await getCompanies(response);
+                
+                try {
+                    const companies = await getCompanies(response);
 
-                if( companies ) {
-                    setSelectorItemData(companies);
+                    if( companies ) {
+                        setCompanies(companies);
+                    } else {
+                        setError("Something went wrong!")
+                    }
+                } catch (err) {
+                    if( err instanceof Error ) {
+                        setError(err)
+                    } 
                 }
             });
     }, []);
 
-    const updateSelectedCompany = (data: selectorItem) => {
+    const handleSelectCompany = (data: selectorItem) => {
         setSelectedCompany(data);
 
         Promise.all([
@@ -123,9 +133,9 @@ const AdminInterface: React.FC = () => {
             .then(responses => Promise.all(responses.map(response => response.json())))
             .then(([clientsData, employeesData, officesData]) => {
                 const combinedData = [
-                    clientsData.map((client: Client) => ({ ...client, category: "clients" })),
-                    employeesData.map((employee: Employee) => ({ ...employee, category: "employees" })),
-                    officesData.map((office: Office) => ({ ...office, category: "offices" }))
+                    clientsData,
+                    employeesData,
+                    officesData
                 ];
                 console.log("combinedData >>> ", combinedData)
                 setData(combinedData);
@@ -137,7 +147,7 @@ const AdminInterface: React.FC = () => {
         {error &&
             <Notification status='error'>
                 <div className='flex flex-col justify-center items-center w-full'>
-                    <p>{error?.message}</p>
+                    <p>{error instanceof Error ? error.message : error}</p>
                     <button className='base-btn-blue' onClick={() => setTryAgain(!tryAgain)}>Try again</button>
                 </div>
             </Notification>
@@ -150,8 +160,8 @@ const AdminInterface: React.FC = () => {
             <DataSelectorWrapper
                 hasInitialPlaceholderValue
                 placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select a company"}
-                selectorData={selectorItemData}
-                onResubForNewData={updateSelectedCompany}
+                selectorData={companies}
+                onResubForNewData={handleSelectCompany}
             />
             { selectedCompany &&
                 <Image
@@ -185,35 +195,52 @@ const AdminInterface: React.FC = () => {
                 </BaseDialog>
             )
         }
-        {/*TODO: Split clients and employees into separate tables instead of mapping them twice */}
-        {/*/!* clients + employees + offices *!/*/}
+        {/* clients + employees + offices */}
         {data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 &&
             data
-                // .filter((individualData: item[]) => individualData.length > 0)
-                .map((individualData: item[], index: number) => (
-                <Table
-                    key={index}
-                    columns={adminColumns[index]}
-                    categories={[{
-                        title: "Data",
-                        code: "data",
-                        id: 1,
-                    }]}
-                    session={session}
-                    data=
-                        {
-                            individualData
-                                .map(item => {
-                                    const companyId = item?.companyId as { id: number; name: string; };
+                .map((individualData: item[], index: number) => {
+                    if( !individualData.length ) return;
 
-                                    return {
-                                        ...item,
-                                        category: "data",
-                                    };
-                                })
-                        }
-                />
-            ))
+                    return (
+                        <Table
+                            key={index}
+                            columns={adminColumns[index]}
+                            categories={adminCategories[index]}
+                            session={session}
+                            data=
+                                {
+                                    individualData
+                                        .map(item => {
+
+                                            if( index === 0 ) {//clients
+                                                return {
+                                                    ...item,
+                                                    category: "clients"
+                                                }
+                                            } else if( index === 1 ) {//employees
+                                                return {
+                                                    ...item,
+                                                    category: "employees"
+                                                }
+                                            } else if( index === 2 ) {//offices
+                                                const companyId: { id: number; name: string; } = item?.companyId;
+
+                                                return {
+                                                    ...item,
+                                                    name: companyId.name,
+                                                    category: "offices",
+                                                };
+                                            }
+
+                                            return {
+                                                ...item,
+                                                category: ""
+                                            }
+                                        })
+                                }
+                        />
+                    )
+                })
         }
     </>;
 }
