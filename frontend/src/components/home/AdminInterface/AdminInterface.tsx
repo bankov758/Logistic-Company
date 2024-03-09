@@ -2,13 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import Table, {item} from "./Table";
+import Table, {item} from "../Table";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import BaseDialog from "@/components/UI/BaseDialog";
 import Button from "@/components/UI/BaseButton";
 import {useFormState} from "react-dom";
 import {Company, deleteCompany, editCompany, createCompany, addOffice} from "@/lib/adminActions"
-import InfoIcon from '../../../public/icons/info.svg';
+import InfoIcon from '../../../../public/icons/info.svg';
 
 import {
     categories,

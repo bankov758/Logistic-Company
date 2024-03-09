@@ -6,7 +6,7 @@ import {getSession} from "@/lib/auth";
 
 import ClientInterface from "@/components/home/ClientInterface";
 import EmployeeInterface from "@/components/home/EmployeeInterface/EmployeeInterface";
-import AdminInterface from "@/components/home/AdminInterface";
+import AdminInterface from "@/components/home/AdminInterface/AdminInterface";
 import BaseDialog from "@/components/UI/BaseDialog";
 
 import type { Session } from '@/lib/auth';
