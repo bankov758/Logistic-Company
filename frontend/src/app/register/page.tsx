@@ -1,11 +1,13 @@
 "use client";
-import {Fragment, useEffect} from "react";
-
-import Link from "next/link";
+import React, {Fragment, useEffect} from "react";
 import { useFormState } from "react-dom";
+import Link from "next/link";
+import {redirect} from "next/navigation";
 
 import {register} from "@/lib/actions";
-import {redirect} from "next/navigation";
+
+import Notification from "@/components/UI/Notification";
+import SubmitButton from "@/components/UI/SubmitButton";
 
 const RegistrationPage = () => {
     const [registerState, registerAction] = useFormState(register, { message: null, errors: '' })
@@ -15,20 +17,23 @@ const RegistrationPage = () => {
             redirect("/");
         }
     }, [registerState]);
+
     return (
         <Fragment>
             {registerState.errors && typeof registerState.errors === 'string' &&
-                <div>{registerState.errors}</div>
+                <Notification status='error'>
+                    {registerState.errors}
+                </Notification>
             }
             {registerState.errors && typeof registerState.errors === 'object' &&
-                <div>
+                <Notification status='error'>
                     {
                         registerState.errors
-                            .map((error, index)=>
+                            .map((error, index) =>
                                 <p key={index}>{error.message}</p>
                             )
                     }
-                </div>
+                </Notification>
             }
             <div className="bg-white p-40 rounded-xl shadow-md text-center">
                 <div className="mb-5">
@@ -62,15 +67,11 @@ const RegistrationPage = () => {
                                className="input-style"></input>
                     </div>
                     <div className="flex justify-center">
-                        <button
-                            type="submit"
-                            className="block px-3 py-1.5 mt-1  relative rounded-xl bg-green-400 text-white border-none cursor-pointer"
-                        >
-                            Register
-                        </button>
+                        <SubmitButton/>
                     </div>
                     <p>
-                        Already a member? <Link href="/login"> Sign in </Link>
+                        Already a member?
+                        <Link href="/login"> Sign in </Link>
                     </p>
                 </form>
             </div>
