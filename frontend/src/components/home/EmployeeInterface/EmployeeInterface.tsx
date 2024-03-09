@@ -47,14 +47,14 @@ const EmployeeInterface: React.FC = () => {
                     </div>
                 </Notification>
             }
-            <h3>Welcome, {session?.username || "user"}! You&apos;re logged in as employee.</h3>
-            <div className="flex gap-x-4">
+            <div className='flex justify-start items-center gap-x-4'>
+                <h3>Welcome, {session?.username || "user"}! You&apos;re logged in as employee.</h3>
                 <Button fill onClick={() => setShowCreateOrderDialog(true)}>Create an order</Button>
             </div>
             {showCreateOrderDialog &&
-                (<BaseDialog title="New order" tryClose={() => setShowCreateOrderDialog(false)}>
-                    <CreateAnOrderForm />
-                </BaseDialog>)
+                <BaseDialog title="New order" tryClose={() => setShowCreateOrderDialog(false)}>
+                    <CreateAnOrderForm/>
+                </BaseDialog>
             }
             <FilterOrders />
             {data &&

@@ -31,7 +31,7 @@ export default async function RootLayout({
 			<body className="min-w-[360px] w-full min-h-screen flex flex-col text-main text-base">
 				<div id="overlay"/>
 				<div id="backdrop"/>
-				<main className="container flex flex-col flex-grow justify-start items-center gap-y-4 w-full">
+				<main className="container flex flex-col flex-grow justify-start items-center gap-y-4 w-full my-6">
 					{children}
 				</main>
 			</body>
