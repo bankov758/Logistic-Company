@@ -5,43 +5,27 @@ import {useFormState} from "react-dom";
 import Link from "next/link";
 
 import {useRouter} from "next/navigation";
-import {login} from "@/lib/actions";
+import {FormState, login} from "@/lib/actions";
 import {ZodError} from "zod";
 import SubmitButton from "@/components/UI/SubmitButton";
 
-type FormState = {
-    message: null | string;
-    errors: ZodError | null | string;
+const initialState: FormState = {
+    message: '',
+    errors: null
 }
 
 const LoginPage: React.FC = () => {
-    const [loginState, loginAction] = useFormState(login, {message: null, errors: ''});
+    const [loginState, loginAction] = useFormState(login, initialState);
     const router = useRouter();
 
     useEffect(() => {
-        if (loginState.message?.username) {
+        if (loginState.message && typeof loginState.message === 'object' && loginState.message?.username) {
             router.push("/", { scroll: false });
         }
     }, [loginState]);
 
-    //TODO: modify
     return (
         <Fragment>
-            {loginState.errors && typeof loginState.errors === 'string' &&
-                <Notification status='error'>
-                    {loginState.errors}
-                </Notification>
-            }
-            {loginState.errors && typeof loginState.errors === 'object' &&
-                <Notification status='error'>
-                    {
-                        loginState.errors
-                            .map((error, index) =>
-                                <p key={index}>{error.message}</p>
-                            )
-                    }
-                </Notification>
-            }
             <div>
                 <div className="bg-white p-40 rounded-xl shadow-md text-center">
                     <div className="mb-5">
@@ -59,7 +43,7 @@ const LoginPage: React.FC = () => {
                                    className="input-style"></input>
                         </div>
                         <div className="flex justify-center">
-                            <SubmitButton />
+                            <SubmitButton formState={loginState} />
                         </div>
                         <p>
                             Not a member yet?

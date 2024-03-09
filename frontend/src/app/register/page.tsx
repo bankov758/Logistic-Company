@@ -21,21 +21,6 @@ const RegistrationPage = () => {
 
     return (
         <Fragment>
-            {registerState.errors && typeof registerState.errors === 'string' &&
-                <Notification status='error'>
-                    {registerState.errors}
-                </Notification>
-            }
-            {registerState.errors && typeof registerState.errors === 'object' &&
-                <Notification status='error'>
-                    {
-                        registerState.errors
-                            .map((error, index) =>
-                                <p key={index}>{error.message}</p>
-                            )
-                    }
-                </Notification>
-            }
             <div className="bg-white p-40 rounded-xl shadow-md text-center">
                 <div className="mb-5">
                     <h2>Register</h2>
@@ -68,7 +53,7 @@ const RegistrationPage = () => {
                                className="input-style"></input>
                     </div>
                     <div className="flex justify-center">
-                        <SubmitButton/>
+                        <SubmitButton formState={registerState}/>
                     </div>
                     <p>
                         Already a member?

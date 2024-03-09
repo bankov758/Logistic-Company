@@ -1,8 +1,13 @@
 "use server"; //module level Server Actions defined by 'use server' React directive
 
-import { z } from "zod";
+import {z, ZodError, ZodIssue} from "zod";
 import {signIn} from "@/lib/auth";
 import {redirect} from "next/navigation";
+
+export type FormState = {
+	message: null | string | { username: string; roles: string[]; };
+	errors: ZodIssue[] | null | string;
+}
 
 const loginSchema = z.object({
 	username: z.string().trim().min(4, { message: "Username must be at least 4 characters!" }),
@@ -12,7 +17,7 @@ const loginSchema = z.object({
 		.min(4, { message: "You've provided an invalid password!" })
 });
 
-export const login = async (initialState: any, formData: FormData) => {
+export const login = async (initialState: FormState, formData: FormData) => {
 
 	const fields = {
 		username: (formData.get("username") as string) || "",
@@ -44,7 +49,7 @@ export const login = async (initialState: any, formData: FormData) => {
 		if( !response.ok ) {
 			throw new Error("Something went wrong! Sign up process was unsuccessfull!")
 		}
-		const data = await response.json();
+		const data: { username: string; roles: string[]; } = await response.json();
 		await signIn(data.username, data.roles)
 
 		return {
@@ -80,7 +85,8 @@ const registerSchema = z.object({
 		.trim()
 });
 
-export const register = async (initialState: any, formData: FormData) => {
+export const register = async (initialState: FormState, formData: FormData) => {
+
 	const username = formData.get('username') as string;
 	const firstName = formData.get('firstName') as string;
 	const lastName = formData.get('lastName') as string;
