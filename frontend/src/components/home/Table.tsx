@@ -7,7 +7,6 @@ import BaseDialog from "@/components/UI/BaseDialog";
 import EditShipmentForm from "@/components/home/EmployeeInterface/EditShipmentForm";
 import EditOfficeForm from "@/components/home/AdminInterface/EditOfficeForm";
 import AddRoleForm from "@/components/home/AdminInterface/AddRoleForm";
-import EmployeeInterface from "@/components/home/EmployeeInterface/EmployeeInterface";
 import EmployeeInterfaceActionsButtons from "@/components/home/EmployeeInterface/EmployeeInterfaceActionsButtons";
 
 export type column = {
@@ -23,7 +22,7 @@ export type category = {
     id: number
 }
 
-export type item = Record<string, string | number> & {
+export type item = Record<string, any> & {
     id: number;
     category: string;
 };

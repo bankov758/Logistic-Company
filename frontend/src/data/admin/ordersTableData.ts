@@ -20,6 +20,13 @@ export const officeColumns: column[] = [
     },
 ]
 
+//TODO: modify
+export const adminColumns: column[][] = [
+    [],//client column
+    [],//employee column
+    [],//admin column
+]
+
 export const officeCategories: category[] = [
     {
         title: 'Offices',

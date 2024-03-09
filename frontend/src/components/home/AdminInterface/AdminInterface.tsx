@@ -1,14 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import {useFormState} from "react-dom";
 import Image from "next/image";
 
 import Table, {item} from "../Table";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import BaseDialog from "@/components/UI/BaseDialog";
 import Button from "@/components/UI/BaseButton";
-import {useFormState} from "react-dom";
-import {Company, deleteCompany, editCompany, createCompany, addOffice} from "@/lib/adminActions"
+
 import InfoIcon from '../../../../public/icons/info.svg';
+
+import {Company, deleteCompany, editCompany, createCompany, addOffice} from "@/lib/adminActions"
 
 import {
     categories,
@@ -17,8 +19,10 @@ import {
     tableColumns
 } from "@/data/admin/ordersTableData";
 
-import {getSession} from "@/lib/auth";
-
+import {getSession, Session} from "@/lib/auth";
+import Notification from "@/components/UI/Notification";
+import ShowCompanyInfo from "@/components/home/AdminInterface/ShowCompanyInfo";
+import CreateCompanyForm from "@/components/home/AdminInterface/CreateCompanyForm";
 
 interface Client {
     id: number;
@@ -35,7 +39,7 @@ interface Office {
     location: string;
 }
 
-async function getCompanies(session: { username: string; } | null) {
+async function getCompanies(session: { username: string; } | null): Promise<selectorItem[] | null> {
    const response = await fetch("http://localhost:8080/api/companies", {
         headers: {
             "Authorization": session?.username || "",
@@ -47,42 +51,48 @@ async function getCompanies(session: { username: string; } | null) {
    const data = await response.json()
 
    if( data ) {
-       const updatedSelectorData = data.map((company: any) => ({
+
+       return data.map((company: any) => ({
            title: company.name,
            code: company.name,
            id: company.id,
        }));
-
    }
 
-   return data;
+   return null;
 }
 
 const AdminInterface: React.FC = () => {
-    const [session, setSession] = useState<null | {username: string; roles: string[]}>(null);
-    const [data, setData] = useState<item[] | null>(null);
+    const [session, setSession] = useState<null | Session>(null);
+    const [data, setData] = useState<item[][] | null>(null);
     const [error, setError] = useState<Error | null>(null);
+    const [tryAgain, setTryAgain] = useState<boolean>(false);
 
     const [selectorItemData, setSelectorItemData] = useState<selectorItem[]>([]);
     const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
 
-    const [showDialog, setShowDialog] = useState<boolean>(false)
+    const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
     const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
 
-    const [companyData, setCompanyData] = useState<Company[]>([]);
+    const [companyData, setCompanyData] = useState<selectorItem[] | null>(null);
     const [updatedCompanyName, setUpdatedCompanyName] = useState('');
     const [officeLocation, setofficeLocation] =useState('');
 
     useEffect(() => {
         getSession()
-            .then((response) => {
+            .then( async (response) => {
                 setSession(response)
-                setCompanyData(getCompanies(response));
+                const companies = await getCompanies(response);
+
+                if( companies ) {
+                    setSelectorItemData(companies);
+                }
             });
     }, []);
 
     const updateSelectedCompany = (data: selectorItem) => {
         setSelectedCompany(data);
+
         Promise.all([
             //clients
             fetch(`http://localhost:8080/api/companies/${data.id}/clients`, {
@@ -112,24 +122,25 @@ const AdminInterface: React.FC = () => {
             .then(responses => Promise.all(responses.map(response => response.json())))
             .then(([clientsData, employeesData, officesData]) => {
                 const combinedData = [
-                    ...clientsData.map((client: Client) => ({ ...client, category: "clients" })),
-                    ...employeesData.map((employee: Employee) => ({ ...employee, category: "employees" })),
-                    ...officesData.map((office: Office) => ({ ...office, category: "offices" }))
+                    clientsData.map((client: Client) => ({ ...client, category: "clients" })),
+                    employeesData.map((employee: Employee) => ({ ...employee, category: "employees" })),
+                    officesData.map((office: Office) => ({ ...office, category: "offices" }))
                 ];
-                console.log(combinedData)
+                console.log("combinedData >>> ", combinedData)
                 setData(combinedData);
             })
             .catch(error => setError(error));
     }
-    const [createCompanyState, createCompanyAction] = useFormState(createCompany.bind(session), { message: "", errors: "" })
-
-    // useEffect(() => {
-    //     setShowDialog(false);
-    //     setSelectedCompany(null);
-    //     setCompanyData(getCompanies(session));
-    // }, [createCompanyState]);
 
     return <>
+        {error &&
+            <Notification status='error'>
+                <div className='flex flex-col justify-center items-center w-full'>
+                    <p>{error?.message}</p>
+                    <button className='base-btn-blue' onClick={() => setTryAgain(!tryAgain)}>Try again</button>
+                </div>
+            </Notification>
+        }
         <h3 className="flex justify-start w-full px-2 py-2">
             Welcome {session?.username || "user"}! You&apos;re logged in as admin.
         </h3>
@@ -146,7 +157,7 @@ const AdminInterface: React.FC = () => {
                     src={InfoIcon}
                     alt='Message'
                     className='cursor-pointer'
-                    onClick={() => setShowDialog(true)}
+                    onClick={() => setShowCompanyInfoDialog(true)}
                 />
             }
             <Button
@@ -159,124 +170,49 @@ const AdminInterface: React.FC = () => {
         {/* create company dialog  */}
         {showCreateDialog &&
             (<BaseDialog title="Create a company" tryClose={() => setShowCreateDialog(false)}>
-                <form
-                    action={createCompanyAction}
-                    className="flex items-center justify-center gap-x-3 pb-3"
-                >
-                    <label className="block text-gray-500" htmlFor='company_name'>Company name</label>
-                    <input
-                        type="text"
-                        id="company_name"
-                        className="input-info-dialog"
-                        name='company_name'
-                        placeholder="Speedy"
-                    />
-                    <br/>
-                    <div className='flex gap-x-2 px-5 py-3 text-gray-500'>
-                        <button
-                            type='submit'
-                            className="action_btn_green px-6 py-2"
-                        >
-                            Add
-                        </button>
-                    </div>
-                </form>
+                <CreateCompanyForm session={session} />
             </BaseDialog>)
         }
         {/* company info dialog */}
-        {showDialog && selectedCompany &&
+        {showCompanyInfoDialog && selectedCompany &&
             (
-                <BaseDialog title={ "Edit company " + selectedCompany.title + "'s information"} tryClose={() => setShowDialog(false)}>
-                    <div className="flex items-center  gap-x-2 pt-3 pb-4">
-                        <label className="block  text-gray-500">Delete this company:</label>
-                        <button
-                            className="action_btn_red px-12 py-1.5 "
-                            onClick={() => deleteCompany(selectedCompany.title,companyData, session )}
-                        >
-                            DELETE COMPANY
-                        </button>
-                    </div>
-                    <div className="flex items-center  gap-x-2 pb-4">
-                        <label className="block  text-gray-500">Change company name:</label>
-                        <input type="text" id="company_name_edit" className="input-info-dialog"
-                               onChange={(e) => setUpdatedCompanyName(e.target.value)}
-                               placeholder="Speedy "></input><br/>
-                        <div className='flex py-3 text-gray-500'>
-                            <button
-                                className="action_btn_green px-6 py-2"
-                                onClick={() => editCompany(selectedCompany.title,updatedCompanyName, companyData, session )}
-
-                            >
-                                Edit
-                            </button>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-x-2 pb-4">
-                        <label className="block  text-gray-500">Add a new office location:</label>
-                        <input type="text" id="office_location" className="input-info-dialog"
-                               onChange={(e) => setofficeLocation(e.target.value)}
-                               placeholder="Sofia"></input>
-                        <div className='flex py-3 text-gray-500'>
-                            <button
-                                className="action_btn_blue px-3 py-1.5"
-                                onClick={() => addOffice(selectedCompany.title,officeLocation, companyData, session )}
-                            >
-                                Add
-                            </button>
-                        </div>
-                    </div>
-
-
+                <BaseDialog
+                    title={ "Edit company " + selectedCompany.title + "'s information"}
+                    tryClose={() => setShowCompanyInfoDialog(false)}
+                >
+                    <ShowCompanyInfo />
                 </BaseDialog>
             )
         }
+        {/*TODO: Split clients and employees into separate tables instead of mapping them twice */}
+        {/*/!* clients + employees + offices *!/*/}
+        {data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 &&
+            data
+                .filter((individualData: item[]) => individualData.length > 0)
+                .map((individualData: item[], index: number) => (
+                <Table
+                    key={index}
+                    columns={Object.keys(individualData[0]).map((key, index) => ({ title: key, code: key, id: index + 1}))}
+                    categories={[{
+                        title: "Data",
+                        code: "data",
+                        id: 1,
+                    }]}
+                    session={session}
+                    data=
+                        {
+                            individualData
+                                .map(item => {
+                                    const companyId = item?.companyId as { id: number; name: string; };
 
-        {/*/!* clients + employees *!/*/}
-        {data && selectedCompany && Object.keys(selectedCompany).length > 0 &&
-            <Table
-                columns={tableColumns}
-                categories={categories}
-                data={data.map((item) => {
-                    if (item?.firstName !== undefined && item?.lastName !== undefined && item?.username === undefined) {
-                        return {
-                            ...item,
-                            category: "clients",
-                        } as item;
-                    } else if (item?.username !== undefined && item?.address === undefined) {
-                        return {
-                            ...item,
-                            category: "employees",
-                        } as item;
-                    }
-                    return item as item;
-                }) as item[]
-                }
-
-            />
-        }
-
-        {/*offices */}
-        {data && selectedCompany && Object.keys(selectedCompany).length > 0 &&
-            <Table
-                columns={officeColumns}
-                categories={officeCategories}
-                data={data
-                    .filter(item => item?.address !== undefined )
-                    .map((item) => {
-                        const companyId = item.companyId as any;end
-
-                        if (companyId?.name === selectedCompany.title) {
-                            return {
-                                ...item,
-                                category: "offices",
-                                name: companyId?.name,
-                            } as item;
+                                    return {
+                                        ...item,
+                                        category: "data",
+                                    };
+                                })
                         }
-                        return null;
-                    })
-                    .filter(Boolean) as item[]
-                }
-            />
+                />
+            ))
         }
     </>;
 }

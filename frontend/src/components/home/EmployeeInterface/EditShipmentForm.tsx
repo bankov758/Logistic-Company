@@ -1,9 +1,8 @@
 "use client";
 
-import React, {useState} from "react";
+import React from "react";
 import {item} from "@/components/home/Table";
 import RadioButton from "@/components/UI/RadioButton";
-import useInput from "@/hooks/useInput";
 
 // Example usage:
 const options = [
