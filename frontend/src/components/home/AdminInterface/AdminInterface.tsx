@@ -13,6 +13,7 @@ import InfoIcon from '../../../../public/icons/info.svg';
 import {Company, deleteCompany, editCompany, createCompany, addOffice} from "@/lib/adminActions"
 
 import {
+    adminColumns,
     categories,
     officeCategories,
     officeColumns,
@@ -188,11 +189,11 @@ const AdminInterface: React.FC = () => {
         {/*/!* clients + employees + offices *!/*/}
         {data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 &&
             data
-                .filter((individualData: item[]) => individualData.length > 0)
+                // .filter((individualData: item[]) => individualData.length > 0)
                 .map((individualData: item[], index: number) => (
                 <Table
                     key={index}
-                    columns={Object.keys(individualData[0]).map((key, index) => ({ title: key, code: key, id: index + 1}))}
+                    columns={adminColumns[index]}
                     categories={[{
                         title: "Data",
                         code: "data",
