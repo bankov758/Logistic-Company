@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { categories, tableColumns } from "@/data/employee/ordersTableData";
-import { getSession } from "@/lib/auth";
+import {getSession, Session} from "@/lib/auth";
 
 import FilterOrders from "./FilterOrders";
 import Table, { item } from "../Table";
@@ -13,7 +13,7 @@ import CreateAnOrderForm from "@/components/home/EmployeeInterface/CreateAnOrder
 const EmployeeInterface: React.FC = () => {
     const [showCreateOrderDialog, setShowCreateOrderDialog] = useState<boolean>(false)
     
-    const [session, setSession] = useState<null | {username: string; roles: string[]}>();
+    const [session, setSession] = useState<null | Session>(null);
     const [data, setData] = useState<item[] | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [tryAgain, setTryAgain] = useState<boolean>(false);
@@ -62,6 +62,7 @@ const EmployeeInterface: React.FC = () => {
                 <Table
                     columns={tableColumns}
                     categories={categories}
+                    session={session}
                     data={data.map((item) => {
                            return {
                                ...item,

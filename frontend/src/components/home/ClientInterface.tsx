@@ -53,6 +53,7 @@ const ClientInterface: React.FC = () => {
                 <Table
                     columns={tableColumns}
                     categories={categories}
+                    session={session}
                     data={
                         data
                             .filter((item) => item.sender === session?.username || item.receiver === session?.username)
