@@ -56,19 +56,16 @@ const EmployeeInterface: React.FC = () => {
                     <CreateAnOrderForm />
                 </BaseDialog>)
             }
-            {/*TODO: Filter logic assigned to Antoan */}
             <FilterOrders />
             {data &&
                 <Table
                     columns={tableColumns}
                     categories={categories}
                     session={session}
-                    data={data.map((item) => {
-                           return {
-                               ...item,
-                               category: "registered"
-                           }
-                    })}
+                    data={data.map((item) => ({
+                           ...item,
+                           category: "registered"
+                    }))}
                 />
             }
         </>
