@@ -144,7 +144,7 @@ const Table: React.FC<TableProps> = ({
 
                                                             return (
                                                                 <EmployeeInterfaceActionsButtons
-                                                                    id={column.id}
+                                                                    key={column.id}
                                                                     onClick={() => handleAction(rowItem, "editShipment")}
                                                                 />
                                                             )

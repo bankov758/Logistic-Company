@@ -137,7 +137,6 @@ const AdminInterface: React.FC = () => {
                     employeesData,
                     officesData
                 ];
-                console.log("combinedData >>> ", combinedData)
                 setData(combinedData);
             })
             .catch(error => setError(error));
