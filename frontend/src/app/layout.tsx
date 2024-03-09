@@ -3,10 +3,6 @@ import type {Metadata} from "next";
 import {Source_Sans_3} from "next/font/google";
 import "@/styles/globals.css";
 
-import TheHeader from "@/components/layout/TheHeader";
-import {getSession} from "@/lib/auth";
-import {redirect} from "next/navigation";
-
 const source_sans_3 = Source_Sans_3({
     weight: ["400", "600", "700"],
     style: "normal",
@@ -35,11 +31,9 @@ export default async function RootLayout({
 			<body className="min-w-[360px] w-full min-h-screen flex flex-col text-main text-base">
 				<div id="overlay"/>
 				<div id="backdrop"/>
-				<TheHeader/>
 				<main className="container flex flex-col flex-grow justify-start items-center">
 					{children}
 				</main>
-				{/*<Footer />*/}
 			</body>
         </html>
     );
