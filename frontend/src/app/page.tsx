@@ -45,11 +45,11 @@ const Home: React.FC = () => {
         <Fragment>
             {	session && showDialog &&
                 <BaseDialog title="Choose an administrative role">
-                    <td className="flex gap-x-3 justify-center items-center">
+                    <div className="flex gap-x-3 justify-center items-center">
                         <button className="base-btn-blue" onClick={() => selectInterface('user')}>User</button>
                         <button className="base-btn-blue" onClick={() => selectInterface('employee')}>Employee</button>
                         {session.roles.includes("ADMIN") && <button className="base-btn-blue" onClick={() => selectInterface("admin")}>Admin</button>}
-                    </td>
+                    </div>
                 </BaseDialog>
             }
             {

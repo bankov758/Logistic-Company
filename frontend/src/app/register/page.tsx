@@ -2,7 +2,7 @@
 import React, {Fragment, useEffect} from "react";
 import { useFormState } from "react-dom";
 import Link from "next/link";
-import {redirect} from "next/navigation";
+import {useRouter} from "next/navigation";
 
 import {register} from "@/lib/actions";
 
@@ -11,10 +11,11 @@ import SubmitButton from "@/components/UI/SubmitButton";
 
 const RegistrationPage = () => {
     const [registerState, registerAction] = useFormState(register, { message: null, errors: '' })
+    const router = useRouter();
 
     useEffect(() => {
         if(registerState.message?.username) {
-            redirect("/");
+            router.push("/", { scroll: false });
         }
     }, [registerState]);
 

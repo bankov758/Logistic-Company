@@ -4,7 +4,7 @@ import Notification from "@/components/UI/Notification";
 import {useFormState} from "react-dom";
 import Link from "next/link";
 
-import {redirect} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {login} from "@/lib/actions";
 import {ZodError} from "zod";
 import SubmitButton from "@/components/UI/SubmitButton";
@@ -15,11 +15,12 @@ type FormState = {
 }
 
 const LoginPage: React.FC = () => {
-    const [loginState, loginAction] = useFormState(login, {message: null, errors: ''})
+    const [loginState, loginAction] = useFormState(login, {message: null, errors: ''});
+    const router = useRouter();
 
     useEffect(() => {
         if (loginState.message?.username) {
-            redirect("/");
+            router.push("/", { scroll: false });
         }
     }, [loginState]);
 
