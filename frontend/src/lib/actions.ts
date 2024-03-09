@@ -147,3 +147,71 @@ export const register = async (initialState: any, formData: FormData) => {
 		};
 	}
 }
+
+export const createAnOrder = async (initialState: any, formData: FormData) => {
+	const username = formData.get('username') as string;
+	const firstName = formData.get('firstName') as string;
+	const lastName = formData.get('lastName') as string;
+	const password = formData.get('password')! as string;
+	const confirmPassword = formData.get('confirmPassword')! as string;
+
+	const fields = {
+		username,
+		firstName,
+		lastName,
+		password,
+		confirmPassword
+	}
+
+	if( password.trim() !== confirmPassword.trim() ) {
+		return {
+			message: '',
+			errors: "Passwords do not match!"
+		}
+	}
+
+	const validateSchema = registerSchema.safeParse(fields);
+
+	if (!validateSchema.success ) {
+		return {
+			message: "",
+			errors: validateSchema.error.issues
+		}
+	}
+
+	try {
+		const response = await fetch('http://localhost:8080/api/auth/signup', {
+			method: "POST",
+			body: JSON.stringify(fields),
+			headers: {
+				'Content-Type': "application/json",
+				Accept: "*/*"
+			}
+		})
+
+		if( !response.ok ) {
+			throw new Error("Something happened! Registration process was unsuccessful!")
+		}
+
+		const data = await response.json();
+		await signIn(data.username, data.roles);
+
+		return {
+			errors: '',
+			message: data
+		}
+
+	} catch ( error ) {
+		if( error instanceof Error ) {
+			return {
+				errors: error.message || "Something went wrong!",
+				message: ""
+			};
+		}
+
+		return {
+			errors: "Something went wrong!",
+			message: ""
+		};
+	}
+}
