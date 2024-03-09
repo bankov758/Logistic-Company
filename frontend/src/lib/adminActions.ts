@@ -1,5 +1,6 @@
 "use server";
-import { getSession } from "@/lib/auth";
+import {getSession, Session} from "@/lib/auth";
+import {FormState} from "@/lib/actions";
 
 export interface Company {
     id: number;
@@ -7,9 +8,9 @@ export interface Company {
     income: number;
 }
 export const createCompany = async (
-    initialState: { message: string; errors: [] | string; },
+    session: Session | null,
+    initialState: FormState,
     formData: FormData,
-    session: { username: string; roles: string[]; } | null | undefined
 ) => {
     const newCompanyName = formData.get("company_name") as string;
 

@@ -9,21 +9,6 @@ const CreateAnOrderForm: React.FC = () => {
     
     return (
         <>
-            {createAnOrderState.errors && typeof createAnOrderState.errors === 'string' &&
-                <Notification status='error'>
-                    {createAnOrderState.errors}
-                </Notification>
-            }
-            {createAnOrderState.errors && typeof createAnOrderState.errors === 'object' &&
-                <Notification status='error'>
-                    {
-                        createAnOrderState.errors
-                            .map((error, index) =>
-                                <p key={index}>{error.message}</p>
-                            )
-                    }
-                </Notification>
-            }
             <h3 className="flex justify-center">Create a new order:</h3>
             <br/>
             {/*TODO:
@@ -66,7 +51,7 @@ const CreateAnOrderForm: React.FC = () => {
                     <input type="text" id="employee" className="input-info-dialog" placeholder="John Doe "></input><br/>
                 </div>
                 <div className='flex justify-center py-3 text-gray-500'>
-                    <SubmitButton/>
+                    <SubmitButton formState={createAnOrderState}/>
                 </div>
             </form>
         </>
