@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -31,13 +32,13 @@ public class OfficeEmployeeController {
     private final AuthenticationHelper authenticationHelper;
     private final OfficeEmployeeMapper officeEmployeeMapper;
     private final ShipmentMapper shipmentMapper;
-
-
     private final ShipmentService shipmentService;
 
     public OfficeEmployeeController(OfficeEmployeeService officeEmployeeService,
                                     AuthenticationHelper authenticationHelper,
-                                    OfficeEmployeeMapper officeEmployeeMapper, ShipmentMapper shipmentMapper, ShipmentService shipmentService) {
+                                    OfficeEmployeeMapper officeEmployeeMapper,
+                                    ShipmentMapper shipmentMapper,
+                                    ShipmentService shipmentService) {
         this.officeEmployeeService = officeEmployeeService;
         this.authenticationHelper = authenticationHelper;
         this.officeEmployeeMapper = officeEmployeeMapper;
@@ -54,20 +55,23 @@ public class OfficeEmployeeController {
                 .collect(Collectors.toList());
     }
 
-
     @GetMapping("/{id}")
     public OfficeEmployeeOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
         return officeEmployeeMapper.ObjectToDto(officeEmployeeService.getById(id));
     }
 
+    @GetMapping("/currently-logged/company-id")
+    public int getCompanyId(HttpSession session) {
+        User loggedUser = authenticationHelper.tryGetUser(session);
+        return officeEmployeeService.getCompany(loggedUser.getId()).getId();
+    }
+
     @GetMapping("/{id}/shipments")
     public ShipmentOutDto getByEmployeeId(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         authenticationHelper.tryGetUser(headers);
         return shipmentMapper.ObjectToDto(shipmentService.getById(id));
-
     }
-
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody OfficeEmployeeRegisterDto officeEmployeeRegisterDto,

@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.services;
 
+import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
@@ -25,6 +26,11 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     @Override
     public List<OfficeEmployee> getAll(Optional<String> search) {
         return officeEmployeeRepository.getAll();
+    }
+
+    @Override
+    public Company getCompany(int officeEmployeeId) {
+        return officeEmployeeRepository.getCompany(officeEmployeeId);
     }
 
     @Override
