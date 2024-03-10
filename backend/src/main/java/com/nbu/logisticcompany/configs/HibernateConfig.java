@@ -46,6 +46,8 @@ public class HibernateConfig {
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        hibernateProperties.setProperty("org.hibernate.boot.model.naming",
+                "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
         return hibernateProperties;
     }
 

@@ -9,6 +9,7 @@ import java.util.Objects;
 @SqlResultSetMapping(name = CompanyOutDto.RESULT_SET_MAPPING_NAME,
         classes = {@ConstructorResult(targetClass = CompanyOutDto.class,
         columns = {@ColumnResult(name = "id"), @ColumnResult(name = "name"), @ColumnResult(name = "income")})})
+@Table(name = "company")
 public class Company {
 
     @Id

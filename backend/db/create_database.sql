@@ -225,10 +225,12 @@ CREATE TABLE IF NOT EXISTS `logistic_company`.`tariff`
 -- -----------------------------------------------------
 -- Table `logistic_company`.`user_roles`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`user_roles`
+CREATE TABLE IF NOT EXISTS `logistic_company`.`User_roles`
 (
+    `id`      INT         NOT NULL AUTO_INCREMENT,
     `user_id` INT         NOT NULL,
     `roles`   VARCHAR(45) NULL,
+    PRIMARY KEY (`id`),
     INDEX `fk_user_roles_user1_idx` (`user_id` ASC) VISIBLE,
     CONSTRAINT `fk_user_roles_user1`
         FOREIGN KEY (`user_id`)
