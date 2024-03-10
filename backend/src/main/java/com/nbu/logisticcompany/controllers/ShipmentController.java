@@ -43,9 +43,14 @@ public class ShipmentController {
 
     @GetMapping
     public List<ShipmentOutDto> getAll(HttpSession session,
-                                       @RequestParam(required = false) Optional<String> search) {
+                                       @RequestParam(required = false) Integer senderId,
+                                       @RequestParam(required = false) Integer receiverId,
+                                       @RequestParam(required = false) Integer employeeId,
+                                       @RequestParam(required = false) String status) {
         authenticationHelper.tryGetUser(session);
-        return shipmentService.getAll().stream()
+        return shipmentService.filter(Optional.ofNullable(senderId), Optional.ofNullable(receiverId),
+                        Optional.ofNullable(employeeId), Optional.ofNullable(status))
+                .stream()
                 .map(shipmentMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }

@@ -81,6 +81,12 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
+    public List<Shipment> filter(Optional<Integer> senderId, Optional<Integer> receiverId,
+                                 Optional<Integer> employeeId, Optional<String> shipmentStatus) {
+        return shipmentRepository.filter(senderId, receiverId, employeeId, shipmentStatus);
+    }
+
+    @Override
     public void create(Shipment shipment, User creator) {
         validationUtil.authorizeOfficeEmployeeAction(shipment.getCompany().getId(), creator, Shipment.class);
         validateCompany(shipment);

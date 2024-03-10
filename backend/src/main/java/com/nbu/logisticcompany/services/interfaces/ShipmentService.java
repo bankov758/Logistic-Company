@@ -5,6 +5,7 @@ import com.nbu.logisticcompany.entities.User;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface ShipmentService {
 
@@ -26,7 +27,10 @@ public interface ShipmentService {
 
     List<Shipment> getByCompanyId(int companyId);
 
-    List<Shipment> getAll() ;
+    List<Shipment> getAll();
+
+    List<Shipment> filter(Optional<Integer> senderId, Optional<Integer> receiverId,
+                          Optional<Integer> employeeId, Optional<String> shipmentStatus);
 
     void create(Shipment shipment, User creator) throws IOException;
 
