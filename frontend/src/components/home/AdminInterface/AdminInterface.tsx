@@ -190,7 +190,7 @@ const AdminInterface: React.FC = () => {
                     title={ "Edit company " + selectedCompany.title + "'s information"}
                     tryClose={() => setShowCompanyInfoDialog(false)}
                 >
-                    <ShowCompanyInfo />
+                    <ShowCompanyInfo session={session} companyData={companies} selectedCompany={selectedCompany.title}/>
                 </BaseDialog>
             )
         }

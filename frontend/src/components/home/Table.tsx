@@ -1,13 +1,16 @@
 "use client";
 import React, {Fragment, useState} from "react";
 import {getSession, Session} from "@/lib/auth";
-import {deleteEmployee, deleteOffice} from "@/lib/adminActions";
+import {deleteEmployee, deleteOffice, demoteEmployee, promoteUser} from "@/lib/adminActions";
 
 import BaseDialog from "@/components/UI/BaseDialog";
 import EditShipmentForm from "@/components/home/EmployeeInterface/EditShipmentForm";
 import EditOfficeForm from "@/components/home/AdminInterface/EditOfficeForm";
 import AddRoleForm from "@/components/home/AdminInterface/AddRoleForm";
 import EmployeeInterfaceActionsButtons from "@/components/home/EmployeeInterface/EmployeeInterfaceActionsButtons";
+import AdminInterfaceUserActionsButtons from "@/components/home/AdminInterface/AdminInterfaceUserActionButtons";
+import AdminInterfaceEmployeeActionsButtons from "@/components/home/AdminInterface/AdminInterfaceEmployeeActionButtons";
+import AdminInterfaceOfficeActionButtons from "@/components/home/AdminInterface/AdminInterfaceOfficeActionButtons";
 
 export type column = {
     title: string;
@@ -27,7 +30,7 @@ export type item = Record<string, any> & {
     category: string;
 };
 
-type ActionType = "demoteEmployee" | "promoteUser" | "deleteUser" | "deleteEmployee" | "deleteOffice" | "editShipment" | "editOffice" | "addRole";
+export type ActionType = "demoteEmployee" | "promoteUser" | "deleteUser" | "deleteEmployee" | "deleteOffice" | "editShipment" | "editOffice" | "addRole" | "deleteShipment";
 
 type TableProps = {
     columns: column[];
@@ -47,29 +50,35 @@ const Table: React.FC<TableProps> = ({
 
     const [editShipment, setEditShipment] = useState<boolean>(false);
     const [editOffice, setEditOffice] = useState<boolean>(false);
-    const [addRole, setAddRole] = useState<boolean>(false);
+    const [actionType, setActionType] = useState<ActionType | null>(null);
 
-    const handleAction = async (item: item, type: ActionType) => {
-        // TODO: turn into switch() and setShowDialog conditionally
-        if (type === "deleteOffice") {
-            await deleteOffice(item, session);
-        } else if (type === "deleteEmployee") {
-            await deleteEmployee(item, session);
-        } else if (type === "deleteUser") {
-            await deleteEmployee(item, session);
-        } else if (type === "promoteUser") {
-            await deleteEmployee(item, session);
-        } else if (type === "demoteEmployee") {
-            await deleteEmployee(item, session);
-        } else if (type === "editShipment") {
-            setEditShipment(true);
-        } else if (type === "editOffice") {
-            setEditOffice(true);
-        } else if (type === "addRole") {
-            setAddRole(true);
+    const [addRole, setAddRole] = useState<boolean>(false);
+    const handleAction = async (item: item, type: ActionType | null) => {
+        // TODO: there is no delete user query to refer to => possible solution : ask backend || remove delete user button
+        setActionType(type);
+        switch (type) {
+            case "deleteOffice": await deleteOffice(item, session); break;
+           // case "deleteUser": await deleteEmployee(item, session); break;
+            case "deleteEmployee": await deleteEmployee(item, session); break;
+            case "promoteUser": await promoteUser(item, session); break;
+            case "demoteEmployee": await demoteEmployee(item, session); break
+            case "editOffice":
+                setEditOffice(true);
+                setSelectedItem(item);
+                setShowDialog(true);
+                break;
+            case "editShipment":
+                setEditShipment(true);
+                setSelectedItem(item);
+                setShowDialog(true);
+                break;
+            case "addRole":
+                setAddRole(true);
+                setSelectedItem(item);
+                setShowDialog(true);
+                break;
+            default: break;
         }
-        setSelectedItem(item);
-        setShowDialog(true);
     };
 
 
@@ -145,7 +154,7 @@ const Table: React.FC<TableProps> = ({
                                                             return (
                                                                 <EmployeeInterfaceActionsButtons
                                                                     key={column.id}
-                                                                    onClick={() => handleAction(rowItem, "editShipment")}
+                                                                    onClick={() => handleAction(rowItem, actionType)}
                                                                 />
                                                             )
 
@@ -154,76 +163,24 @@ const Table: React.FC<TableProps> = ({
                                                             if (category.code === 'clients') {
 
                                                                 return (
-                                                                    // TODO: turn this into a separate component located at the AdminInterface folder
-                                                                    <td key={column.id}
-                                                                        className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
-                                                                        <button
-                                                                            className="action_btn_red"
-                                                                            onClick={() => handleAction(rowItem, "deleteUser")}
-
-                                                                        >
-                                                                            Delete
-                                                                        </button>
-
-                                                                        <button
-                                                                            className="action_btn_green"
-                                                                            onClick={() => handleAction(rowItem, "promoteUser")}
-
-                                                                        >
-                                                                            Promote
-                                                                        </button>
-                                                                    </td>
+                                                                    <AdminInterfaceUserActionsButtons
+                                                                        key={column.id}
+                                                                        onClick={() => handleAction(rowItem, actionType)}
+                                                                    />
                                                                 )
                                                             } else if (category.code === "employees") {
                                                                 return (
-                                                                    // TODO: turn this into a separate component located at the AdminInterface folder
-                                                                    <td key={column.id}
-                                                                        className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
-                                                                        <button
-                                                                            className="action_btn_red"
-                                                                            onClick={() => handleAction(rowItem, "deleteEmployee")}
-
-                                                                        >
-                                                                            Delete
-                                                                        </button>
-                                                                        <button
-                                                                            className="action_btn_blue"
-                                                                            onClick={() => handleAction(rowItem, "demoteEmployee")}
-
-                                                                        >
-                                                                            Demote
-                                                                        </button>
-                                                                        <button
-                                                                            className="action_btn_green"
-                                                                            onClick={() => handleAction(rowItem, "addRole")}
-
-                                                                        >
-                                                                            Add role
-                                                                        </button>
-                                                                    </td>
+                                                                    <AdminInterfaceEmployeeActionsButtons
+                                                                        key={column.id}
+                                                                        onClick={() => handleAction(rowItem, actionType)}                                                                    />
                                                                 )
                                                             } else if (category.code === "offices") {
-                                                                return (
-                                                                    // TODO: turn this into a separate component located at the AdminInterface folder
-                                                                    <td key={column.id}
-                                                                        className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
-                                                                        <button
-                                                                            className="action_btn_red"
-                                                                            onClick={() => handleAction(rowItem, "deleteOffice")}
-                                                                        >
-                                                                            Delete
-                                                                        </button>
-
-                                                                        <button
-                                                                            className="action_btn_blue"
-                                                                            onClick={() => handleAction(rowItem, "editOffice")}
-                                                                        >
-                                                                            Edit
-                                                                        </button>
-
-
-                                                                    </td>
-                                                                )
+                                                               return (
+                                                                   <AdminInterfaceOfficeActionButtons
+                                                                       key={column.id}
+                                                                       onClick={() => handleAction(rowItem, actionType)}
+                                                                   />
+                                                               )
                                                             }
                                                         }
                                                     }

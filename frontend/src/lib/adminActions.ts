@@ -1,12 +1,8 @@
 "use server";
 import {getSession, Session} from "@/lib/auth";
 import {FormState} from "@/lib/actions";
+import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 
-export interface Company {
-    id: number;
-    name: string;
-    income: number;
-}
 export const createCompany = async (
     session: Session | null,
     initialState: FormState,
@@ -58,8 +54,8 @@ export const createCompany = async (
 };
 
 export const deleteCompany = async (
-    companyName: string,
-    companyData: Company[] ,
+    companyName: string | undefined,
+    companyData: selectorItem[] ,
     session: { username: string; roles: string[]; } | null | undefined
 ) => {
 
@@ -96,18 +92,19 @@ export const deleteCompany = async (
         };
     }
 }
-export const getCompanyId = (companyName: string, companyData: Company[]) => {
-    const foundCompany = companyData.find(company => company.name === companyName);
+export const getCompanyId = (companyName: string | undefined, companyData: selectorItem[]) => {
+    const foundCompany = companyData.find(company => company.title === companyName);
     if (foundCompany) {
         return foundCompany.id;
     }
 
     return null;
 }
+
 export const editCompany = async (
-    companyName: string,
+    companyName: string | undefined,
     updatedCompanyName: string,
-    companyData: Company[] , session: { username: string; roles: string[]; } | null | undefined
+    companyData: selectorItem[] , session: { username: string; roles: string[]; } | null | undefined
 ) => {
 
     const companyId = getCompanyId(companyName, companyData);
@@ -150,9 +147,9 @@ export const editCompany = async (
 }
 
 export const addOffice = async (
-    companyName: string,
+    companyName: string | undefined,
     officeName: string,
-    companyData: Company[] ,
+    companyData: selectorItem[] ,
     session: { username: string; roles: string[]; } | null | undefined
 ) => {
 

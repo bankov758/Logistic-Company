@@ -1,54 +1,129 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {getSession, Session} from "@/lib/auth";
 import {useFormState} from "react-dom";
-import Notification from "@/components/UI/Notification";
-import {createAnOrder} from "@/lib/actions";
+import {createAnOrder, FormState, getCompanies, getCouriers, getUserId, getUsers} from "@/lib/actions";
+import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import SubmitButton from "@/components/UI/SubmitButton";
 
 const CreateAnOrderForm: React.FC = () => {
-    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder, {message: null, errors: ''})
-    
+
+    const [session, setSession] = useState<null | Session>(null);
+    const [error, setError] = useState<Error | null | string>(null);
+
+    const [companies, setCompanies] = useState<selectorItem[]>([]);
+    const [couriers, setCouriers] = useState<selectorItem[]>([]);
+    const [users, setUsers] = useState<selectorItem[]>([]);
+    const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
+    const [selectedCourier, setSelectedCourier] = useState<selectorItem | null> (null);
+    const [selectedSender, setSelectedSender] = useState<selectorItem | null>(null);
+    const [selectedReceiver, setSelectedReceiver] = useState<selectorItem | null>(null);
+
+
+
+    useEffect(() => {
+        getSession()
+            .then( async (response) => {
+                setSession(response)
+                try {
+                    const companies = await getCompanies(response);
+                    const users = await getUsers(response);
+                    const couriers = await getCouriers(response);
+                    if( companies ) {
+                        setCompanies(companies);
+                    } else {
+                        setError("Something went wrong when requesting companies!")
+                    }
+                    if( users ) {
+                        setUsers(users);
+                    }else {
+                        setError("Something went wrong when requesting users!")
+                    }
+                    if( couriers ) {
+                        setCouriers(couriers);
+                    }else {
+                        setError("Something went wrong when requesting users!")
+                    }
+                } catch (err) {
+                    if( err instanceof Error ) {
+                        setError(err)
+                    }
+                }
+            });
+    }, []);
+
+
+    function handleSelect(data:selectorItem, targetState:string) {
+        switch (targetState) {
+            case 'sender' : setSelectedSender(data); break;
+            case 'receiver' : setSelectedReceiver(data); break;
+            case 'courier' :  setSelectedCourier(data); break;
+            case 'company' : setSelectedCompany(data); break;
+            default: break;
+        }
+    }
+    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,session, selectedSender?.id, selectedReceiver?.id, selectedCourier?.id, selectedCompany?.id, users), {message: null, errors: ''})
+
     return (
         <>
             <h3 className="flex justify-center">Create a new order:</h3>
             <br/>
-            {/*TODO:
-                1. add htmlFor attribute to the <label>
-                2. bind the htmlFor attribute to the corresponding input id
-                3. add name attribute to the <input>
-                4. create the actual createAnOrderAction action logic inside actions.ts including Zod validation schema
-            */}
             <form action={createAnOrderAction}>
                 <div className="order-div">
-                    <label className="block text-gray-500">Sender:</label>
-                    <input type="text" id="sender" className="input-info-dialog" placeholder="John Doe "></input><br/>
+                    <label htmlFor="sender" className="block text-gray-500">Sender:</label>
+                    <DataSelectorWrapper
+                        hasInitialPlaceholderValue
+                        placeholderValue={selectedSender && Object.keys(selectedSender).length > 0 ? selectedSender.title : "Select user"}
+                        selectorData={users}
+                        onResubForNewData={(data) => handleSelect(data, 'sender')}
+                    />
                 </div>
                 <div className="order-div">
-                    <label className="block text-gray-500">Receiver:</label>
-                    <input type="text" id="reveiver" className="input-info-dialog" placeholder="Jane Doe "></input><br/>
+                    <label htmlFor="receiver" className="block text-gray-500">Receiver:</label>
+                    <DataSelectorWrapper
+                        hasInitialPlaceholderValue
+                        placeholderValue={selectedReceiver && Object.keys(selectedReceiver).length > 0 ? selectedReceiver.title : "Select user"}
+                        selectorData={users}
+                        onResubForNewData={(data) => handleSelect(data, 'receiver')}
+                    />
                 </div>
                 <div className="order-div">
-                    <label className="block  text-gray-500">Departure location:</label>
-                    <input type="text" id="departure_place" className="input-info-dialog"
+                    <label htmlFor="departure_place" className="block  text-gray-500">Departure location:</label>
+                    <input type="text" id="departure_place" name="departureAddress" className="input-info-dialog"
                            placeholder="Sofia "></input><br/>
                 </div>
                 <div className="order-div">
-                    <label className="block  text-gray-500">Arrival location:</label>
-                    <input type="text" id="arrival_location" className="input-info-dialog"
+                    <label htmlFor="arrival_location" className="block  text-gray-500">Arrival location:</label>
+                    <input type="text" id="arrival_location" name="arrivalAddress" className="input-info-dialog"
                            placeholder="Varna "></input><br/>
                 </div>
                 <div className="order-div">
-                    <label className="block  text-gray-500">Date:</label>
-                    <input type="date" id="date"
+                    <label htmlFor="weight" className="block  text-gray-500">Weight (in kg.):</label>
+                    <input type="text" id="weight" name="weight" className="input-info-dialog"
+                           placeholder="40 "></input><br/>
+                </div>
+                <div className="order-div">
+                    <label htmlFor="date" className="block text-gray-500">Date:</label>
+                    <input type="date" id="date" name="sentDate"
                            className="block text-gray-500 rounded-xl border-2 py-1.5  focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line"
                            placeholder="DD:MM:YYYY"></input><br/>
                 </div>
                 <div className="order-div">
-                    <label className="block  text-gray-500">Weight (in kg.):</label>
-                    <input type="text" id="weight" className="input-info-dialog" placeholder="40 "></input><br/>
+                    <label htmlFor="courier" className="block  text-gray-500">Courier:</label>
+                    <DataSelectorWrapper
+                        hasInitialPlaceholderValue
+                        placeholderValue={selectedCourier && Object.keys(selectedCourier).length > 0 ? selectedCourier.title : "Select courier"}
+                        selectorData={couriers}
+                        onResubForNewData={(data) => handleSelect(data, 'courier')}
+                    />
                 </div>
                 <div className="order-div">
-                    <label className="block  text-gray-500">Employee:</label>
-                    <input type="text" id="employee" className="input-info-dialog" placeholder="John Doe "></input><br/>
+                    <label htmlFor="company" className="block  text-gray-500">Company:</label>
+                    <DataSelectorWrapper
+                        hasInitialPlaceholderValue
+                        placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select company"}
+                        selectorData={companies}
+                        onResubForNewData={(data) => handleSelect(data, 'company')}
+                    />
                 </div>
                 <div className='flex justify-center py-3 text-gray-500'>
                     <SubmitButton formState={createAnOrderState}/>
