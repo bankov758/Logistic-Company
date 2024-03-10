@@ -71,6 +71,11 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
+    public List<Shipment> getByCompanyId(int companyId) {
+        return shipmentRepository.getByCompanyId(companyId);
+    }
+
+    @Override
     public List<Shipment> getAll() {
         return shipmentRepository.getAll();
     }

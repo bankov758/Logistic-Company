@@ -8,6 +8,7 @@ import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentUpdateDto;
 import com.nbu.logisticcompany.mappers.ShipmentMapper;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
+import com.nbu.logisticcompany.services.interfaces.UserService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +31,14 @@ public class ShipmentController {
     private final ShipmentService shipmentService;
     private final AuthenticationHelper authenticationHelper;
     private final ShipmentMapper shipmentMapper;
+    private final UserService userService;
 
     public ShipmentController(ShipmentService shipmentService, AuthenticationHelper authenticationHelper,
-                              ShipmentMapper shipmentMapper) {
+                              ShipmentMapper shipmentMapper, UserService userService) {
         this.shipmentService = shipmentService;
         this.authenticationHelper = authenticationHelper;
         this.shipmentMapper = shipmentMapper;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -57,6 +60,15 @@ public class ShipmentController {
     public List<ShipmentOutDto> getBySenderOrReceiver(HttpSession session) {
         User loggedUser = authenticationHelper.tryGetUser(session);
         return shipmentService.getBySenderOrReceiver(loggedUser.getId()).stream()
+                .map(shipmentMapper::ObjectToDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/logged-company")
+    public List<ShipmentOutDto> getByCompany(HttpSession session) {
+        User loggedUser = authenticationHelper.tryGetUser(session);
+        int companyId = userService.getEmployeeCompany(loggedUser.getId()).getId();
+        return shipmentService.getByCompanyId(companyId).stream()
                 .map(shipmentMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }

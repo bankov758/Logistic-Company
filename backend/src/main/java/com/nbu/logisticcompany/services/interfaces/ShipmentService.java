@@ -24,6 +24,8 @@ public interface ShipmentService {
 
     List<Shipment> getBySenderOrReceiver(int userId);
 
+    List<Shipment> getByCompanyId(int companyId);
+
     List<Shipment> getAll() ;
 
     void create(Shipment shipment, User creator) throws IOException;

@@ -16,4 +16,6 @@ public interface ShipmentRepository extends BaseCRUDRepository<Shipment> {
 
     List<Shipment> getBySenderOrReceiver(int userId);
 
+    List<Shipment> getByCompanyId(int companyId);
+
 }

@@ -72,4 +72,13 @@ public class ShipmentRepositoryImpl extends AbstractRepository<Shipment> impleme
         }
     }
 
+    @Override
+    public List<Shipment> getByCompanyId(int companyId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session
+                    .createQuery(" from Shipment shipment where company.id = :companyId ", Shipment.class)
+                    .setParameter("companyId", companyId).getResultList();
+        }
+    }
+
 }
