@@ -1,7 +1,6 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Shipment;
-import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
 import org.hibernate.Session;
@@ -58,12 +57,18 @@ public class ShipmentRepositoryImpl extends AbstractRepository<Shipment> impleme
         try (Session session = sessionFactory.openSession()) {
             return session
                     .createQuery(" from Shipment shipment where company.id = :companyId " +
-                                             "  and receivedDate is null  "
-                            , Shipment.class)
-                    .setParameter("companyId", companyId).getResultList()
+                                    "  and receivedDate is null  ", Shipment.class)
+                    .setParameter("companyId", companyId).getResultList();
+        }
+    }
 
-
-                    ;
+    @Override
+    public List<Shipment> getBySenderOrReceiver(int userId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session
+                    .createQuery(" from Shipment where receiver.id = :userId or sender.id = :userId ", Shipment.class)
+                    .setParameter("userId", userId)
+                    .getResultList();
         }
     }
 

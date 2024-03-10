@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.services;
 
+import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
@@ -41,6 +42,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAll(Optional<String> search) {
         return userRepository.getAll();
+    }
+
+    @Override
+    public Company getEmployeeCompany(int employeeId) {
+        return userRepository.getEmployeeCompany(employeeId);
     }
 
     @Override

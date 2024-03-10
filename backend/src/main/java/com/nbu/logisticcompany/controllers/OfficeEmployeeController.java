@@ -11,6 +11,7 @@ import com.nbu.logisticcompany.mappers.OfficeEmployeeMapper;
 import com.nbu.logisticcompany.mappers.ShipmentMapper;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
+import com.nbu.logisticcompany.services.interfaces.UserService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -32,17 +33,19 @@ public class OfficeEmployeeController {
     private final OfficeEmployeeMapper officeEmployeeMapper;
     private final ShipmentMapper shipmentMapper;
     private final ShipmentService shipmentService;
+    private final UserService userService;
 
     public OfficeEmployeeController(OfficeEmployeeService officeEmployeeService,
                                     AuthenticationHelper authenticationHelper,
                                     OfficeEmployeeMapper officeEmployeeMapper,
                                     ShipmentMapper shipmentMapper,
-                                    ShipmentService shipmentService) {
+                                    ShipmentService shipmentService, UserService userService) {
         this.officeEmployeeService = officeEmployeeService;
         this.authenticationHelper = authenticationHelper;
         this.officeEmployeeMapper = officeEmployeeMapper;
         this.shipmentMapper = shipmentMapper;
         this.shipmentService = shipmentService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -60,10 +63,10 @@ public class OfficeEmployeeController {
         return officeEmployeeMapper.ObjectToDto(officeEmployeeService.getById(id));
     }
 
-    @GetMapping("/currently-logged/company-id")
+    @GetMapping("/logged-employee/company-id")
     public int getCompanyId(HttpSession session) {
         User loggedUser = authenticationHelper.tryGetUser(session);
-        return officeEmployeeService.getCompany(loggedUser.getId()).getId();
+        return userService.getEmployeeCompany(loggedUser.getId()).getId();
     }
 
     @GetMapping("/{id}/shipments")

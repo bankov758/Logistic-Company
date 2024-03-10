@@ -53,6 +53,14 @@ public class ShipmentController {
         return shipmentMapper.ObjectToDto(shipmentService.getById(id));
     }
 
+    @GetMapping("/logged-user")
+    public List<ShipmentOutDto> getBySenderOrReceiver(HttpSession session) {
+        User loggedUser = authenticationHelper.tryGetUser(session);
+        return shipmentService.getBySenderOrReceiver(loggedUser.getId()).stream()
+                .map(shipmentMapper::ObjectToDto)
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public ResponseEntity<?> create(HttpSession session,
                                     @Valid @RequestBody ShipmentCreateDto shipmentCreateDto, BindingResult result) {

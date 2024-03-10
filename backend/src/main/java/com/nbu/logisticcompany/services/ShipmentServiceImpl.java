@@ -66,6 +66,11 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
+    public List<Shipment> getBySenderOrReceiver(int userId) {
+        return shipmentRepository.getBySenderOrReceiver(userId);
+    }
+
+    @Override
     public List<Shipment> getAll() {
         return shipmentRepository.getAll();
     }

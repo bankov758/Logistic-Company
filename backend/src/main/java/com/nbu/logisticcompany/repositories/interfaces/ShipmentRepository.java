@@ -14,4 +14,6 @@ public interface ShipmentRepository extends BaseCRUDRepository<Shipment> {
 
     List<Shipment> getNotDelivered(int companyId);
 
+    List<Shipment> getBySenderOrReceiver(int userId);
+
 }
