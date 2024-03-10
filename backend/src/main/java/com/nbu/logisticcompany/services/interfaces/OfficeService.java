@@ -1,6 +1,5 @@
 package com.nbu.logisticcompany.services.interfaces;
 
-import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.User;
 
@@ -12,8 +11,6 @@ public interface OfficeService {
     Office getById(int id);
 
     Office getByAddress(String address);
-
-    Office getByCompany(Company company);
 
     List<Office> filter(Optional<String> address, Optional<Integer> companyId, Optional<String> sort);
 
