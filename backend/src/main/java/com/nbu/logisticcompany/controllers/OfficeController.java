@@ -6,17 +6,16 @@ import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.office.OfficeCreateDto;
 import com.nbu.logisticcompany.entities.dtos.office.OfficeOutDto;
 import com.nbu.logisticcompany.entities.dtos.office.OfficeUpdateDto;
-import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.mappers.OfficeMapper;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -38,25 +37,25 @@ public class OfficeController {
     }
 
     @GetMapping
-    public List<OfficeOutDto> getAll(@RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public List<OfficeOutDto> getAll(HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return officeService.getAll().stream()
                 .map(officeMapper::ObjectToDTO)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public OfficeOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public OfficeOutDto getById(@PathVariable int id, HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return officeMapper.ObjectToDTO(officeService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> create(HttpSession session,
                          @Valid @RequestBody OfficeCreateDto officeCreateDto, BindingResult result) {
         try {
             ValidationUtil.validate(result);
-            User creator = authenticationHelper.tryGetUser(headers);
+            User creator = authenticationHelper.tryGetUser(session);
             Office office = officeMapper.DTOtoObject(officeCreateDto);
             officeService.create(office, creator);
             return ResponseEntity.ok().body(officeCreateDto);
@@ -66,18 +65,18 @@ public class OfficeController {
     }
 
     @PutMapping()
-    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> update(HttpSession session,
                          @Valid @RequestBody OfficeUpdateDto officeUpdateDto, BindingResult result) {
         ValidationUtil.validate(result);
-        User updater = authenticationHelper.tryGetUser(headers);
+        User updater = authenticationHelper.tryGetUser(session);
         Office office = officeMapper.UpdateDTOtoOffice(officeUpdateDto);
         officeService.update(office, updater);
         return ResponseEntity.ok().body(officeUpdateDto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        User destroyer = authenticationHelper.tryGetUser(headers);
+    public void delete(HttpSession session, @PathVariable int id) {
+        User destroyer = authenticationHelper.tryGetUser(session);
         officeService.delete(id, destroyer);
     }
 

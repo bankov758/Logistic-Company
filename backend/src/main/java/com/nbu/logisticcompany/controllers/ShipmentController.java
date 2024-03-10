@@ -9,13 +9,13 @@ import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentUpdateDto;
 import com.nbu.logisticcompany.mappers.ShipmentMapper;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -39,26 +39,26 @@ public class ShipmentController {
     }
 
     @GetMapping
-    public List<ShipmentOutDto> getAll(@RequestHeader HttpHeaders headers,
+    public List<ShipmentOutDto> getAll(HttpSession session,
                                        @RequestParam(required = false) Optional<String> search) {
-        authenticationHelper.tryGetUser(headers);
+        authenticationHelper.tryGetUser(session);
         return shipmentService.getAll().stream()
                 .map(shipmentMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ShipmentOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public ShipmentOutDto getById(@PathVariable int id, HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return shipmentMapper.ObjectToDto(shipmentService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> create(HttpSession session,
                                     @Valid @RequestBody ShipmentCreateDto shipmentCreateDto, BindingResult result) {
         try {
             ValidationUtil.validate(result);
-            User creator = authenticationHelper.tryGetUser(headers);
+            User creator = authenticationHelper.tryGetUser(session);
             Shipment shipment = shipmentMapper.createDtoToObject(shipmentCreateDto);
             shipmentService.create(shipment, creator);
             return ResponseEntity.ok().body(shipmentCreateDto);
@@ -68,18 +68,18 @@ public class ShipmentController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> update(HttpSession session,
                                     @Valid @RequestBody ShipmentUpdateDto shipmentUpdateDto, BindingResult result) {
         ValidationUtil.validate(result);
-        User updater = authenticationHelper.tryGetUser(headers);
+        User updater = authenticationHelper.tryGetUser(session);
         Shipment shipment = shipmentMapper.updateDtoToObject(shipmentUpdateDto);
         shipmentService.update(shipment, updater);
         return ResponseEntity.ok().body(shipmentUpdateDto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        User user = authenticationHelper.tryGetUser(headers);
+    public void delete(HttpSession session, @PathVariable int id) {
+        User user = authenticationHelper.tryGetUser(session);
         shipmentService.delete(id, user);
     }
 

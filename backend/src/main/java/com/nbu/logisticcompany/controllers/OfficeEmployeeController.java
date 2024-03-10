@@ -12,7 +12,6 @@ import com.nbu.logisticcompany.mappers.ShipmentMapper;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -47,17 +46,17 @@ public class OfficeEmployeeController {
     }
 
     @GetMapping
-    public List<OfficeEmployeeOutDto> getAll(@RequestHeader HttpHeaders headers,
+    public List<OfficeEmployeeOutDto> getAll(HttpSession session,
                                              @RequestParam(required = false) Optional<String> search) {
-        authenticationHelper.tryGetUser(headers);
+        authenticationHelper.tryGetUser(session);
         return officeEmployeeService.getAll(search).stream()
                 .map(officeEmployeeMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public OfficeEmployeeOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public OfficeEmployeeOutDto getById(@PathVariable int id, HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return officeEmployeeMapper.ObjectToDto(officeEmployeeService.getById(id));
     }
 
@@ -68,8 +67,8 @@ public class OfficeEmployeeController {
     }
 
     @GetMapping("/{id}/shipments")
-    public ShipmentOutDto getByEmployeeId(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public ShipmentOutDto getByEmployeeId(@PathVariable int id, HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return shipmentMapper.ObjectToDto(shipmentService.getById(id));
     }
 
@@ -83,19 +82,19 @@ public class OfficeEmployeeController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> update(HttpSession session,
                                     @Valid @RequestBody OfficeEmployeeUpdateDto officeEmployeeUpdateDto,
                                     BindingResult result) {
         ValidationUtil.validate(result);
-        User updater = authenticationHelper.tryGetUser(headers);
+        User updater = authenticationHelper.tryGetUser(session);
         OfficeEmployee officeEmployee = officeEmployeeMapper.UpdateDtoToOfficeEmployee(officeEmployeeUpdateDto);
         officeEmployeeService.update(officeEmployee, updater);
         return ResponseEntity.ok().body(officeEmployeeUpdateDto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        User updater = authenticationHelper.tryGetUser(headers);
+    public void delete(HttpSession session, @PathVariable int id) {
+        User updater = authenticationHelper.tryGetUser(session);
         officeEmployeeService.delete(id, updater);
     }
 

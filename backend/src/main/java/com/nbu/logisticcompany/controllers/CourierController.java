@@ -9,11 +9,11 @@ import com.nbu.logisticcompany.entities.dtos.user.CourierUpdateDto;
 import com.nbu.logisticcompany.mappers.CourierMapper;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -36,17 +36,17 @@ public class CourierController {
     }
 
     @GetMapping
-    public List<CourierOutDto> getAll(@RequestHeader HttpHeaders headers,
+    public List<CourierOutDto> getAll(HttpSession session,
                                       @RequestParam(required = false) Optional<String> search) {
-        authenticationHelper.tryGetUser(headers);
+        authenticationHelper.tryGetUser(session);
         return courierService.getAll(search).stream()
                 .map(courierMapper::ObjectToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public CourierOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public CourierOutDto getById(@PathVariable int id, HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return courierMapper.ObjectToDto(courierService.getById(id));
     }
 
@@ -59,18 +59,18 @@ public class CourierController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> update(HttpSession session,
                                     @Valid @RequestBody CourierUpdateDto courierToUpdate, BindingResult result) {
         ValidationUtil.validate(result);
-        User updater = authenticationHelper.tryGetUser(headers);
+        User updater = authenticationHelper.tryGetUser(session);
         Courier courier = courierMapper.UpdateDtoToCourier(courierToUpdate);
         courierService.update(courier, updater);
         return ResponseEntity.ok().body(courierToUpdate);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        User user = authenticationHelper.tryGetUser(headers);
+    public void delete(HttpSession session, @PathVariable int id) {
+        User user = authenticationHelper.tryGetUser(session);
         courierService.delete(id, user);
     }
 
