@@ -21,6 +21,8 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final ValidationUtil validationUtil;
     private final OfficeService officeService;
 
+    private static final int DEFAULT_PRICE_PER_KG = 1;
+
     @Autowired
     public ShipmentServiceImpl(ShipmentRepository shipmentRepository, TariffsService tariffsService,
                                ValidationUtil validationUtil, OfficeService officeService) {
@@ -81,6 +83,12 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
+    public List<Shipment> filter(Optional<Integer> senderId, Optional<Integer> receiverId,
+                                 Optional<Integer> employeeId, Optional<String> shipmentStatus) {
+        return shipmentRepository.filter(senderId, receiverId, employeeId, shipmentStatus);
+    }
+
+    @Override
     public void create(Shipment shipment, User creator) {
         validationUtil.authorizeOfficeEmployeeAction(shipment.getCompany().getId(), creator, Shipment.class);
         validateCompany(shipment);
@@ -119,13 +127,16 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     private void applyTariff(Shipment shipment) {
         Tariff tariff = tariffsService.getByCompany(shipment.getCompany().getId());
-        double discountMultiplier = 1;
-        if (shipment.isSentFromOffice() && shipment.isReceivedFromOffice()) {
-            discountMultiplier = 2 * (tariff.getOfficeDiscount() / 100);
-        } else if (shipment.isSentFromOffice() || shipment.isReceivedFromOffice()) {
-            discountMultiplier = tariff.getOfficeDiscount() / 100;
+        double shipmentPrice = shipment.getWeight() * DEFAULT_PRICE_PER_KG;
+        if (tariff != null){
+            double discountMultiplier = 1;
+            if (shipment.isSentFromOffice() && shipment.isReceivedFromOffice()) {
+                discountMultiplier = 2 * (tariff.getOfficeDiscount() / 100);
+            } else if (shipment.isSentFromOffice() || shipment.isReceivedFromOffice()) {
+                discountMultiplier = tariff.getOfficeDiscount() / 100;
+            }
+            shipmentPrice = shipment.getWeight() * tariff.getPricePerKG() - shipment.getWeight() * tariff.getPricePerKG() * discountMultiplier;
         }
-        double shipmentPrice = shipment.getWeight() * tariff.getPricePerKG() - shipment.getWeight() * tariff.getPricePerKG() * discountMultiplier;
         shipment.setPrice(shipmentPrice);
     }
 
