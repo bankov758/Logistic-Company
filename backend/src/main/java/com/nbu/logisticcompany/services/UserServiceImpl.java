@@ -75,6 +75,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User userToUpdate, User updater) {
         ValidationUtil.validateOwnerUpdate(userToUpdate.getId(), updater.getId());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (ValidationUtil.isNotEmpty(userToUpdate.getPassword())
+                && !passwordEncoder.matches(userToUpdate.getPassword(), updater.getPassword())){
+            String hashedPassword = passwordEncoder.encode(userToUpdate.getPassword());
+            userToUpdate.setPassword(hashedPassword);
+        }
         userRepository.update(userToUpdate);
     }
 
