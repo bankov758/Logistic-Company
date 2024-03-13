@@ -11,6 +11,7 @@ import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -60,6 +61,11 @@ public class UserServiceImpl implements UserService {
         if (duplicateUser) {
             throw new DuplicateEntityException("User", "username", user.getUsername());
         }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
         userRepository.create(user);
         User alreadySaved = getById(user.getId());
         addRole(alreadySaved, Role.USER.name(), getById(user.getId()));
