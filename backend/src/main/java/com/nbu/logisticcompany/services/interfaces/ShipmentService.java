@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.services.interfaces;
 
+import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.entities.User;
 
@@ -31,6 +32,12 @@ public interface ShipmentService {
 
     List<Shipment> filter(Optional<Integer> senderId, Optional<Integer> receiverId,
                           Optional<Integer> employeeId, Optional<String> shipmentStatus);
+
+    User getSender(int shipmentId);
+
+    User getReceiver(int shipmentId);
+
+    OfficeEmployee getEmployee(int shipmentId);
 
     void create(Shipment shipment, User creator) throws IOException;
 

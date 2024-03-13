@@ -1,7 +1,9 @@
 package com.nbu.logisticcompany.repositories;
 
+import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.Shipment;
 import com.nbu.logisticcompany.entities.ShipmentStatus;
+import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
 import org.hibernate.Session;
@@ -120,6 +122,42 @@ public class ShipmentRepositoryImpl extends AbstractRepository<Shipment> impleme
             Query<Shipment> queryList = session.createQuery(queryString.toString(), Shipment.class);
             queryList.setProperties(queryParams);
             return queryList.list();
+        }
+    }
+
+    @Override
+    public User getSender(int shipmentId) {
+        try (Session session = sessionFactory.openSession()) {
+            List<User> users = session.createQuery(
+                            " SELECT shipment.sender FROM Shipment shipment " +
+                                    " WHERE shipment.id = :shipmentId ", User.class)
+                    .setParameter("shipmentId", shipmentId)
+                    .getResultList();
+            return users.isEmpty() ? null : users.get(0);
+        }
+    }
+
+    @Override
+    public User getReceiver(int shipmentId) {
+        try (Session session = sessionFactory.openSession()) {
+            List<User> users = session.createQuery(
+                            " SELECT shipment.receiver FROM Shipment shipment " +
+                                    " WHERE shipment.id = :shipmentId ", User.class)
+                    .setParameter("shipmentId", shipmentId)
+                    .getResultList();
+            return users.isEmpty() ? null : users.get(0);
+        }
+    }
+
+    @Override
+    public OfficeEmployee getEmployee(int shipmentId) {
+        try (Session session = sessionFactory.openSession()) {
+            List<OfficeEmployee> employees = session.createQuery(
+                            " SELECT shipment.employee FROM Shipment shipment " +
+                                    " WHERE shipment.id = :shipmentId ", OfficeEmployee.class)
+                    .setParameter("shipmentId", shipmentId)
+                    .getResultList();
+            return employees.isEmpty() ? null : employees.get(0);
         }
     }
 

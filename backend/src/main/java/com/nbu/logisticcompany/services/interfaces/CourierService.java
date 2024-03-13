@@ -14,6 +14,8 @@ public interface CourierService {
 
     List<Courier> getAll(Optional<String> search);
 
+    Courier getCourierFromShipment(int shipmentId);
+
     void create(Courier courier);
 
     void update(Courier courierToUpdate, User updater);

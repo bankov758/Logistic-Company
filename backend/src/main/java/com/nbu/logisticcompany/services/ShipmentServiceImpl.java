@@ -3,6 +3,7 @@ package com.nbu.logisticcompany.services;
 import com.nbu.logisticcompany.entities.*;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
+import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
@@ -20,16 +21,19 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final TariffsService tariffsService;
     private final ValidationUtil validationUtil;
     private final OfficeService officeService;
+    private final CourierService courierService;
 
     private static final int DEFAULT_PRICE_PER_KG = 1;
 
     @Autowired
     public ShipmentServiceImpl(ShipmentRepository shipmentRepository, TariffsService tariffsService,
-                               ValidationUtil validationUtil, OfficeService officeService) {
+                               ValidationUtil validationUtil, OfficeService officeService,
+                               CourierService courierService) {
         this.shipmentRepository = shipmentRepository;
         this.tariffsService = tariffsService;
         this.validationUtil = validationUtil;
         this.officeService = officeService;
+        this.courierService = courierService;
     }
 
     @Override
@@ -89,6 +93,21 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
+    public User getSender(int shipmentId) {
+        return shipmentRepository.getSender(shipmentId);
+    }
+
+    @Override
+    public User getReceiver(int shipmentId) {
+        return shipmentRepository.getReceiver(shipmentId);
+    }
+
+    @Override
+    public OfficeEmployee getEmployee(int shipmentId) {
+        return shipmentRepository.getEmployee(shipmentId);
+    }
+
+    @Override
     public void create(Shipment shipment, User creator) {
         validationUtil.authorizeOfficeEmployeeAction(shipment.getCompany().getId(), creator, Shipment.class);
         validateCompany(shipment);
@@ -115,9 +134,9 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     private void validateCompany(Shipment shipment) {
         int shipmentCompanyId = shipment.getCompany().getId();
-        int courierCompanyId = shipment.getCourier().getCompany().getId();
+        Courier courier = courierService.getCourierFromShipment(shipment.getId());
         int officeEmployeeCompanyId = shipment.getEmployee().getCompany().getId();
-        if (shipmentCompanyId != courierCompanyId) {
+        if (courier == null || shipmentCompanyId != courier.getCompany().getId()) {
             throw new InvalidDataException("Shipment and courier companies do not match");
         }
         if (shipmentCompanyId != officeEmployeeCompanyId) {
