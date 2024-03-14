@@ -50,12 +50,11 @@ const Table: React.FC<TableProps> = ({
 
     const [editShipment, setEditShipment] = useState<boolean>(false);
     const [editOffice, setEditOffice] = useState<boolean>(false);
-    const [actionType, setActionType] = useState<ActionType | null>(null);
-
     const [addRole, setAddRole] = useState<boolean>(false);
+
+
     const handleAction = async (item: item, type: ActionType | null) => {
         // TODO: there is no delete user query to refer to => possible solution : ask backend || remove delete user button
-        setActionType(type);
         switch (type) {
             case "deleteOffice": await deleteOffice(item, session); break;
            // case "deleteUser": await deleteEmployee(item, session); break;
@@ -154,7 +153,7 @@ const Table: React.FC<TableProps> = ({
                                                             return (
                                                                 <EmployeeInterfaceActionsButtons
                                                                     key={column.id}
-                                                                    onClick={() => handleAction(rowItem, actionType)}
+                                                                    onClick={(actionType) => handleAction(rowItem, actionType)}
                                                                 />
                                                             )
 
@@ -165,20 +164,20 @@ const Table: React.FC<TableProps> = ({
                                                                 return (
                                                                     <AdminInterfaceUserActionsButtons
                                                                         key={column.id}
-                                                                        onClick={() => handleAction(rowItem, actionType)}
+                                                                        onClick={(actionType) => handleAction(rowItem, actionType)}
                                                                     />
                                                                 )
                                                             } else if (category.code === "employees") {
                                                                 return (
                                                                     <AdminInterfaceEmployeeActionsButtons
                                                                         key={column.id}
-                                                                        onClick={() => handleAction(rowItem, actionType)}                                                                    />
+                                                                        onClick={(actionType) => handleAction(rowItem, actionType)}                                                                    />
                                                                 )
                                                             } else if (category.code === "offices") {
                                                                return (
                                                                    <AdminInterfaceOfficeActionButtons
                                                                        key={column.id}
-                                                                       onClick={() => handleAction(rowItem, actionType)}
+                                                                       onClick={(actionType) => handleAction(rowItem, actionType)}
                                                                    />
                                                                )
                                                             }
