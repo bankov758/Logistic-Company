@@ -19,20 +19,20 @@ import Notification from "@/components/UI/Notification";
 import ShowCompanyInfo from "@/components/home/AdminInterface/ShowCompanyInfo";
 import CreateCompanyForm from "@/components/home/AdminInterface/CreateCompanyForm";
 
-interface Client {
-    id: number;
-    name: string;
-}
+// interface Client {
+//     id: number;
+//     name: string;
+// }
 
-interface Employee {
-    id: number;
-    name: string;
-}
-
-interface Office {
-    id: number;
-    location: string;
-}
+// interface Employee {
+//     id: number;
+//     name: string;
+// }
+//
+// interface Office {
+//     id: number;
+//     location: string;
+// }
 
 async function getCompanies(session: { username: string; } | null): Promise<selectorItem[] | null> {
    try {
@@ -121,6 +121,14 @@ const AdminInterface: React.FC = () => {
                     Accept: "*/*"
                 }
             }),
+            //couriers
+            fetch(`http://localhost:8080/api/couriers`, {
+                headers: {
+                    "Authorization": session?.username || "",
+                    "Content-Type": "application/json",
+                    Accept: "*/*"
+                }
+            }),
             //offices
             fetch("http://localhost:8080/api/offices", {
                 headers: {
@@ -131,10 +139,11 @@ const AdminInterface: React.FC = () => {
             })
         ])
             .then(responses => Promise.all(responses.map(response => response.json())))
-            .then(([clientsData, employeesData, officesData]) => {
+            .then(([clientsData, employeesData, courierData, officesData]) => {
                 const combinedData = [
                     clientsData,
                     employeesData,
+                    courierData,
                     officesData
                 ];
                 setData(combinedData);
@@ -221,14 +230,23 @@ const AdminInterface: React.FC = () => {
                                                     ...item,
                                                     category: "employees"
                                                 }
-                                            } else if( index === 2 ) {//offices
+                                            } else if( index === 2 ) {//couriers
+                                                //const courierId: { id: number; companyName: string; } = item?.;
+                                                if (selectedCompany.title === item?.companyName) {
+                                                    return {
+                                                        ...item,
+                                                        category: "couriers",
+                                                    };
+                                                }
+                                            } else if( index === 3 ) {//offices
                                                 const companyId: { id: number; name: string; } = item?.companyId;
-
-                                                return {
-                                                    ...item,
-                                                    name: companyId.name,
-                                                    category: "offices",
-                                                };
+                                                if (selectedCompany.title === companyId.name) {
+                                                    return {
+                                                        ...item,
+                                                        name: companyId.name,
+                                                        category: "offices",
+                                                    };
+                                                }
                                             }
 
                                             return {

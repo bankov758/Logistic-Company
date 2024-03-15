@@ -11,6 +11,7 @@ import EmployeeInterfaceActionsButtons from "@/components/home/EmployeeInterface
 import AdminInterfaceUserActionsButtons from "@/components/home/AdminInterface/AdminInterfaceUserActionButtons";
 import AdminInterfaceEmployeeActionsButtons from "@/components/home/AdminInterface/AdminInterfaceEmployeeActionButtons";
 import AdminInterfaceOfficeActionButtons from "@/components/home/AdminInterface/AdminInterfaceOfficeActionButtons";
+import AdminInterfaceCourierActionsButtons from "@/components/home/AdminInterface/AdminInterfaceCourierActionButtons";
 
 export type column = {
     title: string;
@@ -30,7 +31,7 @@ export type item = Record<string, any> & {
     category: string;
 };
 
-export type ActionType = "demoteEmployee" | "promoteUser" | "deleteUser" | "deleteEmployee" | "deleteOffice" | "editShipment" | "editOffice" | "addRole" | "deleteShipment";
+export type ActionType = "demoteEmployee" | "promoteUser" | "deleteUser" | "deleteEmployee" | "deleteOffice" | "editShipment" | "editOffice" | "addRole" | "deleteShipment" | "deleteCourier" | "demoteCourier" | "makeOfficeEmployee" | "makeCourier";
 
 type TableProps = {
     columns: column[];
@@ -170,6 +171,12 @@ const Table: React.FC<TableProps> = ({
                                                             } else if (category.code === "employees") {
                                                                 return (
                                                                     <AdminInterfaceEmployeeActionsButtons
+                                                                        key={column.id}
+                                                                        onClick={(actionType) => handleAction(rowItem, actionType)}                                                                    />
+                                                                )
+                                                            } else if (category.code === "couriers") {
+                                                                return (
+                                                                    <AdminInterfaceCourierActionsButtons
                                                                         key={column.id}
                                                                         onClick={(actionType) => handleAction(rowItem, actionType)}                                                                    />
                                                                 )

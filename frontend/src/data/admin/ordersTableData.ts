@@ -37,6 +37,24 @@ export const adminColumns: column[][] = [
             id: 3,
         }
     ],
+    [//courier column
+        {
+            title: "First name",
+            code: "firstName",
+            id: 1,
+        },
+        {
+            title: "Last name",
+            code: "lastName",
+            id: 2,
+        },
+        {
+            title: "Actions",
+            code: "adminInterfaceActions",
+            hide: true,
+            id: 3,
+        }
+    ],
     [//office column
         {
             title: "Address",
@@ -69,6 +87,13 @@ export const adminCategories: category[][] = [
         {
             title: "Employees",
             code: "employees",
+            id: 1,
+        },
+    ],
+    [//courier categories
+        {
+            title: "Courier",
+            code: "couriers",
             id: 1,
         },
     ],
