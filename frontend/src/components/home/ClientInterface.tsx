@@ -20,7 +20,7 @@ const ClientInterface: React.FC = () => {
                 setSession(response)
                 setError(null);
 
-                fetch("http://localhost:8080/api/shipments", {
+                fetch("http://localhost:8080/api/shipments/logged-user", {
                     headers: {
                         "Content-Type": "application/json",
                         Accept: "*/*"

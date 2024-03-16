@@ -24,9 +24,8 @@ const EmployeeInterface: React.FC = () => {
                 setSession(response)
                 setError(null);
 
-                fetch("http://localhost:8080/api/shipments", {
+                fetch("localhost:8080/api/shipments/logged-user", {
                     headers: {
-                        "Authorization": response?.username || "",
                         "Content-Type": "application/json",
                         Accept: "*/*"
                     }
