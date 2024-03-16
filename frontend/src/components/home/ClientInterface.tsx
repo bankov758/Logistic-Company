@@ -22,7 +22,6 @@ const ClientInterface: React.FC = () => {
 
                 fetch("http://localhost:8080/api/shipments", {
                     headers: {
-                        "Authorization": response?.username || "",
                         "Content-Type": "application/json",
                         Accept: "*/*"
                     }
