@@ -277,28 +277,30 @@ INSERT INTO `user` VALUES (1,'alex','123456789','alex','alexov'),(2,'ivo','12345
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_roles`
+-- Table structure for table `User_roles`
 --
 
-DROP TABLE IF EXISTS `user_roles`;
+DROP TABLE IF EXISTS `User_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_roles` (
+CREATE TABLE `User_roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `roles` varchar(45) DEFAULT NULL,
-  KEY `fk_user_roles_user1_idx` (`user_id`),
-  CONSTRAINT `fk_user_roles_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  PRIMARY KEY (`id`),
+  KEY `fk_User_roles_user1_idx` (`user_id`),
+  CONSTRAINT `fk_User_roles_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_roles`
+-- Dumping data for table `User_roles`
 --
 
-LOCK TABLES `user_roles` WRITE;
-/*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
-INSERT INTO `user_roles` VALUES (1,'ADMIN'),(4,'USER'),(5,'USER'),(6,'USER'),(7,'USER'),(8,'USER'),(9,'USER'),(10,'USER'),(11,'USER'),(12,'USER'),(13,'USER'),(14,'USER'),(7,'EMPLOYEE'),(9,'EMPLOYEE'),(11,'EMPLOYEE'),(12,'EMPLOYEE'),(14,'EMPLOYEE'),(15,'EMPLOYEE'),(16,'EMPLOYEE'),(17,'EMPLOYEE'),(18,'EMPLOYEE'),(19,'EMPLOYEE'),(20,'EMPLOYEE'),(21,'EMPLOYEE'),(22,'EMPLOYEE'),(23,'EMPLOYEE'),(24,'EMPLOYEE'),(25,'EMPLOYEE'),(26,'EMPLOYEE'),(27,'EMPLOYEE'),(28,'EMPLOYEE'),(29,'EMPLOYEE'),(30,'EMPLOYEE'),(31,'EMPLOYEE'),(32,'EMPLOYEE'),(33,'EMPLOYEE'),(34,'EMPLOYEE'),(35,'EMPLOYEE'),(36,'EMPLOYEE'),(37,'EMPLOYEE'),(38,'EMPLOYEE'),(39,'EMPLOYEE'),(40,'EMPLOYEE'),(41,'EMPLOYEE'),(42,'EMPLOYEE'),(43,'EMPLOYEE'),(44,'EMPLOYEE'),(45,'EMPLOYEE'),(46,'EMPLOYEE'),(47,'EMPLOYEE'),(48,'EMPLOYEE'),(49,'EMPLOYEE'),(50,'EMPLOYEE');
-/*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+LOCK TABLES `User_roles` WRITE;
+/*!40000 ALTER TABLE `User_roles` DISABLE KEYS */;
+INSERT INTO `User_roles` VALUES (1, 1, 'ADMIN'), (2, 4, 'USER'), (3, 5, 'USER'), (4, 6, 'USER'), (5, 7, 'USER'), (6, 8, 'USER'), (7, 9, 'USER'), (8, 10, 'USER'), (9, 11, 'USER'), (10, 12, 'USER'), (11, 13, 'USER'), (12, 14, 'USER'), (13, 7, 'EMPLOYEE'), (14, 9, 'EMPLOYEE'), (15, 11, 'EMPLOYEE'), (16, 12, 'EMPLOYEE'), (17, 14, 'EMPLOYEE'), (18, 15, 'EMPLOYEE'), (19, 16, 'EMPLOYEE'), (20, 17, 'EMPLOYEE'), (21, 18, 'EMPLOYEE'), (22, 19, 'EMPLOYEE'), (23, 20, 'EMPLOYEE'), (24, 21, 'EMPLOYEE'), (25, 22, 'EMPLOYEE'), (26, 23, 'EMPLOYEE'), (27, 24, 'EMPLOYEE'), (28, 25, 'EMPLOYEE'), (29, 26, 'EMPLOYEE'), (30, 27, 'EMPLOYEE'), (31, 28, 'EMPLOYEE'), (32, 29, 'EMPLOYEE'), (33, 30, 'EMPLOYEE'), (34, 31, 'EMPLOYEE'), (35, 32, 'EMPLOYEE'), (36, 33, 'EMPLOYEE'), (37, 34, 'EMPLOYEE'), (38, 35, 'EMPLOYEE'), (39, 36, 'EMPLOYEE'), (40, 37, 'EMPLOYEE'), (41, 38, 'EMPLOYEE'), (42, 39, 'EMPLOYEE'), (43, 40, 'EMPLOYEE'), (44, 41, 'EMPLOYEE'), (45, 42, 'EMPLOYEE'), (46, 43, 'EMPLOYEE'), (47, 44, 'EMPLOYEE'), (48, 45, 'EMPLOYEE'), (49, 46, 'EMPLOYEE'), (50, 47, 'EMPLOYEE'), (51, 48, 'EMPLOYEE'), (52, 49, 'EMPLOYEE'), (53, 50, 'EMPLOYEE');
+/*!40000 ALTER TABLE `User_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

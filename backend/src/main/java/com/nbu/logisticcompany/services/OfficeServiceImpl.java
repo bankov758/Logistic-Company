@@ -1,6 +1,5 @@
 package com.nbu.logisticcompany.services;
 
-import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
@@ -32,11 +31,6 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public Office getByAddress(String address) {
         return officeRepository.getByField("address", address);
-    }
-
-    @Override
-    public Office getByCompany(Company company) {
-        return officeRepository.getByField("company", company);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.nbu.logisticcompany.services;
 
+import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
@@ -10,6 +11,7 @@ import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -44,6 +46,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Company getEmployeeCompany(int employeeId) {
+        return userRepository.getEmployeeCompany(employeeId);
+    }
+
+    @Override
     public User create(User user) {
         boolean duplicateUser = true;
         try {
@@ -54,6 +61,11 @@ public class UserServiceImpl implements UserService {
         if (duplicateUser) {
             throw new DuplicateEntityException("User", "username", user.getUsername());
         }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
         userRepository.create(user);
         User alreadySaved = getById(user.getId());
         addRole(alreadySaved, Role.USER.name(), getById(user.getId()));
@@ -63,6 +75,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User userToUpdate, User updater) {
         ValidationUtil.validateOwnerUpdate(userToUpdate.getId(), updater.getId());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (ValidationUtil.isNotEmpty(userToUpdate.getPassword())
+                && !passwordEncoder.matches(userToUpdate.getPassword(), updater.getPassword())){
+            String hashedPassword = passwordEncoder.encode(userToUpdate.getPassword());
+            userToUpdate.setPassword(hashedPassword);
+        }
         userRepository.update(userToUpdate);
     }
 

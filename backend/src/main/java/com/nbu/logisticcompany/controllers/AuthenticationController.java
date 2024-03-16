@@ -55,8 +55,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/logout")
-    public void logout(HttpSession session) {
+    public ResponseEntity<?> logout(HttpSession session) {
+        if (session.getAttribute("currentUser") == null){
+            return ResponseEntity.notFound().build();
+        }
         session.removeAttribute("currentUser");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")

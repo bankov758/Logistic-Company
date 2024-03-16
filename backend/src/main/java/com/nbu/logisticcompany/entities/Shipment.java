@@ -2,10 +2,10 @@ package com.nbu.logisticcompany.entities;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@Table(name = "shipment")
 public class Shipment {
 
     @Id

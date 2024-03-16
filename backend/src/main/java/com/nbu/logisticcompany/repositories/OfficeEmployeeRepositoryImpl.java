@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class OfficeEmployeeRepositoryImpl extends AbstractRepository<OfficeEmployee> implements OfficeEmployeeRepository {
+
     public OfficeEmployeeRepositoryImpl(SessionFactory sessionFactory) {
         super(OfficeEmployee.class, sessionFactory);
     }

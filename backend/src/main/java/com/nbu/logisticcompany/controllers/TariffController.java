@@ -8,12 +8,12 @@ import com.nbu.logisticcompany.entities.dtos.tariff.TariffOutDto;
 import com.nbu.logisticcompany.entities.dtos.tariff.TariffUpdateDto;
 import com.nbu.logisticcompany.mappers.TariffsMapper;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -36,24 +36,24 @@ public class TariffController {
     }
 
     @GetMapping
-    public List<TariffOutDto> getAll(@RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public List<TariffOutDto> getAll(HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return tariffsService.getAll().stream()
                 .map(tariffsMapper::ObjectToDTO)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public TariffOutDto getById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
-        authenticationHelper.tryGetUser(headers);
+    public TariffOutDto getById(@PathVariable int id, HttpSession session) {
+        authenticationHelper.tryGetUser(session);
         return tariffsMapper.ObjectToDTO(tariffsService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> create(HttpSession session,
                                     @Valid @RequestBody TariffCreateDto tariffCreateDto) {
         try {
-            User creator = authenticationHelper.tryGetUser(headers);
+            User creator = authenticationHelper.tryGetUser(session);
             Tariff tariff = tariffsMapper.DTOtoObject(tariffCreateDto);
             tariffsService.create(tariff, creator);
             return ResponseEntity.ok().body(tariffCreateDto);
@@ -63,17 +63,17 @@ public class TariffController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<?> update(HttpSession session,
                                     @Valid @RequestBody TariffUpdateDto tariffUpdateDto) {
-        User updater = authenticationHelper.tryGetUser(headers);
+        User updater = authenticationHelper.tryGetUser(session);
         Tariff tariff = tariffsMapper.UpdateDTOtoTariffs(tariffUpdateDto);
         tariffsService.update(tariff, updater);
         return ResponseEntity.ok().body(tariffUpdateDto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        User user = authenticationHelper.tryGetUser(headers);
+    public void delete(HttpSession session, @PathVariable int id) {
+        User user = authenticationHelper.tryGetUser(session);
         tariffsService.delete(id, user);
     }
 

@@ -1,16 +1,10 @@
 package com.nbu.logisticcompany.mappers;
 
-import com.nbu.logisticcompany.entities.OfficeEmployee;
-import com.nbu.logisticcompany.entities.Shipment;
-import com.nbu.logisticcompany.entities.ShipmentStatus;
-import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.entities.*;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentCreateDto;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentUpdateDto;
-import com.nbu.logisticcompany.services.interfaces.CompanyService;
-import com.nbu.logisticcompany.services.interfaces.CourierService;
-import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
-import com.nbu.logisticcompany.services.interfaces.UserService;
+import com.nbu.logisticcompany.services.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +15,17 @@ public class ShipmentMapper {
     private final OfficeEmployeeService officeEmployeeService;
     private final CourierService courierService;
     private final CompanyService companyService;
+    private final ShipmentService shipmentService;
 
     @Autowired
     public ShipmentMapper(UserService userService, OfficeEmployeeService officeEmployeeService,
-                          CourierService courierService, CompanyService companyService) {
+                          CourierService courierService, CompanyService companyService,
+                          ShipmentService shipmentService) {
         this.userService = userService;
         this.officeEmployeeService = officeEmployeeService;
         this.courierService = courierService;
         this.companyService = companyService;
+        this.shipmentService = shipmentService;
     }
 
     public Shipment createDtoToObject(ShipmentCreateDto shipmentCreateDto) {
@@ -56,20 +53,30 @@ public class ShipmentMapper {
     }
 
     public ShipmentOutDto ObjectToDto(Shipment shipment) {
+        Courier courier = courierService.getCourierFromShipment(shipment.getId());
+        User sender = shipmentService.getSender(shipment.getId());
+        User receiver = shipmentService.getReceiver(shipment.getId());
+        OfficeEmployee employee = shipmentService.getEmployee(shipment.getId());
+
+        String courierUsername = courier == null ? null : courier.getUsername();
+        String senderUsername = sender == null ? null : sender.getUsername();
+        String receiverUsername = receiver == null ? null : receiver.getUsername();
+        String employeeUsername = employee == null ? null : employee.getUsername();
+
         ShipmentOutDto shipmentOutDto = new ShipmentOutDto();
         shipmentOutDto.setId(shipment.getId());
         shipmentOutDto.setArrivalAddress(shipment.getArrivalAddress());
         shipmentOutDto.setDepartureAddress(shipment.getDepartureAddress());
-        shipmentOutDto.setEmployee(shipment.getEmployee().getUsername());
-        shipmentOutDto.setReceiver(shipment.getReceiver().getUsername());
-        shipmentOutDto.setSender(shipment.getSender().getUsername());
+        shipmentOutDto.setEmployee(employeeUsername);
+        shipmentOutDto.setReceiver(receiverUsername);
+        shipmentOutDto.setSender(senderUsername);
         shipmentOutDto.setReceivedFromOffice(shipment.isReceivedFromOffice());
         shipmentOutDto.setSentFromOffice(shipment.isSentFromOffice());
         shipmentOutDto.setPrice(shipment.getPrice());
         shipmentOutDto.setWeight(shipment.getWeight());
         shipmentOutDto.setSentDate(shipment.getSentDate());
         shipmentOutDto.setReceivedDate(shipment.getReceivedDate());
-        shipmentOutDto.setCourier(shipment.getCourier().getUsername());
+        shipmentOutDto.setCourier(courierUsername);
         shipmentOutDto.setCompanyName(shipment.getCompany().getName());
         if (shipment.getReceivedDate() == null) {
             shipmentOutDto.setStatus(ShipmentStatus.ACTIVE.toString());

@@ -37,6 +37,11 @@ public class CourierServiceImpl implements CourierService {
     }
 
     @Override
+    public Courier getCourierFromShipment(int shipmentId) {
+        return courierRepository.getCourierFromShipment(shipmentId);
+    }
+
+    @Override
     public void create(Courier courier) {
         courierRepository.create(courier);
     }

@@ -1,8 +1,6 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Tariff;
-import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.TariffsRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,9 +18,9 @@ public class TariffsRepositoryImpl extends AbstractRepository<Tariff> implements
             return session.createQuery(" select tariff from Tariff tariff where tariff.company.id =: companyId ",
                             Tariff.class)
                     .setParameter("companyId", companyId)
-                    .uniqueResultOptional()
-                    .orElseThrow(() -> new EntityNotFoundException(Tariff.class.getSimpleName(),
-                            "companyId", String.valueOf(companyId)));
+                    .uniqueResult();
+//                    .orElseThrow(() -> new EntityNotFoundException(Tariff.class.getSimpleName(),
+//                            "companyId", String.valueOf(companyId)));
         }
     }
 
