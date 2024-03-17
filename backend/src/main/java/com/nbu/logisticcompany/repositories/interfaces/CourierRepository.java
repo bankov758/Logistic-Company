@@ -6,4 +6,6 @@ public interface CourierRepository extends BaseCRUDRepository<Courier> {
 
     Courier getCourierFromShipment(int shipmentId);
 
+    void removeUserFromOfficeEmployees(int courierToDemoteId);
+
 }

@@ -4,12 +4,15 @@ import com.nbu.logisticcompany.entities.Courier;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
+import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.nbu.logisticcompany.utils.ValidationUtil.validateAdminAction;
 
 @Service
 public class CourierServiceImpl implements CourierService {
@@ -56,6 +59,12 @@ public class CourierServiceImpl implements CourierService {
     public void delete(int courierToDeleteId, User deleter) {
         ValidationUtil.validateOwnerDelete(courierToDeleteId, deleter.getId());
         courierRepository.delete(courierToDeleteId);
+    }
+
+    @Override
+    public void demoteToUser(int courierToDemoteId, User updater) {
+        validateAdminAction(updater, Courier.class, Action.UPDATE);
+        courierRepository.removeUserFromOfficeEmployees(courierToDemoteId);
     }
 
 }

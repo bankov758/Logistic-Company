@@ -5,12 +5,14 @@ import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
-import com.nbu.logisticcompany.utils.ValidationUtil;
+import com.nbu.logisticcompany.utils.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.nbu.logisticcompany.utils.ValidationUtil.*;
 
 @Service
 public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
@@ -46,8 +48,21 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     }
 
     @Override
+    public void demoteToUser(int officeEmployeeToDemoteId, User updater) {
+        validateAdminAction(updater, OfficeEmployee.class, Action.UPDATE);
+        officeEmployeeRepository.removeUserFromOfficeEmployees(officeEmployeeToDemoteId);
+    }
+
+    @Override
+    public void makeCourier(int officeEmployeeToUpdateId, User updater) {
+        validateAdminAction(updater, OfficeEmployee.class, Action.UPDATE);
+        officeEmployeeRepository.removeUserFromOfficeEmployees(officeEmployeeToUpdateId);
+        officeEmployeeRepository.makeCourier(officeEmployeeToUpdateId);
+    }
+
+    @Override
     public void update(OfficeEmployee officeEmployeeToUpdate, User updater) {
-        ValidationUtil.validateOwnerUpdate(officeEmployeeToUpdate.getId(), updater.getId());
+        validateOwnerUpdate(officeEmployeeToUpdate.getId(), updater.getId());
         if (officeEmployeeToUpdate.getOffice().getCompany().getId() != officeEmployeeToUpdate.getCompany().getId()){
             throw new InvalidDataException("Office employee company and office company do not match");
         }
@@ -56,7 +71,7 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
 
     @Override
     public void delete(int id, User updater) {
-        ValidationUtil.validateOwnerDelete(id, updater.getId());
+        validateOwnerDelete(id, updater.getId());
         officeEmployeeRepository.delete(id);
     }
 

@@ -29,4 +29,13 @@ public class CourierRepositoryImpl extends AbstractRepository<Courier> implement
         }
     }
 
+    @Override
+    public void removeUserFromOfficeEmployees(int courierToDemoteId) {
+        try (Session session = sessionFactory.openSession()) {
+            session.createSQLQuery(" delete from courier where id = :id ")
+                    .setParameter("id", courierToDemoteId)
+                    .executeUpdate();
+        }
+    }
+
 }
