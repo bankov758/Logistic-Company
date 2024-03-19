@@ -23,6 +23,12 @@ public class CourierMapper extends UserMapper {
         this.courierService = courierService;
     }
 
+    /**
+     * Converts a CourierRegisterDto object to a Courier object.
+     *
+     * @param courierRegisterDto CourierRegisterDto object to convert.
+     * @return Converted Courier object.
+     */
     public Courier DtoToObject(CourierRegisterDto courierRegisterDto) {
         Courier courier = new Courier();
         setUserFieldsFromDto(courier, courierRegisterDto);
@@ -30,6 +36,12 @@ public class CourierMapper extends UserMapper {
         return courier;
     }
 
+    /**
+     * Converts a Courier object to a CourierOutDto object.
+     *
+     * @param courier Courier object to convert.
+     * @return Converted CourierOutDto object.
+     */
     public CourierOutDto ObjectToDto(Courier courier) {
         CourierOutDto courierOutDto = new CourierOutDto();
         setFieldsFormObjectToOutDto(courier, courierOutDto);
@@ -37,6 +49,12 @@ public class CourierMapper extends UserMapper {
         return courierOutDto;
     }
 
+    /**
+     * Converts a CourierUpdateDto object to a Courier object for update.
+     *
+     * @param courierDto CourierUpdateDto object containing updated courier information.
+     * @return Updated Courier object.
+     */
     public Courier UpdateDtoToCourier(CourierUpdateDto courierDto) {
         Courier courier = courierService.getById(courierDto.getId());
         setFieldsFromUpdateDtoToObject(courierDto, courier);
