@@ -23,6 +23,15 @@ public class OfficeRepositoryImpl extends AbstractRepository<Office> implements 
         super(Office.class, sessionFactory);
     }
 
+    /**
+     * Filters offices based on optional parameters such as address, company ID, and sort criteria.
+     *
+     * @param address   Optional address to filter offices.
+     * @param companyId Optional company ID to filter offices.
+     * @param sort      Optional sort criteria for offices.
+     * @return List of offices filtered based on the provided parameters.
+     */
+
     public List<Office> filter(Optional<String> address, Optional<Integer> companyId, Optional<String> sort) {
         try (Session session = sessionFactory.openSession()) {
             var queryString = new StringBuilder(" from Office as office");

@@ -20,6 +20,14 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
         super(Company.class, sessionFactory);
     }
 
+    /**
+     * Retrieves the income of a company within a specified period.
+     *
+     * @param companyId   ID of the company.
+     * @param periodStart Start of the period.
+     * @param periodEnd   End of the period.
+     * @return List of CompanyOutDto objects containing company ID, name, and total income within the specified period.
+     */
     public List<CompanyOutDto> getCompanyIncome(int companyId, LocalDateTime periodStart, LocalDateTime periodEnd) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto " +
@@ -34,7 +42,14 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
                     .setParameter("companyId", companyId).getResultList();
         }
     }
-
+    /**
+     * Retrieves employees of a company.
+     *
+     * @param companyId ID of the company.
+     * @param user      User initiating the request.
+     * @return List of CompanyEmployeesDto objects containing employee ID, username, first name, last name,
+     * and company name.
+     */
     public List<CompanyEmployeesDto> getCompanyEmployees(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto " +
@@ -45,7 +60,13 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
                     .getResultList();
         }
     }
-
+    /**
+     * Retrieves clients associated with a company.
+     *
+     * @param companyId ID of the company.
+     * @param user      User initiating the request.
+     * @return List of ClientOutDto objects containing client first name and last name.
+     */
     public List<ClientOutDto> getCompanyClients(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(

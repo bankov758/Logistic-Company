@@ -13,6 +13,11 @@ public class OfficeEmployeeRepositoryImpl extends AbstractRepository<OfficeEmplo
         super(OfficeEmployee.class, sessionFactory);
     }
 
+    /**
+     * Removes a user from the employees of an office.
+     *
+     * @param officeEmployeeToDemoteId ID of the office employee to demote.
+     */
     @Override
     public void removeUserFromOfficeEmployees(int officeEmployeeToDemoteId) {
         try (Session session = sessionFactory.openSession()) {
@@ -21,7 +26,11 @@ public class OfficeEmployeeRepositoryImpl extends AbstractRepository<OfficeEmplo
                     .executeUpdate();
         }
     }
-
+    /**
+     * Updates the role of an office employee to courier.
+     *
+     * @param officeEmployeeToUpdateId ID of the office employee to update.
+     */
     @Override
     public void makeCourier(int officeEmployeeToUpdateId) {
         try (Session session = sessionFactory.openSession()) {
