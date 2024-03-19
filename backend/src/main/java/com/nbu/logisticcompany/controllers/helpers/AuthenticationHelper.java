@@ -49,8 +49,8 @@ public class AuthenticationHelper {
     public User verifyAuthentication(String username, String password) {
         try {
             User user = userService.getByUsername(username);
-            //BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            if (!password.equals(user.getPassword()) || !user.getUsername().equals(username)) {
+
+            if ( !user.getPassword().equals(password) ||  !user.getUsername().equals(username)) {
                 throw new AuthenticationFailureException(AUTHENTICATION_FAILURE_MESSAGE);
             }
             return user;
