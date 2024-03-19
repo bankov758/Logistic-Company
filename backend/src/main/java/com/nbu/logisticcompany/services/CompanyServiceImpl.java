@@ -61,7 +61,14 @@ public class CompanyServiceImpl implements CompanyService {
     public List<ClientOutDto> getCompanyClients(int companyId, User user){
         return companyRepository.getCompanyClients(companyId, user);
     }
-
+    /**
+     * Creates a new company after ensuring no duplicate exists and the creator has admin privileges.
+     *
+     * @param company The company to be created.
+     * @param creator The user attempting to create the company.
+     * @throws UnauthorizedOperationException If the creator is not an admin.
+     * @throws DuplicateEntityException If a company with the same name already exists.
+     */
     @Override
     public void create(Company company, User creator) {
         ValidationUtil.validateAdminAction(creator, Company.class, Action.CREATE);
@@ -76,13 +83,25 @@ public class CompanyServiceImpl implements CompanyService {
         }
         companyRepository.create(company);
     }
-
+    /**
+     * Updates a company's information, ensuring the operation is performed by an authorized admin.
+     *
+     * @param companyToUpdate The company entity with updated information.
+     * @param user The admin user performing the update.
+     * @throws UnauthorizedOperationException If the user is not authorized as an admin.
+     */
     @Override
     public void update(Company companyToUpdate, User user) {
         ValidationUtil.validateAdminAction(user, Company.class, Action.UPDATE);
         companyRepository.update(companyToUpdate);
     }
-
+    /**
+     * Deletes a company by its ID, ensuring the operation is performed by an authorized admin.
+     *
+     * @param companyId The ID of the company to be deleted.
+     * @param user The admin user attempting the deletion.
+     * @throws UnauthorizedOperationException If the user is not authorized as an admin.
+     */
     @Override
     public void delete(int companyId, User user) {
         ValidationUtil.validateAdminAction(user, Company.class, Action.DELETE);
