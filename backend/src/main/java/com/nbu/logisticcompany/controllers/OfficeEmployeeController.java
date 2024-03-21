@@ -84,6 +84,20 @@ public class OfficeEmployeeController {
         return ResponseEntity.ok().body(officeEmployeeRegisterDto);
     }
 
+    @PutMapping("/demote/{id}")
+    public ResponseEntity<?> demoteToUser(HttpSession session, @PathVariable int id) {
+        User updater = authenticationHelper.tryGetUser(session);
+        officeEmployeeService.demoteToUser(id, updater);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/make-courier/{id}")
+    public ResponseEntity<?> makeCourier(HttpSession session, @PathVariable int id) {
+        User updater = authenticationHelper.tryGetUser(session);
+        officeEmployeeService.makeCourier(id, updater);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping
     public ResponseEntity<?> update(HttpSession session,
                                     @Valid @RequestBody OfficeEmployeeUpdateDto officeEmployeeUpdateDto,

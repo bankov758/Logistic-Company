@@ -58,6 +58,13 @@ public class CourierController {
         return ResponseEntity.ok().body(courierRegisterDto);
     }
 
+    @PutMapping("/demote/{id}")
+    public ResponseEntity<?> demoteToUser(HttpSession session, @PathVariable int id) {
+        User updater = authenticationHelper.tryGetUser(session);
+        courierService.demoteToUser(id, updater);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping
     public ResponseEntity<?> update(HttpSession session,
                                     @Valid @RequestBody CourierUpdateDto courierToUpdate, BindingResult result) {

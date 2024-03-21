@@ -16,6 +16,10 @@ public interface OfficeEmployeeService {
 
     void create(OfficeEmployee officeEmployee);
 
+    void demoteToUser(int officeEmployeeToDemoteId, User updater);
+
+    void makeCourier(int officeEmployeeToUpdateId, User updater);
+
     void update(OfficeEmployee officeEmployeeToUpdate, User updater);
 
     void delete(int officeEmployeeToDeleteId, User deleter);

@@ -23,12 +23,25 @@ public class OfficeMapper {
         this.companyService = companyService;
     }
 
+    /**
+     * Converts an OfficeCreateDto object to an Office object.
+     *
+     * @param officeCreateDto OfficeCreateDto object to convert.
+     * @return Converted Office object.
+     * @throws IOException if an I/O error occurs.
+     */
     public Office DTOtoObject(OfficeCreateDto officeCreateDto) throws IOException {
         Office office = new Office();
         office.setAddress(officeCreateDto.getAddress());
         office.setCompany(companyService.getById(officeCreateDto.getCompanyId()));
         return office;
     }
+    /**
+     * Converts an Office object to an OfficeOutDto object.
+     *
+     * @param office Office object to convert.
+     * @return Converted OfficeOutDto object.
+     */
     public OfficeOutDto ObjectToDTO(Office office){
         OfficeOutDto officeOutDto = new OfficeOutDto();
         officeOutDto.setId(office.getId());
@@ -37,6 +50,12 @@ public class OfficeMapper {
         return officeOutDto;
     }
 
+    /**
+     * Converts an Office object to an OfficeUpdateDto object for update.
+     *
+     * @param office Office object to convert.
+     * @return Converted OfficeUpdateDto object.
+     */
     private OfficeUpdateDto objectToUpdateDTO(Office office){
         OfficeUpdateDto officeUpdateDto = new OfficeUpdateDto();
         officeUpdateDto.setCompanyId(office.getCompany());
@@ -44,6 +63,12 @@ public class OfficeMapper {
         return officeUpdateDto;
     }
 
+    /**
+     * Converts an OfficeUpdateDto object to an Office object for update.
+     *
+     * @param officeUpdateDto OfficeUpdateDto object containing updated office information.
+     * @return Updated Office object.
+     */
     public Office UpdateDTOtoOffice(OfficeUpdateDto officeUpdateDto){
         Office office = new Office();
         office.setCompany(officeUpdateDto.getCompanyId());

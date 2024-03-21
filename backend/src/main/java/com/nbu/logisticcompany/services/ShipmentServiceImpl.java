@@ -1,7 +1,9 @@
 package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.*;
+import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
+import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
@@ -115,7 +117,13 @@ public class ShipmentServiceImpl implements ShipmentService {
         applyTariff(shipment);
         shipmentRepository.create(shipment);
     }
-
+    /**
+     * Updates a shipment with new details after authorization and validations.
+     *
+     * @param shipmentToUpdate The shipment entity with updated details.
+     * @param updater The user performing the update operation.
+     * @throws UnauthorizedOperationException If the updater is not authorized.
+     */
     @Override
     public void update(Shipment shipmentToUpdate, User updater) {
         validationUtil.authorizeOfficeEmployeeAction(shipmentToUpdate.getCompany().getId(), updater, Shipment.class);
@@ -124,7 +132,14 @@ public class ShipmentServiceImpl implements ShipmentService {
         applyTariff(shipmentToUpdate);
         shipmentRepository.update(shipmentToUpdate);
     }
-
+    /**
+     * Deletes a shipment by its ID after ensuring the user has the necessary authorization.
+     *
+     * @param shipmentId The ID of the shipment to be deleted.
+     * @param destroyer The user attempting the deletion.
+     * @throws EntityNotFoundException If no shipment is found with the given ID.
+     * @throws UnauthorizedOperationException If the destroyer lacks authorization.
+     */
     @Override
     public void delete(int shipmentId, User destroyer) {
         Shipment shipment = shipmentRepository.getById(shipmentId);
@@ -132,6 +147,12 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipmentRepository.delete(shipmentId);
     }
 
+    /**
+     * Validates that the shipment, courier, and office employee belong to the same company.
+     *
+     * @param shipment The shipment to validate.
+     * @throws InvalidDataException If there's a mismatch in company IDs among the shipment, courier, or office employee.
+     */
     private void validateCompany(Shipment shipment) {
         int shipmentCompanyId = shipment.getCompany().getId();
         Courier courier = courierService.getCourierFromShipment(shipment.getId());
@@ -143,7 +164,13 @@ public class ShipmentServiceImpl implements ShipmentService {
             throw new InvalidDataException("Shipment and office employee companies do not match");
         }
     }
-
+    /**
+     * Calculates and applies the tariff to a shipment based on its weight and office pick-up/delivery status.
+     * If the shipment is either sent or received from an office it gives 10% discount, if both -> 20%
+     * It also applies price per KG based on the given tariff
+     *
+     * @param shipment The shipment to apply the tariff to.
+     */
     private void applyTariff(Shipment shipment) {
         Tariff tariff = tariffsService.getByCompany(shipment.getCompany().getId());
         double shipmentPrice = shipment.getWeight() * DEFAULT_PRICE_PER_KG;
@@ -159,6 +186,13 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setPrice(shipmentPrice);
     }
 
+    /**
+     * Determines if the shipment's departure and arrival addresses
+     * match any of the company's office addresses.
+     * Sets flags on the shipment accordingly.
+     *
+     * @param shipment The shipment to check and update.
+     */
     private void populateOfficeAddresses(Shipment shipment) {
         Company company = shipment.getCompany();
         if (shipment.getDepartureAddress() != null) {

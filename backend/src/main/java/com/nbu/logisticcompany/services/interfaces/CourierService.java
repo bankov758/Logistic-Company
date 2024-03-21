@@ -21,5 +21,7 @@ public interface CourierService {
     void update(Courier courierToUpdate, User updater);
 
     void delete(int courierToDeleteId, User deleter);
-    
+
+    void demoteToUser(int courierToDemoteId, User updater);
+
 }

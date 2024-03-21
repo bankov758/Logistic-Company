@@ -15,6 +15,12 @@ public class CourierRepositoryImpl extends AbstractRepository<Courier> implement
         super(Courier.class, sessionFactory);
     }
 
+    /**
+     * Retrieves the courier associated with a shipment.
+     *
+     * @param shipmentId ID of the shipment.
+     * @return Courier associated with the shipment, or null if not found.
+     */
     @Override
     public Courier getCourierFromShipment(int shipmentId) {
         try (Session session = sessionFactory.openSession()) {
@@ -26,6 +32,19 @@ public class CourierRepositoryImpl extends AbstractRepository<Courier> implement
             } catch (NoResultException e) {
                 return null;
             }
+        }
+    }
+    /**
+     * Removes a user from the list of office employees by demoting them from being a courier.
+     *
+     * @param courierToDemoteId ID of the courier to demote.
+     */
+    @Override
+    public void removeUserFromOfficeEmployees(int courierToDemoteId) {
+        try (Session session = sessionFactory.openSession()) {
+            session.createSQLQuery(" delete from courier where id = :id ")
+                    .setParameter("id", courierToDemoteId)
+                    .executeUpdate();
         }
     }
 

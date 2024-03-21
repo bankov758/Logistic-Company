@@ -26,7 +26,12 @@ public class OfficeEmployeeMapper extends UserMapper {
         this.officeService = officeService;
         this.officeEmployeeService = officeEmployeeService;
     }
-
+    /**
+     * Converts an OfficeEmployeeRegisterDto object to an OfficeEmployee object.
+     *
+     * @param officeEmployeeRegisterDto OfficeEmployeeRegisterDto object to convert.
+     * @return Converted OfficeEmployee object.
+     */
     public OfficeEmployee DtoToObject(OfficeEmployeeRegisterDto officeEmployeeRegisterDto) {
         OfficeEmployee officeEmployee = new OfficeEmployee();
         setUserFieldsFromDto(officeEmployee, officeEmployeeRegisterDto);
@@ -35,6 +40,12 @@ public class OfficeEmployeeMapper extends UserMapper {
         return officeEmployee;
     }
 
+    /**
+     * Converts an OfficeEmployee object to an OfficeEmployeeOutDto object.
+     *
+     * @param officeEmployee OfficeEmployee object to convert.
+     * @return Converted OfficeEmployeeOutDto object.
+     */
     public OfficeEmployeeOutDto ObjectToDto(OfficeEmployee officeEmployee) {
         OfficeEmployeeOutDto officeEmployeeOutDto = new OfficeEmployeeOutDto();
         setFieldsFormObjectToOutDto(officeEmployee, officeEmployeeOutDto);
@@ -43,6 +54,12 @@ public class OfficeEmployeeMapper extends UserMapper {
         return officeEmployeeOutDto;
     }
 
+    /**
+     * Converts an OfficeEmployeeUpdateDto object to an OfficeEmployee object for update.
+     *
+     * @param officeEmployeeUpdateDto OfficeEmployeeUpdateDto object containing updated office employee information.
+     * @return Updated OfficeEmployee object.
+     */
     public OfficeEmployee UpdateDtoToOfficeEmployee(OfficeEmployeeUpdateDto officeEmployeeUpdateDto) {
         OfficeEmployee officeEmployee = officeEmployeeService.getById(officeEmployeeUpdateDto.getId());
         setFieldsFromUpdateDtoToObject(officeEmployeeUpdateDto, officeEmployee);

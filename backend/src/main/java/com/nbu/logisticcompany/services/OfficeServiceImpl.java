@@ -3,6 +3,7 @@ package com.nbu.logisticcompany.services;
 import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
+import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeRepository;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.utils.Action;
@@ -43,6 +44,14 @@ public class OfficeServiceImpl implements OfficeService {
         return officeRepository.getAll();
     }
 
+    /**
+     * Creates a new office, ensuring no duplicate exists for the same address within the company, and the creator is authorized.
+     *
+     * @param office The office to be created.
+     * @param creator The user attempting to create the office.
+     * @throws UnauthorizedOperationException If the creator lacks admin privileges.
+     * @throws DuplicateEntityException If an office at the same address already exists for the company.
+     */
     @Override
     public void create(Office office, User creator) {
         ValidationUtil.validateAdminAction(creator, Office.class, Action.CREATE);
@@ -55,13 +64,24 @@ public class OfficeServiceImpl implements OfficeService {
         }
         officeRepository.create(office);
     }
-
+    /**
+     * Updates an existing office's details, given that the updater has admin privileges.
+     *
+     * @param officeToUpdate The office entity with updated information.
+     * @param updater The user performing the update operation.
+     * @throws UnauthorizedOperationException If the updater is not an admin.
+     */
     @Override
     public void update(Office officeToUpdate, User updater) {
         ValidationUtil.validateAdminAction(updater, Office.class, Action.UPDATE);
         officeRepository.update(officeToUpdate);
     }
-
+    /**
+     * Deletes an office by its ID, ensuring the operation is performed by an authorized admin.
+     * @param officeId The ID of the office to be deleted.
+     * @param destroyer The admin user attempting the deletion.
+     * @throws UnauthorizedOperationException If the destroyer is not authorized as an admin.
+     */
     @Override
     public void delete(int officeId, User destroyer) {
         ValidationUtil.validateAdminAction(destroyer, Office.class, Action.DELETE);

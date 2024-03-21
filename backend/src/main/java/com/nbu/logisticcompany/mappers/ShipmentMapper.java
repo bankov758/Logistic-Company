@@ -27,7 +27,12 @@ public class ShipmentMapper {
         this.companyService = companyService;
         this.shipmentService = shipmentService;
     }
-
+    /**
+     * Converts a ShipmentCreateDto object to a Shipment object for creation.
+     *
+     * @param shipmentCreateDto ShipmentCreateDto object to convert.
+     * @return Created Shipment object.
+     */
     public Shipment createDtoToObject(ShipmentCreateDto shipmentCreateDto) {
         Shipment shipment = new Shipment();
         shipment.setDepartureAddress(shipmentCreateDto.getDepartureAddress());
@@ -45,6 +50,12 @@ public class ShipmentMapper {
         return shipment;
     }
 
+    /**
+     * Converts a ShipmentUpdateDto object to a Shipment object for update.
+     *
+     * @param shipmentUpdateDto ShipmentUpdateDto object to convert.
+     * @return Updated Shipment object.
+     */
     public Shipment updateDtoToObject(ShipmentUpdateDto shipmentUpdateDto) {
         Shipment shipment = createDtoToObject(shipmentUpdateDto);
         shipment.setId(shipmentUpdateDto.getId());
@@ -52,6 +63,12 @@ public class ShipmentMapper {
         return shipment;
     }
 
+    /**
+     * Converts a Shipment object to a ShipmentOutDto object.
+     *
+     * @param shipment Shipment object to convert.
+     * @return Converted ShipmentOutDto object.
+     */
     public ShipmentOutDto ObjectToDto(Shipment shipment) {
         Courier courier = courierService.getCourierFromShipment(shipment.getId());
         User sender = shipmentService.getSender(shipment.getId());

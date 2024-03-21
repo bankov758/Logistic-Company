@@ -22,6 +22,14 @@ public class TariffsMapper {
         this.tariffsService=tariffsService;
         this.companyService = companyService;
     }
+
+    /**
+     * Converts a TariffCreateDto object to a Tariff object.
+     *
+     * @param tariffCreateDto TariffCreateDto object to convert.
+     * @return Converted Tariff object.
+     * @throws IOException if an I/O error occurs.
+     */
     public Tariff DTOtoObject(TariffCreateDto tariffCreateDto) throws IOException{
         Tariff tariff = new Tariff();
         tariff.setCompany(companyService.getById(tariffCreateDto.getCompanyID()));
@@ -30,6 +38,12 @@ public class TariffsMapper {
         return tariff;
     }
 
+    /**
+     * Converts a Tariff object to a TariffOutDto object.
+     *
+     * @param tariff Tariff object to convert.
+     * @return Converted TariffOutDto object.
+     */
     public TariffOutDto ObjectToDTO(Tariff tariff){
         TariffOutDto tariffOutDto = new TariffOutDto();
         tariffOutDto.setId(tariff.getId());
@@ -39,6 +53,12 @@ public class TariffsMapper {
         return tariffOutDto;
     }
 
+    /**
+     * Converts a Tariff object to a TariffUpdateDto object for update.
+     *
+     * @param tariff Tariff object to convert.
+     * @return Converted TariffUpdateDto object.
+     */
     private TariffUpdateDto objectToUpdateDTO(Tariff tariff){
         TariffUpdateDto tariffUpdateDto = new TariffUpdateDto();
         tariffUpdateDto.setCompanyID(tariff.getCompany());
@@ -47,6 +67,12 @@ public class TariffsMapper {
         return tariffUpdateDto;
     }
 
+    /**
+     * Converts a TariffUpdateDto object to a Tariff object for update.
+     *
+     * @param tariffUpdateDto TariffUpdateDto object containing updated tariff information.
+     * @return Updated Tariff object.
+     */
     public Tariff UpdateDTOtoTariffs(TariffUpdateDto tariffUpdateDto){
         Tariff tariff = new Tariff();
         tariff.setPricePerKG(tariffUpdateDto.getPricePerKG());
