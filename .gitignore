@@ -25,4 +25,6 @@ replay_pid*
 
 # IDE
 .idea
-backend/src/main/resources/application.properties
+frontend/.next
+frontend/next-env.d.ts
+frontend/node_modules
