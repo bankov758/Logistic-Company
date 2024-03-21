@@ -1,6 +1,7 @@
 import React from "react";
 import {useEffect, useState} from "react";
 import {Session, getSession} from "@/lib/auth";
+import axios from "@/lib/axios";
 
 import {categories, tableColumns} from "@/data/client/ordersTableData";
 
@@ -24,14 +25,8 @@ const ClientInterface: React.FC = () => {
                 setSession(response)
                 setError(null);
 
-                fetch("http://localhost:8080/api/shipments/logged-user", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "*/*"
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => setData(data))
+                axios.get("/shipments/logged-user")
+                    .then(response => setData(response.data))
                     .catch(error => setError(error));
             })
     }, [tryAgain]);

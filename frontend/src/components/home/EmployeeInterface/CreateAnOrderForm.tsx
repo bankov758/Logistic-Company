@@ -18,8 +18,6 @@ const CreateAnOrderForm: React.FC = () => {
     const [selectedSender, setSelectedSender] = useState<selectorItem | null>(null);
     const [selectedReceiver, setSelectedReceiver] = useState<selectorItem | null>(null);
 
-
-
     useEffect(() => {
         getSession()
             .then( async (response) => {

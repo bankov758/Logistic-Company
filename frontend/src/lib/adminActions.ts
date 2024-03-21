@@ -1,5 +1,6 @@
 "use server";
-import {getSession, Session} from "@/lib/auth";
+import {Session} from "@/lib/auth";
+import axios from "@/lib/axios";
 import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 
@@ -22,28 +23,15 @@ export const createCompany = async (
             name: newCompanyName.trim(),
         };
 
-        const response = await fetch('http://localhost:8080/api/companies', {
-            method: 'POST',
-            body: JSON.stringify(requestData),
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
+        await axios.post('/companies', requestData);
 
-        });
-
-        if (response.ok) {
-            return {
-                message: "You've successfully create a company! ",
-                errors: ""
-            }
-        } else {
-            return {
-                message: '',
-                errors: 'Failed to create company:'+ response.statusText }
+        return {
+            message: "You've successfully create a company! ",
+            errors: ""
         }
 
     } catch (error) {
+
         console.error('Error creating company:', error);
         return {
             message: '',
@@ -60,27 +48,11 @@ export const deleteCompany = async (
 
     const companyId = getCompanyId(companyName, companyData);
     try {
-        const response = await fetch(`http://localhost:8080/api/companies/${companyId}`, {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
-
-        });
-        if(response.ok){
-            console.log("Company successfully deleted!")
-            return {
-                message: "Company was successfully deleted!",
-                errors: ""
-            }
-        }else {
-            console.log("Failed to delete company")
-            return {
-                message: '',
-                errors: 'Failed to delete company '
-            };
-
+        await axios.delete(`/companies/${companyId}`);
+        
+        return {
+            message: "Company was successfully deleted!",
+            errors: ""
         }
     } catch (error) {
         console.error("Failed to delete the company!", error);
@@ -112,27 +84,11 @@ export const editCompany = async (
         name: updatedCompanyName
     }
     try {
-        const response = await fetch(`http://localhost:8080/api/companies`, {
-            method: 'PUT',
-            body: JSON.stringify(requestedData),
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
+        await axios.put(`/companies`, requestedData);
 
-        });
-        if(!response.ok){
-            console.log("Failed to update company")
-            return {
-                message: '',
-                errors: 'Failed to update company'
-            };
-        }else {
-            console.log("Company was successfully updated!")
-            return {
-                message: "Company was successfully updated! ",
-                errors: ""
-            }
+        return {
+            message: "Company was successfully updated! ",
+            errors: ""
         }
     } catch (error) {
         console.error("Failed to update the company", error);
@@ -157,27 +113,11 @@ export const addOffice = async (
     }
 
     try {
-        const response = await fetch(`http://localhost:8080/api/offices`, {
-            method: 'POST',
-            body: JSON.stringify(requestedData),
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
-
-        });
-        if(!response.ok){
-            console.log("Failed to add office!")
-            return {
-                message: '',
-                errors: 'Failed to add office!'
-            };
-        }else {
-            console.log("New office was successfully added!")
-            return {
-                message: "New office was successfully added! ",
-                errors: ""
-            }
+        await axios.post(`/offices`, requestedData);
+        
+        return {
+            message: "New office was successfully added! ",
+            errors: ""
         }
     } catch (error) {
         console.error("Failed to add a new office to the company!", error);
@@ -187,6 +127,7 @@ export const addOffice = async (
         };
     }
 }
+
 export const deleteOffice = async (
     item: any,
     session: { username: string; roles: string[]; } | null | undefined

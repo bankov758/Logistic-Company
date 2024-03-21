@@ -1,21 +1,14 @@
 "use client";
 import React, {Fragment, useEffect} from "react";
-import Notification from "@/components/UI/Notification";
 import {useFormState} from "react-dom";
 import Link from "next/link";
 
 import {useRouter} from "next/navigation";
-import {FormState, login} from "@/lib/actions";
-import {ZodError} from "zod";
+import {login} from "@/lib/actions";
 import SubmitButton from "@/components/UI/SubmitButton";
 
-const initialState: FormState = {
-    message: '',
-    errors: null
-}
-
 const LoginPage: React.FC = () => {
-    const [loginState, loginAction] = useFormState(login, initialState);
+    const [loginState, loginAction] = useFormState(login, { message: '', errors: '' });
     const router = useRouter();
 
     useEffect(() => {

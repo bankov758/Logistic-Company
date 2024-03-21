@@ -6,7 +6,6 @@ import {useRouter} from "next/navigation";
 
 import {register} from "@/lib/actions";
 
-import Notification from "@/components/UI/Notification";
 import SubmitButton from "@/components/UI/SubmitButton";
 
 const RegistrationPage = () => {

@@ -3,16 +3,12 @@
 import {z, ZodIssue} from "zod";
 import {Session, signIn, signOut} from "@/lib/auth";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
-import exp from "node:constants";
-import {headers} from "next/headers";
-import {item} from "@/components/home/Table";
-interface User {
-	id: number,
-	username: string
-}
+import axios from "@/lib/axios";
+import { AxiosError } from "axios";
+
 export type FormState = {
-    message: null | string | { username: string; roles: string[]; };
-    errors: ZodIssue[] | null | string;
+    message: string | { username: string; roles: string[]; };
+    errors: ZodIssue[] | string;
 }
 
 const loginSchema = z.object({
@@ -44,23 +40,13 @@ export const login = async (initialState: FormState, formData: FormData) => {
 
     try {
         //make an API call to the server to login the user
-        const response = await fetch('http://localhost:8080/api/auth/login', {
-            method: "POST",
-            body: JSON.stringify(fields),
-            headers: {
-                'Content-Type': "application/json",
-            }
-        })
+        const response = await axios.post('/auth/login', fields)
 
-        if (!response.ok) {
-            throw new Error("Something went wrong! Sign up process was unsuccessfull!")
-        }
-        const data: { username: string; roles: string[]; id: number } = await response.json();
-        await signIn(data.username, data.roles, data.id)
+        await signIn(response.data.username, response.data.roles, response.data.id)
 
         return {
             errors: '',
-            message: data
+            message: response.data
         }
 
     } catch (error) {
@@ -124,25 +110,13 @@ export const register = async (initialState: FormState, formData: FormData) => {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/auth/signup', {
-            method: "POST",
-            body: JSON.stringify(fields),
-            headers: {
-                'Content-Type': "application/json",
-                Accept: "*/*"
-            }
-        })
+        const response = await axios.post('/auth/signup', fields)
 
-        if (!response.ok) {
-            throw new Error("Something happened! Registration process was unsuccessful!")
-        }
-
-        const data = await response.json();
-        await signIn(data.username, data.roles, data.id);
+        await signIn(response.data.username, response.data.roles, response.data.id);
 
         return {
             errors: '',
-            message: data
+            message: response.data
         }
 
     } catch (error) {
@@ -162,17 +136,12 @@ export const register = async (initialState: FormState, formData: FormData) => {
 
 export const deleteUser = async (session: Session | null) => {
 	try {
-		const response = await fetch(`localhost:8080/api/users/${session?.id}`, {
-			headers: {
-				"Content-Type": "application/json",
-				Accept: "*/*"
-			}
-		})
-		if (!response.ok) {
-			throw new Error("Something went wrong!");
-		}
+		await axios.get(`/users/${session?.id}`);
+
+        await signOut();
+
 	} catch (err) {
-		if( err instanceof Error ) {
+		if( err instanceof AxiosError ) {
 			throw err;
 		}
 	}
@@ -180,30 +149,16 @@ export const deleteUser = async (session: Session | null) => {
 
 export const getCompanies = async (): Promise<selectorItem[] | null> => {
     try {
-        const response = await fetch("http://localhost:8080/api/companies", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            }
-        })
+        const response = await axios.get("/companies")
 
-        if (!response.ok) {
-            throw new Error("Something went wrong!");
-        }
+        return response.data.map((company: any) => ({
+            title: company.name,
+            code: company.name,
+            id: company.id,
+        }));
 
-        const data = await response.json()
-
-        if (data) {
-
-            return data.map((company: any) => ({
-                title: company.name,
-                code: company.name,
-                id: company.id,
-            }));
-        }
-        return null;
     } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof AxiosError) {
             throw err;
         }
     }
@@ -214,67 +169,36 @@ export const getCompanies = async (): Promise<selectorItem[] | null> => {
 
 export const getCouriers = async (): Promise<selectorItem[] | null> => {
     try {
-        const response = await fetch("http://localhost:8080/api/couriers", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            }
-        })
+        const response = await axios.get("/couriers")
 
-        if (!response.ok) {
-            throw new Error("Something went wrong!");
-        }
-
-        const data = await response.json()
-
-        if (data) {
-
-            return data.map((courier: any) => ({
-                title: courier.username,
-                username: courier.username,
-                id: courier.id,
-            }));
-        }
-        return null;
+        return response.data.map((courier: any) => ({
+            title: courier.username,
+            username: courier.username,
+            id: courier.id,
+        }));
     } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof AxiosError) {
             throw err;
         }
     }
-
     return null;
-
 }
 
 export const getUsers = async (): Promise<selectorItem[] | null> => {
     try {
-        const response = await fetch("http://localhost:8080/api/users", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            }
-        })
+        const response = await axios.get("/users")
 
-        if (!response.ok) {
-            throw new Error("Something went wrong!");
-        }
+        return response.data.map((user: any) => ({
+            title: user.username,
+            id: user.id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            roles: user.roles
+        }));
 
-        const data = await response.json()
-
-        if (data) {
-
-            return data.map((user: any) => ({
-                title: user.username,
-                id: user.id,
-                username: user.username,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                roles: user.roles
-            }));
-        }
-        return null;
     } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof AxiosError) {
             throw err;
         }
     }
@@ -314,9 +238,8 @@ export const createAnOrder = async (
 
     const employeeId = await getUserId(session?.username, users);
 
-
+    //TODO check
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
-
 
     const fields = {
         departureAddress,
@@ -329,8 +252,8 @@ export const createAnOrder = async (
         courierId,
         companyId
     }
-    console.log(fields);
-	const validateSchema = createNewOrderSchema.safeParse(fields);
+
+    const validateSchema = createNewOrderSchema.safeParse(fields);
 	if (!validateSchema.success ) {
 		return {
 			message: "",
@@ -339,43 +262,22 @@ export const createAnOrder = async (
 	}
 
     try {
-        const response = await fetch('http://localhost:8080/api/shipments', {
-            method: "POST",
-            body: JSON.stringify(fields),
-            headers: {
-                'Content-Type': "application/json",
-                Accept: "*/*"
-            }
-        })
-	console.log(response);
-        if (!response.ok) {
-            throw new Error("Something happened! Creating new order process was unsuccessful!")
-        }
+        const response = await axios.post('/shipments', fields)
 
-        const data = await response.json();
         return {
             errors: '',
-            message: data
+            message: response.data
         }
 
     } catch (error) {
         console.error("Error creating new order:", error);
 
-        if (error instanceof Error) {
+        if (error instanceof AxiosError) {
             return {
                 errors: error.message || "Something went wrong!",
                 message: ""
             };
-        } else if (error instanceof Response) {
-            const responseText = await error.text();
-            console.error("Server response:", responseText);
 
-            // Parse the responseText and handle accordingly
-
-            return {
-                errors: "Something went wrong!",
-                message: ""
-            };
         }
 
 		return {
@@ -384,6 +286,7 @@ export const createAnOrder = async (
 		};
 	}
 }
+
 export const editOrder = async (
 	session: Session | null,
 	senderId: string | number | undefined,
@@ -401,11 +304,10 @@ export const editOrder = async (
 	console.log(FormData);
 	//const employeeId = await getUserId(session?.username, users);
 
-
+    //TODO fix
 	const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
 
-
-	 const fields ={
+	 const fields = {
 		selectedItemId,
 	 	departureAddress,
 	 	arrivalAddress,
@@ -417,6 +319,7 @@ export const editOrder = async (
 	//	 receivedDate,
 	 	courierId,
 	 }
+
 	console.log(fields);
 	const validateSchema = createNewOrderSchema.safeParse(fields);
 	if (!validateSchema.success ) {
@@ -426,30 +329,17 @@ export const editOrder = async (
 		}
 	}
 	try {
-		const response = await fetch('http://localhost:8080/api/shipments', {
-			method: "POST",
-			body: JSON.stringify(fields),
-			headers: {
-				//Authorization: session?.username || '',
-				'Content-Type': "application/json",
-				Accept: "*/*"
-			}
-		})
-		console.log(response);
-		if( !response.ok ) {
-			throw new Error("Something happened! Creating new order process was unsuccessful!")
-		} else {
-			signOut();
-		}
+		const response = await axios.post('/shipments', fields)
 
-		const data = await response.json();
+        signOut();
+
 		return {
 			errors: '',
-			message: data
+			message: response.data
 		}
 
 	} catch ( error ) {
-		if( error instanceof Error ) {
+		if( error instanceof AxiosError ) {
 			return {
 				errors: error.message || "Something went wrong!",
 				message: ""
@@ -462,11 +352,3 @@ export const editOrder = async (
         };
     }
 }
-
-
-
-
-
-
-
-

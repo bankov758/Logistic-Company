@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import {AxiosError} from "axios";
+import axios from "@/lib/axios";
 
 import Table, {item} from "../Table";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
@@ -18,60 +20,12 @@ import {getSession, Session} from "@/lib/auth";
 import Notification from "@/components/UI/Notification";
 import ShowCompanyInfo from "@/components/home/AdminInterface/ShowCompanyInfo";
 import CreateCompanyForm from "@/components/home/AdminInterface/CreateCompanyForm";
-
-// interface Client {
-//     id: number;
-//     name: string;
-// }
-
-// interface Employee {
-//     id: number;
-//     name: string;
-// }
-//
-// interface Office {
-//     id: number;
-//     location: string;
-// }
-
-async function getCompanies(session: { username: string; } | null): Promise<selectorItem[] | null> {
-   try {
-       const response = await fetch("http://localhost:8080/api/companies", {
-           headers: {
-               "Authorization": session?.username || "",
-               "Content-Type": "application/json",
-               Accept: "*/*"
-           }
-       })
-
-       if( !response.ok ) {
-           throw new Error("Something went wrong!");
-       }
-
-       const data = await response.json()
-
-       if( data ) {
-
-           return data.map((company: any) => ({
-               title: company.name,
-               code: company.name,
-               id: company.id,
-           }));
-       }
-       return null;
-   } catch (err) {
-       if( err instanceof Error ) {
-           throw err;
-       }
-   }
-
-   return null;
-}
+import {getCompanies} from "@/lib/actions";
 
 const AdminInterface: React.FC = () => {
     const [session, setSession] = useState<null | Session>(null);
     const [data, setData] = useState<item[][] | null>(null);
-    const [error, setError] = useState<Error | null | string>(null);
+    const [error, setError] = useState<AxiosError | null | string>(null);
     const [tryAgain, setTryAgain] = useState<boolean>(false);
 
     const [companies, setCompanies] = useState<selectorItem[]>([]);
@@ -86,7 +40,7 @@ const AdminInterface: React.FC = () => {
                 setSession(response)
                 
                 try {
-                    const companies = await getCompanies(response);
+                    const companies = await getCompanies();
 
                     if( companies ) {
                         setCompanies(companies);
@@ -94,7 +48,7 @@ const AdminInterface: React.FC = () => {
                         setError("Something went wrong!")
                     }
                 } catch (err) {
-                    if( err instanceof Error ) {
+                    if( err instanceof AxiosError ) {
                         setError(err)
                     } 
                 }
@@ -106,45 +60,20 @@ const AdminInterface: React.FC = () => {
 
         Promise.all([
             //clients
-            fetch(`http://localhost:8080/api/companies/${data.id}/clients`, {
-                headers: {
-                    "Authorization": session?.username || "",
-                    "Content-Type": "application/json",
-                    Accept: "*/*"
-                }
-            }),
+            axios.get(`/companies/${data.id}/clients`),
             //employees
-            fetch(`http://localhost:8080/api/companies/${data.id}/employees`, {
-                headers: {
-                    "Authorization": session?.username || "",
-                    "Content-Type": "application/json",
-                    Accept: "*/*"
-                }
-            }),
+            axios.get(`/companies/${data.id}/employees`),
             //couriers
-            fetch(`http://localhost:8080/api/couriers`, {
-                headers: {
-                    "Authorization": session?.username || "",
-                    "Content-Type": "application/json",
-                    Accept: "*/*"
-                }
-            }),
+            axios.get(`/couriers`),
             //offices
-            fetch("http://localhost:8080/api/offices", {
-                headers: {
-                    "Authorization": session?.username || "",
-                    "Content-Type": "application/json",
-                    Accept: "*/*"
-                }
-            })
+            axios.get("/offices")
         ])
-            .then(responses => Promise.all(responses.map(response => response.json())))
             .then(([clientsData, employeesData, courierData, officesData]) => {
                 const combinedData = [
-                    clientsData,
-                    employeesData,
-                    courierData,
-                    officesData
+                    clientsData.data,
+                    employeesData.data,
+                    courierData.data,
+                    officesData.data
                 ];
                 setData(combinedData);
             })
@@ -155,7 +84,7 @@ const AdminInterface: React.FC = () => {
         {error &&
             <Notification status='error'>
                 <div className='flex flex-col justify-center items-center w-full'>
-                    <p>{error instanceof Error ? error.message : error}</p>
+                    <p>{error instanceof AxiosError ? error.message : error}</p>
                     <button className='base-btn-blue' onClick={() => setTryAgain(!tryAgain)}>Try again</button>
                 </div>
             </Notification>

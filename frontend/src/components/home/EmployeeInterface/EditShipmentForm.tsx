@@ -34,9 +34,9 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
             .then( async (response) => {
                 setSession(response)
                 try {
-                    const companies = await getCompanies(response);
-                    const users = await getUsers(response);
-                    const couriers = await getCouriers(response);
+                    const companies = await getCompanies();
+                    const users = await getUsers();
+                    const couriers = await getCouriers();
                     if( companies ) {
                         setCompanies(companies);
                     } else {
@@ -115,12 +115,12 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
                     className="block text-gray-500 rounded-xl border-2 py-1.5 px-1 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line"
                 />
             </div>
-            <div className="order-div">
-                <label className="block  text-gray-500">Status:</label>
-                <div className="rounded-xl border-2 py-1 px-3">
-                    <RadioButton options={options} />
-                </div>
-            </div>
+            {/*<div className="order-div">*/}
+            {/*    <label className="block  text-gray-500">Status:</label>*/}
+            {/*    <div className="rounded-xl border-2 py-1 px-3">*/}
+            {/*        <RadioButton options={options} />*/}
+            {/*    </div>*/}
+            {/*</div>*/}
             <div className="order-div">
                 <label htmlFor="weight" className="block  text-gray-500">Weight (in kilogram):</label>
                 <input type="text" id="weight" name="weight"  className="input-info-dialog" />

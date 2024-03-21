@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { categories, tableColumns } from "@/data/employee/ordersTableData";
 import {getSession, Session} from "@/lib/auth";
+import axios from "@/lib/axios";
 
 import FilterOrders from "./FilterOrders";
 import Table, { item } from "../Table";
@@ -24,14 +25,8 @@ const EmployeeInterface: React.FC = () => {
                 setSession(response)
                 setError(null);
 
-                fetch("localhost:8080/api/shipments/logged-user", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "*/*"
-                    }
-                })
-                .then(response => response.json())
-                .then(data => setData(data))
+                axios.get("/shipments/logged-user")
+                .then(response => setData(response.data))
                 .catch(error => setError(error));
             })
     }, []);
