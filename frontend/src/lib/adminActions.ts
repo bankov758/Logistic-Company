@@ -92,6 +92,7 @@ export const deleteCompany = async (
         };
     }
 }
+
 export const getCompanyId = (companyName: string | undefined, companyData: selectorItem[]) => {
     const foundCompany = companyData.find(company => company.title === companyName);
     if (foundCompany) {

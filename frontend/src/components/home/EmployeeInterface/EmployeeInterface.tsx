@@ -49,6 +49,7 @@ const EmployeeInterface: React.FC = () => {
             }
             <div className='flex justify-start items-center gap-x-4'>
                 <h3>Welcome, {session?.username || "user"}! You&apos;re logged in as employee.</h3>
+                <br/>
                 <Button fill onClick={() => setShowCreateOrderDialog(true)}>Create an order</Button>
             </div>
             {showCreateOrderDialog &&

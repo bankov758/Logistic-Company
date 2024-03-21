@@ -4,7 +4,7 @@ import React, {Fragment, useEffect, useState} from "react";
 import {redirect} from "next/navigation";
 import {getSession} from "@/lib/auth";
 
-import ClientInterface from "@/components/home/ClientInterface";
+import ClientInterface from "@/components/home/ClientInterface/ClientInterface";
 import EmployeeInterface from "@/components/home/EmployeeInterface/EmployeeInterface";
 import AdminInterface from "@/components/home/AdminInterface/AdminInterface";
 import BaseDialog from "@/components/UI/BaseDialog";

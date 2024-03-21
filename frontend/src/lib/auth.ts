@@ -4,6 +4,7 @@ import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 
 export type Session = {
+	id: number;
 	username: string;
 	roles: string[];
 	expires: Date;
@@ -28,9 +29,9 @@ export async function decrypt(session: string): Promise<any> {
 	return payload;
 }
 
-export async function signIn(username: string, roles: string[]): Promise<void> {
+export async function signIn(username: string, roles: string[], id: number): Promise<void> {
 	const expires = new Date(Date.now() + (60 * 60 * 1000));
-	const session = await encrypt({ username, roles, expires });
+	const session = await encrypt({id, username, roles, expires });
 
 	cookies().set("session", session, { expires, httpOnly: true });
 }

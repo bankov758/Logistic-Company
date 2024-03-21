@@ -1,10 +1,12 @@
 "use server"; //module level Server Actions defined by 'use server' React directive
 
 import {z, ZodError, ZodIssue} from "zod";
-import {getSession, Session, signIn} from "@/lib/auth";
+import {getSession, Session, signIn, signOut} from "@/lib/auth";
 import {redirect} from "next/navigation";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import exp from "node:constants";
+import {headers} from "next/headers";
+import {item} from "@/components/home/Table";
 interface User {
 	id: number,
 	username: string
@@ -54,8 +56,8 @@ export const login = async (initialState: FormState, formData: FormData) => {
 		if( !response.ok ) {
 			throw new Error("Something went wrong! Sign up process was unsuccessfull!")
 		}
-		const data: { username: string; roles: string[]; } = await response.json();
-		await signIn(data.username, data.roles)
+		const data: { username: string; roles: string[]; id: number } = await response.json();
+		await signIn(data.username, data.roles, data.id)
 
 		return {
 			errors: '',
@@ -137,7 +139,7 @@ export const register = async (initialState: FormState, formData: FormData) => {
 		}
 
 		const data = await response.json();
-		await signIn(data.username, data.roles);
+		await signIn(data.username, data.roles, data.id);
 
 		return {
 			errors: '',
@@ -156,6 +158,24 @@ export const register = async (initialState: FormState, formData: FormData) => {
 			errors: "Something went wrong!",
 			message: ""
 		};
+	}
+}
+
+export const deleteUser = async (session: Session | null) => {
+	try {
+		const response = await fetch(`localhost:8080/api/users/${session?.id}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "*/*"
+			}
+		})
+		if (!response.ok) {
+			throw new Error("Something went wrong!");
+		}
+	} catch (err) {
+		if( err instanceof Error ) {
+			throw err;
+		}
 	}
 }
 
@@ -313,6 +333,7 @@ export const createAnOrder = async (
 		courierId,
 		companyId
 	}
+	console.log(fields);
 	const validateSchema = createNewOrderSchema.safeParse(fields);
 	if (!validateSchema.success ) {
 		return {
@@ -332,7 +353,7 @@ export const createAnOrder = async (
 				Accept: "*/*"
 			}
 		})
-
+	console.log(response);
 		if( !response.ok ) {
 			throw new Error("Something happened! Creating new order process was unsuccessful!")
 		}
@@ -369,6 +390,87 @@ export const createAnOrder = async (
 		};
 	}
 }
+export const editOrder = async (
+	session: Session | null,
+	senderId: string | number | undefined,
+	receiverId: string | number | undefined,
+	courierId: string | number | undefined,
+	selectedItemId: number | null,
+	initialState: FormState,
+	formData: FormData,
+) => {
+	const departureAddress = formData.get('departureAddress');
+	const arrivalAddress = formData.get('arrivalAddress');
+	const sentDate = formData.get('sentDate');
+	const weight = formData.get('weight');
+
+	console.log(FormData);
+	//const employeeId = await getUserId(session?.username, users);
+
+
+	const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
+
+
+	 const fields ={
+		selectedItemId,
+	 	departureAddress,
+	 	arrivalAddress,
+	// 	weight,
+	 	senderId,
+	 	receiverId,
+		employeeId: session?.id,
+	 	sentDate,
+	//	 receivedDate,
+	 	courierId,
+	 }
+	console.log(fields);
+	const validateSchema = createNewOrderSchema.safeParse(fields);
+	if (!validateSchema.success ) {
+		return {
+			message: "",
+			errors: validateSchema.error.issues
+		}
+	}
+	try {
+		const response = await fetch('http://localhost:8080/api/shipments', {
+			method: "POST",
+			body: JSON.stringify(fields),
+			headers: {
+				//Authorization: session?.username || '',
+				'Content-Type': "application/json",
+				Accept: "*/*"
+			}
+		})
+		console.log(response);
+		if( !response.ok ) {
+			throw new Error("Something happened! Creating new order process was unsuccessful!")
+		} else {
+			signOut();
+		}
+
+		const data = await response.json();
+		return {
+			errors: '',
+			message: data
+		}
+
+	} catch ( error ) {
+		if( error instanceof Error ) {
+			return {
+				errors: error.message || "Something went wrong!",
+				message: ""
+			};
+		}
+
+		return {
+			errors: "Something went wrong!",
+			message: ""
+		};
+	}
+}
+
+
+
 
 
 

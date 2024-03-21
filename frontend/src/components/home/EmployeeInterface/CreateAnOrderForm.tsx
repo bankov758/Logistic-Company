@@ -61,7 +61,14 @@ const CreateAnOrderForm: React.FC = () => {
             default: break;
         }
     }
-    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,session, selectedSender?.id, selectedReceiver?.id, selectedCourier?.id, selectedCompany?.id, users), {message: null, errors: ''})
+    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,
+        session,
+        selectedSender?.id,
+        selectedReceiver?.id,
+        selectedCourier?.id,
+        selectedCompany?.id,
+        users),
+        {message: null, errors: ''})
 
     return (
         <>
@@ -69,7 +76,7 @@ const CreateAnOrderForm: React.FC = () => {
             <br/>
             <form action={createAnOrderAction}>
                 <div className="order-div">
-                    <label htmlFor="sender" className="block text-gray-500">Sender:</label>
+                    <label className="block text-gray-500">Sender:</label>
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
                         placeholderValue={selectedSender && Object.keys(selectedSender).length > 0 ? selectedSender.title : "Select user"}
@@ -78,7 +85,7 @@ const CreateAnOrderForm: React.FC = () => {
                     />
                 </div>
                 <div className="order-div">
-                    <label htmlFor="receiver" className="block text-gray-500">Receiver:</label>
+                    <label className="block text-gray-500">Receiver:</label>
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
                         placeholderValue={selectedReceiver && Object.keys(selectedReceiver).length > 0 ? selectedReceiver.title : "Select user"}
@@ -108,7 +115,7 @@ const CreateAnOrderForm: React.FC = () => {
                            placeholder="DD:MM:YYYY"></input><br/>
                 </div>
                 <div className="order-div">
-                    <label htmlFor="courier" className="block  text-gray-500">Courier:</label>
+                    <label className="block  text-gray-500">Courier:</label>
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
                         placeholderValue={selectedCourier && Object.keys(selectedCourier).length > 0 ? selectedCourier.title : "Select courier"}
@@ -117,7 +124,7 @@ const CreateAnOrderForm: React.FC = () => {
                     />
                 </div>
                 <div className="order-div">
-                    <label htmlFor="company" className="block  text-gray-500">Company:</label>
+                    <label className="block  text-gray-500">Company:</label>
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
                         placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select company"}
