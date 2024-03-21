@@ -26,7 +26,6 @@ export const createCompany = async (
             method: 'POST',
             body: JSON.stringify(requestData),
             headers: {
-                Authorization: session?.username || '',
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
@@ -64,7 +63,6 @@ export const deleteCompany = async (
         const response = await fetch(`http://localhost:8080/api/companies/${companyId}`, {
             method: 'DELETE',
             headers: {
-                Authorization: session?.username || '',
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
@@ -118,8 +116,6 @@ export const editCompany = async (
             method: 'PUT',
             body: JSON.stringify(requestedData),
             headers: {
-                Authorization: session?.username || '',
-
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
@@ -165,7 +161,6 @@ export const addOffice = async (
             method: 'POST',
             body: JSON.stringify(requestedData),
             headers: {
-                Authorization: session?.username || '',
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
@@ -204,7 +199,6 @@ export const deleteOffice = async (
         const response = await fetch(`http://localhost:8080/api/office/${item.id}`, {
             method: 'DELETE',
             headers: {
-                Authorization: session?.username || '',
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
@@ -243,7 +237,6 @@ export const deleteEmployee = async (
         const response = await fetch(`http://localhost:8080/api/office-employees/${item.id}`, {
             method: 'DELETE',
             headers: {
-                Authorization: session?.username || '',
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
@@ -284,7 +277,6 @@ export const promoteUser = async (
             method: 'PUT',
             body: JSON.stringify(requestedData),
             headers: {
-                Authorization: session?.username || '',
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
@@ -325,7 +317,6 @@ export const demoteEmployee = async (
             method: 'PUT',
             body: JSON.stringify(requestedData),
             headers: {
-                Authorization: session?.username || '',
                 "Content-Type": "application/json",
                 Accept: "*/*"
             },
