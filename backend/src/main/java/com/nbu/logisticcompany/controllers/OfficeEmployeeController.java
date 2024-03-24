@@ -24,8 +24,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/office-employees")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class OfficeEmployeeController {
 
     private final OfficeEmployeeService officeEmployeeService;

@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthenticationController {
 
     private final UserService userService;
