@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 @Repository
 public class CourierRepositoryImpl extends AbstractRepository<Courier> implements CourierRepository {
@@ -34,17 +35,32 @@ public class CourierRepositoryImpl extends AbstractRepository<Courier> implement
             }
         }
     }
+
     /**
      * Removes a user from the list of office employees by demoting them from being a courier.
      *
      * @param courierToDemoteId ID of the courier to demote.
      */
     @Override
-    public void removeUserFromOfficeEmployees(int courierToDemoteId) {
+    public void removeUserFromCouriers(int courierToDemoteId) {
         try (Session session = sessionFactory.openSession()) {
+            session.getTransaction().begin();
             session.createSQLQuery(" delete from courier where id = :id ")
                     .setParameter("id", courierToDemoteId)
                     .executeUpdate();
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void makeOfficeEmployee(int courierId, int officeId) {
+        try (Session session = sessionFactory.openSession()) {
+            session.getTransaction().begin();
+            session.createSQLQuery(" INSERT INTO office_employee (id, office_id) VALUES (:id, :officeId); ")
+                .setParameter("id", courierId)
+                .setParameter("officeId", officeId)
+                .executeUpdate();
+            session.getTransaction().commit();
         }
     }
 

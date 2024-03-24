@@ -1,6 +1,7 @@
 package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Courier;
+import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
@@ -64,7 +65,14 @@ public class CourierServiceImpl implements CourierService {
     @Override
     public void demoteToUser(int courierToDemoteId, User updater) {
         validateAdminAction(updater, Courier.class, Action.UPDATE);
-        courierRepository.removeUserFromOfficeEmployees(courierToDemoteId);
+        courierRepository.removeUserFromCouriers(courierToDemoteId);
+    }
+
+    @Override
+    public void makeOfficeEmployee(int courierId, int officeId, User updater) {
+        validateAdminAction(updater, OfficeEmployee.class, Action.UPDATE);
+        courierRepository.removeUserFromCouriers(courierId);
+        courierRepository.makeOfficeEmployee(courierId, officeId);
     }
 
 }

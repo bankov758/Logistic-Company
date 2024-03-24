@@ -39,13 +39,13 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     public OfficeEmployee getByUsername(String username) {
         return officeEmployeeRepository.getByField("username", username);
     }
+
     /**
      * Creates a new office employee, ensuring the employee's company matches the office's company.
      *
      * @param officeEmployee The office employee to be created.
      * @throws InvalidDataException If the company IDs of the office and employee do not match.
      */
-
     @Override
     public void create(OfficeEmployee officeEmployee) {
         if (officeEmployee.getOffice().getCompany().getId() != officeEmployee.getCompany().getId()){
@@ -53,6 +53,7 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
         }
         officeEmployeeRepository.create(officeEmployee);
     }
+
     /**
      * Demotes an office employee to a regular user role, provided the updater has admin privileges.
      *
@@ -79,6 +80,7 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
         officeEmployeeRepository.removeUserFromOfficeEmployees(officeEmployeeToUpdateId);
         officeEmployeeRepository.makeCourier(officeEmployeeToUpdateId);
     }
+
     /**
      * Updates an office employee's details after ownership and company validation.
      *

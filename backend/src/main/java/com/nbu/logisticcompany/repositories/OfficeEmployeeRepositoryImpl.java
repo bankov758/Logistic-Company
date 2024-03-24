@@ -26,6 +26,7 @@ public class OfficeEmployeeRepositoryImpl extends AbstractRepository<OfficeEmplo
                     .executeUpdate();
         }
     }
+
     /**
      * Updates the role of an office employee to courier.
      *

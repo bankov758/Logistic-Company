@@ -24,4 +24,6 @@ public interface CourierService {
 
     void demoteToUser(int courierToDemoteId, User updater);
 
+    void makeOfficeEmployee(int courierId, int officeId, User updater);
+
 }

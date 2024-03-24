@@ -58,6 +58,13 @@ public class CourierController {
         return ResponseEntity.ok().body(courierRegisterDto);
     }
 
+    @PutMapping("/{courierId}/make-office-employee/{officeId}")
+    public ResponseEntity<?> makeOfficeEmployee(HttpSession session, @PathVariable int courierId, @PathVariable int officeId) {
+        User updater = authenticationHelper.tryGetUser(session);
+        courierService.makeOfficeEmployee(courierId, officeId, updater);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/demote/{id}")
     public ResponseEntity<?> demoteToUser(HttpSession session, @PathVariable int id) {
         User updater = authenticationHelper.tryGetUser(session);
