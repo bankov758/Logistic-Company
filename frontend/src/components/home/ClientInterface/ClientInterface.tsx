@@ -70,8 +70,10 @@ const ClientInterface: React.FC = () => {
             }
             {showSelfDeleteDialog &&
                 ( <BaseDialog title="Self deletion" tryClose={() => setShowSelfDeleteDialog(false) }>
-                    <SelfDeleteUserForm session={session}
-                    onClick={(setAction) => {setShowSelfDeleteDialog(setAction)}}/>
+                    <SelfDeleteUserForm 
+                        session={session}
+                        onClick={(setAction) => {setShowSelfDeleteDialog(setAction)}}
+                    />
                 </BaseDialog>)
             }
             <div className="flex gap-x-5 items-center">

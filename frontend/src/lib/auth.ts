@@ -38,6 +38,7 @@ export async function signIn(username: string, roles: string[], id: number): Pro
 
 export async function signOut() {
 	cookies().set("session", "", { expires: new Date(0) });
+	cookies().set("JSESSIONID", "", { expires: new Date(0) });
 }
 
 export async function getSession(): Promise<Session | null> {

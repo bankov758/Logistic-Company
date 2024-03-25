@@ -5,6 +5,8 @@ import {Session, signIn, signOut} from "@/lib/auth";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import axios from "@/lib/axios";
 import { AxiosError } from "axios";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export type FormState = {
     message: string | { username: string; roles: string[]; };
@@ -42,6 +44,10 @@ export const login = async (initialState: FormState, formData: FormData) => {
         //make an API call to the server to login the user
         const response = await axios.post('/auth/login', fields)
 
+        const expires = new Date(Date.now() + (60 * 60 * 1000));
+        const jsession = response.headers['set-cookie']![0].split('; ')[0].split('=')[1];
+
+        cookies().set("JSESSIONID", jsession, { expires, httpOnly: true, path: '/' });
         await signIn(response.data.username, response.data.roles, response.data.id)
 
         return {
@@ -110,7 +116,12 @@ export const register = async (initialState: FormState, formData: FormData) => {
     }
 
     try {
-        const response = await axios.post('/auth/signup', fields)
+        const response = await axios.post('/auth/signup', fields);
+
+        const expires = new Date(Date.now() + (60 * 60 * 1000));
+        const jsession = response.headers['set-cookie']![0].split('; ')[0].split('=')[1];
+
+        cookies().set("JSESSIONID", jsession, { expires, httpOnly: true, path: '/' });
 
         await signIn(response.data.username, response.data.roles, response.data.id);
 
@@ -120,7 +131,7 @@ export const register = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
-        if (error instanceof Error) {
+        if (error instanceof AxiosError) {
             return {
                 errors: error.message || "Something went wrong!",
                 message: ""
@@ -135,9 +146,11 @@ export const register = async (initialState: FormState, formData: FormData) => {
 }
 
 export const deleteUser = async (session: Session | null) => {
-	try {
-		await axios.get(`/users/${session?.id}`);
+    const jsession = cookies().get("JSESSIONID")
 
+    try {
+		await axios.delete(`/users/${session?.id}`);
+        console.log("Deleted user");
         await signOut();
 
 	} catch (err) {
@@ -145,6 +158,8 @@ export const deleteUser = async (session: Session | null) => {
 			throw err;
 		}
 	}
+
+    redirect('/login');
 }
 
 export const getCompanies = async (): Promise<selectorItem[] | null> => {
@@ -301,7 +316,6 @@ export const editOrder = async (
 	const sentDate = formData.get('sentDate');
 	const weight = formData.get('weight');
 
-	console.log(FormData);
 	//const employeeId = await getUserId(session?.username, users);
 
     //TODO fix
@@ -320,7 +334,6 @@ export const editOrder = async (
 	 	courierId,
 	 }
 
-	console.log(fields);
 	const validateSchema = createNewOrderSchema.safeParse(fields);
 	if (!validateSchema.success ) {
 		return {
