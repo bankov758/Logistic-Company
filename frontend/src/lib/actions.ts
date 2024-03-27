@@ -7,6 +7,11 @@ import axios from "@/lib/axios";
 import { AxiosError } from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import {RequestCookie} from "next/dist/compiled/@edge-runtime/cookies";
+
+async function getCookies(): Promise<RequestCookie | undefined> {
+    return cookies().get("JSESSIONID")
+}
 
 export type FormState = {
     message: string | { username: string; roles: string[]; };
@@ -163,8 +168,15 @@ export const deleteUser = async (session: Session | null) => {
 }
 
 export const getCompanies = async (): Promise<selectorItem[] | null> => {
+
     try {
-        const response = await axios.get("/companies")
+        const jsession = await getCookies();
+
+        const response = await axios.get("/companies", {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
         return response.data.map((company: any) => ({
             title: company.name,

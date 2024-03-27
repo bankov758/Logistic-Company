@@ -4,6 +4,7 @@ import {useFormState} from "react-dom";
 import {createAnOrder, FormState, getCompanies, getCouriers, getUserId, getUsers} from "@/lib/actions";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import SubmitButton from "@/components/UI/SubmitButton";
+import { AxiosError } from "axios";
 
 const CreateAnOrderForm: React.FC = () => {
 
@@ -23,26 +24,24 @@ const CreateAnOrderForm: React.FC = () => {
             .then( async (response) => {
                 setSession(response)
                 try {
-                    const companies = await getCompanies(response);
-                    const users = await getUsers(response);
-                    const couriers = await getCouriers(response);
+                    const companies = await getCompanies();
+                    const couriers = await getCouriers();
+                    const users = await getUsers();
+
                     if( companies ) {
                         setCompanies(companies);
-                    } else {
-                        setError("Something went wrong when requesting companies!")
                     }
+                    
                     if( users ) {
                         setUsers(users);
-                    }else {
-                        setError("Something went wrong when requesting users!")
                     }
+                    
                     if( couriers ) {
                         setCouriers(couriers);
-                    }else {
-                        setError("Something went wrong when requesting users!")
                     }
+                    
                 } catch (err) {
-                    if( err instanceof Error ) {
+                    if( err instanceof AxiosError ) {
                         setError(err)
                     }
                 }
