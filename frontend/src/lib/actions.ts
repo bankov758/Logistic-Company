@@ -1,17 +1,12 @@
 "use server"; //module level Server Actions defined by 'use server' React directive
 
 import {z, ZodIssue} from "zod";
-import {Session, signIn, signOut} from "@/lib/auth";
+import {getCookies, Session, signIn, signOut} from "@/lib/auth";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import axios from "@/lib/axios";
 import { AxiosError } from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import {RequestCookie} from "next/dist/compiled/@edge-runtime/cookies";
-
-async function getCookies(): Promise<RequestCookie | undefined> {
-    return cookies().get("JSESSIONID")
-}
 
 export type FormState = {
     message: string | { username: string; roles: string[]; };
@@ -49,11 +44,16 @@ export const login = async (initialState: FormState, formData: FormData) => {
         //make an API call to the server to login the user
         const response = await axios.post('/auth/login', fields)
 
-        const expires = new Date(Date.now() + (60 * 60 * 1000));
         const jsession = response.headers['set-cookie']![0].split('; ')[0].split('=')[1];
 
-        cookies().set("JSESSIONID", jsession, { expires, httpOnly: true, path: '/' });
-        await signIn(response.data.username, response.data.roles, response.data.id)
+        await signIn(
+            {
+                username: response.data.username,
+                roles: response.data.roles,
+                id: response.data.id
+            },
+            jsession
+        )
 
         return {
             errors: '',
@@ -123,12 +123,16 @@ export const register = async (initialState: FormState, formData: FormData) => {
     try {
         const response = await axios.post('/auth/signup', fields);
 
-        const expires = new Date(Date.now() + (60 * 60 * 1000));
         const jsession = response.headers['set-cookie']![0].split('; ')[0].split('=')[1];
 
-        cookies().set("JSESSIONID", jsession, { expires, httpOnly: true, path: '/' });
-
-        await signIn(response.data.username, response.data.roles, response.data.id);
+        await signIn(
+            {
+                username: response.data.username,
+                roles: response.data.roles,
+                id: response.data.id
+            },
+            jsession
+        )
 
         return {
             errors: '',

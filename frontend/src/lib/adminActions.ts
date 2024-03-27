@@ -1,11 +1,9 @@
 "use server";
-import {Session} from "@/lib/auth";
 import axios from "@/lib/axios";
 import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 
 export const createCompany = async (
-    session: Session | null,
     initialState: FormState,
     formData: FormData,
 ) => {
@@ -14,7 +12,7 @@ export const createCompany = async (
     try {
         if (!newCompanyName.trim()) {
             return {
-                message: null,
+                message: '',
                 errors: "Company name cannot be empty!"
             }
         }
@@ -31,7 +29,6 @@ export const createCompany = async (
         }
 
     } catch (error) {
-
         console.error('Error creating company:', error);
         return {
             message: '',
