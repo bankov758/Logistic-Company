@@ -44,20 +44,22 @@ export const createCompany = async (
     }
 };
 
-export const deleteCompany = async (
-    companyName: string | undefined,
-    companyData: selectorItem[] ,
-    session: { username: string; roles: string[]; } | null | undefined
-) => {
+export const deleteCompany = async (initialState: FormState, selectedCompany: selectorItem) => {
 
-    const companyId = getCompanyId(companyName, companyData);
     try {
-        await axios.delete(`/companies/${companyId}`);
+        const jsession = await getCookies();
+
+        await axios.delete(`/companies/${selectedCompany.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
         
         return {
             message: "Company was successfully deleted!",
             errors: ""
         }
+
     } catch (error) {
         console.error("Failed to delete the company!", error);
         return {
@@ -69,6 +71,7 @@ export const deleteCompany = async (
 
 export const getCompanyId = (companyName: string | undefined, companyData: selectorItem[]) => {
     const foundCompany = companyData.find(company => company.title === companyName);
+
     if (foundCompany) {
         return foundCompany.id;
     }
@@ -76,19 +79,22 @@ export const getCompanyId = (companyName: string | undefined, companyData: selec
     return null;
 }
 
-export const editCompany = async (
-    companyName: string | undefined,
-    updatedCompanyName: string,
-    companyData: selectorItem[] , session: { username: string; roles: string[]; } | null | undefined
-) => {
+export const editCompany = async (updatedCompanyName: string, selectedCompany: selectorItem) => {
 
-    const companyId = getCompanyId(companyName, companyData);
     const requestedData = {
-        id: companyId,
+        id: selectedCompany.id,
         name: updatedCompanyName
     }
+
     try {
-        await axios.put(`/companies`, requestedData);
+
+        const jsession = await getCookies();
+
+        await axios.put(`/companies`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
 
         return {
             message: "Company was successfully updated! ",

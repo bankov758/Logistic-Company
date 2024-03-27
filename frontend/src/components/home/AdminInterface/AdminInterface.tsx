@@ -83,9 +83,24 @@ const AdminInterface: React.FC = () => {
             .catch(error => setError(error));
     }
 
-    const onSuccessCompany = async () => {
+    //TODO: turn this into one function
+    const onSuccessCreateCompany = async () => {
         setShowCreateDialog(false);
         await getAndSetCompanies()
+    }
+
+    const onSuccessDeleteCompany = async () => {
+        setShowCompanyInfoDialog(false);
+        setSelectedCompany(null);
+        await getAndSetCompanies();
+        setData([]);
+    }
+
+    const onSuccessEditCompany = async () => {
+        setShowCompanyInfoDialog(false);
+        setSelectedCompany(null);
+        await getAndSetCompanies();
+        setData([]);
     }
 
     return <>
@@ -126,7 +141,7 @@ const AdminInterface: React.FC = () => {
         {/* create company dialog  */}
         {showCreateDialog &&
             (<BaseDialog title="Create a company" tryClose={() => setShowCreateDialog(false)}>
-                <CreateCompanyForm onSuccess={onSuccessCompany} />
+                <CreateCompanyForm onSuccess={onSuccessCreateCompany} />
             </BaseDialog>)
         }
         {/* company info dialog */}
@@ -136,11 +151,11 @@ const AdminInterface: React.FC = () => {
                     title={ "Edit company " + selectedCompany.title + "'s information"}
                     tryClose={() => setShowCompanyInfoDialog(false)}
                 >
-                    <ShowCompanyInfo session={session} companyData={companies} selectedCompany={selectedCompany.title}/>
+                    <ShowCompanyInfo session={session} companyData={companies} selectedCompany={selectedCompany} onSuccessDelete={onSuccessDeleteCompany} onSuccessEdit={onSuccessEditCompany}/>
                 </BaseDialog>
             )
         }
-        {/* clients + employees + offices */}
+        {/* clients + employees + currier + offices */}
         {data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 &&
             data
                 .map((individualData: item[], index: number) => {
