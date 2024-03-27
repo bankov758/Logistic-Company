@@ -1,13 +1,20 @@
 "use client";
 
-import React from "react";
+import React, {useEffect} from "react";
 import {useFormState} from "react-dom";
 import {createCompany} from "@/lib/adminActions";
-import {Session} from "@/lib/auth";
 import SubmitButton from "@/components/UI/SubmitButton";
 
-const CreateCompanyForm: React.FC<{ session: Session | null }> = ({ session }) => {
+const CreateCompanyForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
     const [createCompanyState, createCompanyAction] = useFormState(createCompany, { message: "", errors: "" })
+
+    useEffect(() => {
+        console.log(createCompanyState)
+
+        if( createCompanyState.message ) {
+            onSuccess();
+        }
+    }, [createCompanyState, onSuccess]);
 
     return (
         <form

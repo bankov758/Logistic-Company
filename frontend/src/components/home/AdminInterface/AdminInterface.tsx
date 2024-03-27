@@ -34,24 +34,27 @@ const AdminInterface: React.FC = () => {
     const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
     const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
 
+    const getAndSetCompanies = async () => {
+        try {
+            const companies = await getCompanies();
+
+            if( companies ) {
+                setCompanies(companies);
+            } else {
+                setError("Something went wrong!")
+            }
+        } catch (err) {
+            if( err instanceof AxiosError ) {
+                setError(err)
+            }
+        }
+    }
+
     useEffect(() => {
         getSession()
             .then( async (response) => {
                 setSession(response)
-                
-                try {
-                    const companies = await getCompanies();
-
-                    if( companies ) {
-                        setCompanies(companies);
-                    } else {
-                        setError("Something went wrong!")
-                    }
-                } catch (err) {
-                    if( err instanceof AxiosError ) {
-                        setError(err)
-                    } 
-                }
+                await getAndSetCompanies();
             });
     }, []);
 
@@ -78,6 +81,11 @@ const AdminInterface: React.FC = () => {
                 setData(combinedData);
             })
             .catch(error => setError(error));
+    }
+
+    const onSuccessCompany = async () => {
+        setShowCreateDialog(false);
+        await getAndSetCompanies()
     }
 
     return <>
@@ -118,7 +126,7 @@ const AdminInterface: React.FC = () => {
         {/* create company dialog  */}
         {showCreateDialog &&
             (<BaseDialog title="Create a company" tryClose={() => setShowCreateDialog(false)}>
-                <CreateCompanyForm session={session} />
+                <CreateCompanyForm onSuccess={onSuccessCompany} />
             </BaseDialog>)
         }
         {/* company info dialog */}

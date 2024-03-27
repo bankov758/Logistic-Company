@@ -2,6 +2,7 @@
 import axios from "@/lib/axios";
 import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
+import {getCookies} from "@/lib/auth";
 
 export const createCompany = async (
     initialState: FormState,
@@ -21,10 +22,16 @@ export const createCompany = async (
             name: newCompanyName.trim(),
         };
 
-        await axios.post('/companies', requestData);
+        const jsession = await getCookies();
+
+        await axios.post('/companies', requestData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
 
         return {
-            message: "You've successfully create a company! ",
+            message: "You've successfully create a company!",
             errors: ""
         }
 
