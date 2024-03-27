@@ -62,20 +62,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDto register, BindingResult errors) {
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
-        }
-
-        if (!register.getPassword().equals(register.getConfirmPassword())) {
-            errors.rejectValue("confirmPassword", "password_error",
-                                      "Password confirmation should match password.");
-            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
-        }
-
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDto register,
+                                      BindingResult errors, HttpSession session) {
         try {
+            if (errors.hasErrors()) {
+                return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+            }
+            if (!register.getPassword().equals(register.getConfirmPassword())) {
+                errors.rejectValue("confirmPassword", "password_error",
+                        "Password confirmation should match password.");
+                return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+            }
             User user = userMapper.DtoToObject(register);
-            return ResponseEntity.ok().body(userMapper.ObjectToDto(userService.create(user)));
+            User newUser = userService.create(user);
+            session.setAttribute("currentUser", newUser);
+            return ResponseEntity.ok().body(userMapper.ObjectToDto(newUser));
         } catch (DuplicateEntityException | EntityNotFoundException | IOException ex) {
             String[] exceptionMessage = ex.getMessage().split(" ");
             String fieldName = exceptionMessage[2];
