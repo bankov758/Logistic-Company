@@ -19,6 +19,13 @@ const CreateAnOrderForm: React.FC = () => {
     const [selectedSender, setSelectedSender] = useState<selectorItem | null>(null);
     const [selectedReceiver, setSelectedReceiver] = useState<selectorItem | null>(null);
 
+    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,
+            session,
+            selectedSender?.id,
+            selectedReceiver?.id,
+            selectedCourier?.id),
+        {message: null, errors: ''})
+
     useEffect(() => {
         getSession()
             .then( async (response) => {
@@ -57,12 +64,6 @@ const CreateAnOrderForm: React.FC = () => {
             default: break;
         }
     }
-    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,
-        session,
-        selectedSender?.id,
-        selectedReceiver?.id,
-        selectedCourier?.id),
-        {message: null, errors: ''})
 
     return (
         <>

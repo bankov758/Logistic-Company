@@ -8,7 +8,6 @@ const AdminInterfaceUserActionsButtons: React.FC<{  onClick: (actionType: Action
             <button
                 className="action_btn_red"
                 onClick={() => onClick("deleteUser")}
-
             >
                 Delete
             </button>
@@ -16,7 +15,6 @@ const AdminInterfaceUserActionsButtons: React.FC<{  onClick: (actionType: Action
             <button
                 className="action_btn_green"
                 onClick={() => onClick("promoteUser")}
-
             >
                 Promote
             </button>

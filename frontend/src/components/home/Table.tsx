@@ -1,6 +1,7 @@
 "use client";
 import React, {Fragment, useState} from "react";
-import {getSession, Session} from "@/lib/auth";
+import {useFormState} from "react-dom";
+import {Session} from "@/lib/auth";
 import {deleteEmployee, deleteOffice, deleteUser, demoteEmployee, promoteUser} from "@/lib/adminActions";
 
 import BaseDialog from "@/components/UI/BaseDialog";
@@ -54,23 +55,36 @@ const Table: React.FC<TableProps> = ({
     const [editOffice, setEditOffice] = useState<boolean>(false);
     const [addRole, setAddRole] = useState<boolean>(false);
 
+    // user actions
+    const [deleteUserState, deleteUserAction] = useFormState(deleteUser, { message: '', errors: '' });
+    const [promoteUserState, promoteUserAction] = useFormState(promoteUser, { message: '', errors: '' });
+
+    // employee actions
+    const [deleteEmployeeState, deleteEmployeeAction] = useFormState(deleteEmployee, { message: '', errors: '' });
+    const [demoteEmployeeState, demoteEmployeeAction] = useFormState(demoteEmployee, { message: '', errors: '' });
+
+    // shipment actions
+    const [deleteShipmentState, deleteShipmentAction] = useFormState(deleteShipment, { message: '', errors: '' });
+
+    // office actions
+    const [deleteOfficeState, deleteOfficeAction] = useFormState(deleteOffice, { message: '', errors: '' });
+
 
     const handleAction = async (item: item, type: ActionType | null) => {
-        // TODO: there is no delete user query to refer to => possible solution : ask backend || remove delete user button
         switch (type) {
-            case "deleteOffice": await deleteOffice(item); break;
-            case "deleteUser": await deleteUser(item); break;
-            case "deleteEmployee": await deleteEmployee(item); break;
-            case "promoteUser": await promoteUser(item); break;
-            case "demoteEmployee": await demoteEmployee(item); break;
-            case "deleteShipment": await deleteShipment(item); break;
-            case "editOffice":
-                setEditOffice(true);
+            case "deleteUser": deleteUserAction(item.id); break;
+            case "promoteUser": promoteUserAction(item.id); break;
+            case "deleteEmployee": deleteEmployeeAction(item.id); break;
+            case "demoteEmployee": demoteEmployeeAction(item.id); break;
+            case "deleteShipment": deleteShipmentAction(item.id); break; // employee interface
+            case "editShipment":
+                setEditShipment(true);
                 setSelectedItem(item);
                 setShowDialog(true);
                 break;
-            case "editShipment":
-                setEditShipment(true);
+            case "deleteOffice": deleteOfficeAction(item.id); break;
+            case "editOffice":
+                setEditOffice(true);
                 setSelectedItem(item);
                 setShowDialog(true);
                 break;
@@ -82,7 +96,6 @@ const Table: React.FC<TableProps> = ({
             default: break;
         }
     };
-
 
     return (
         <div className="px-8 py-2 min-w-full">
@@ -163,7 +176,6 @@ const Table: React.FC<TableProps> = ({
                                                         }
                                                         if (column.code === 'adminInterfaceActions') {
                                                             if (category.code === 'clients') {
-
                                                                 return (
                                                                     <AdminInterfaceUserActionsButtons
                                                                         key={column.id}

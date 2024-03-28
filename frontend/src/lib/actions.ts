@@ -269,8 +269,8 @@ const createNewOrderSchema = z.object({
     weight: z.string().trim(),
 });
 
-const getCompanyId = async() => {
-    try{
+const getCompanyId = async () => {
+    try {
         const jsession = await getCookies();
 
         const response = await axios.get("/office-employees/logged-employee/company-id", {
@@ -278,7 +278,7 @@ const getCompanyId = async() => {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
         })
-        console.log("company id is " + response.data);
+
         return response.data;
     } catch (err) {
         if (err instanceof AxiosError) {
@@ -305,6 +305,8 @@ export const createAnOrder = async (
     //TODO check
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
 
+    const companyId = await getCompanyId();
+
     const fields = {
         departureAddress,
         arrivalAddress,
@@ -314,7 +316,7 @@ export const createAnOrder = async (
         employeeId: session?.id ,
         sentDate: parsedSentDate,
         courierId,
-        companyId: await getCompanyId()
+        companyId
     }
 
     const validateSchema = createNewOrderSchema.safeParse(fields);
@@ -327,24 +329,22 @@ export const createAnOrder = async (
 
     try {
         const jsession = await getCookies();
-        console.log(fields);
+
         const response = await axios.post('/shipments', fields, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
         })
-        console.log(response);
-
 
         return {
+            message: response.data,
             errors: '',
-            message: response.data
         }
 
     } catch (error) {
-        if (error instanceof AxiosError) {
+        if (error instanceof AxiosError && error.response) {
             return {
-                errors: error.message || "Something went wrong!",
+                errors: error.response.data || "Something went wrong!",
                 message: ""
             };
 
@@ -355,6 +355,7 @@ export const createAnOrder = async (
         }
 	}
 }
+
 const editOrderSchema = z.object({
     departureAddress: z.string().trim(),
     arrivalAddress: z.string().trim(),
@@ -428,19 +429,25 @@ export const editOrder = async (
     }
 }
 
-export const deleteShipment = async (item:item) => {
+export const deleteShipment = async (initialState: FormState, shipmentId: number) => {
     try {
         const jsession = await getCookies();
 
-        await axios.put(`/shipments/${item.id}`, {
+        await axios.put(`/shipments/${shipmentId}`, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
         });
 
+        return {
+            message: "The shipment was successfully removed!",
+            errors: ''
+        }
+
     } catch (err) {
-        if (err instanceof AxiosError) {
-            throw  err;
+        return {
+            message: '',
+            errors: "Cannot delete the shipment!"
         }
     }
 }
