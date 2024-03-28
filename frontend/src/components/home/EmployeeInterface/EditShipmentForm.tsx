@@ -66,7 +66,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
             case 'sender' : setSelectedSender(data); break;
             case 'receiver' : setSelectedReceiver(data); break;
             case 'courier' :  setSelectedCourier(data); break;
-            case 'company' : setSelectedCompany(data); break;
+           // case 'company' : setSelectedCompany(data); break;
             default: break;
         }
     }
@@ -100,21 +100,39 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
                 />
             </div>
             <div className="order-div">
+                <label className="block  text-gray-500">Courier:</label>
+                <DataSelectorWrapper
+                    hasInitialPlaceholderValue
+                    placeholderValue={selectedCourier && Object.keys(selectedCourier).length > 0 ? selectedCourier.title : "Select courier"}
+                    selectorData={couriers}
+                    onResubForNewData={(data) => handleSelect(data, 'courier')}
+                />
+            </div>
+            <div className="order-div">
                 <label htmlFor="departureAddress" className="block  text-gray-500">Departure location:</label>
-                <input type="text" id="departureAddress"  name="departureAddress" className="input-info-dialog" />
+                <input type="text" id="departureAddress" name="departureAddress" className="input-info-dialog"/>
             </div>
             <div className="order-div">
                 <label htmlFor="arrivalAddress" className="block  text-gray-500">Arrival location:</label>
-                <input type="text" id="arrivalAddress"  name="arrivalAddress" className="input-info-dialog" />
+                <input type="text" id="arrivalAddress" name="arrivalAddress" className="input-info-dialog"/>
             </div>
             <div className="order-div">
-                <label htmlFor="sentDate" className="block  text-gray-500">Date:</label>
+                <label htmlFor="sentDate" className="block  text-gray-500">Send date:</label>
                 <input
-                    type='sentDate'
+                    type='date'
                     id="sentDate" name="sentDate"
                     className="block text-gray-500 rounded-xl border-2 py-1.5 px-1 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line"
                 />
             </div>
+            <div className="order-div">
+                <label htmlFor="receivedDate" className="block  text-gray-500">Received date:</label>
+                <input
+                    type='date'
+                    id="receivedDate" name="receivedDate"
+                    className="block text-gray-500 rounded-xl border-2 py-1.5 px-1 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line"
+                />
+            </div>
+
             {/*<div className="order-div">*/}
             {/*    <label className="block  text-gray-500">Status:</label>*/}
             {/*    <div className="rounded-xl border-2 py-1 px-3">*/}
@@ -123,7 +141,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
             {/*</div>*/}
             <div className="order-div">
                 <label htmlFor="weight" className="block  text-gray-500">Weight (in kilogram):</label>
-                <input type="text" id="weight" name="weight"  className="input-info-dialog" />
+                <input type="text" id="weight" name="weight" className="input-info-dialog"/>
             </div>
             <div className='flex justify-center py-3 text-gray-500'>
                 <div className='flex justify-center py-3 text-gray-500'>

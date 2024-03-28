@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {getSession, Session} from "@/lib/auth";
 import {useFormState} from "react-dom";
-import {createAnOrder, FormState, getCompanies, getCouriers, getUserId, getUsers} from "@/lib/actions";
+import {createAnOrder, getCompanies, getCouriers, getUsers} from "@/lib/actions";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import SubmitButton from "@/components/UI/SubmitButton";
 import { AxiosError } from "axios";
@@ -54,7 +54,6 @@ const CreateAnOrderForm: React.FC = () => {
             case 'sender' : setSelectedSender(data); break;
             case 'receiver' : setSelectedReceiver(data); break;
             case 'courier' :  setSelectedCourier(data); break;
-            case 'company' : setSelectedCompany(data); break;
             default: break;
         }
     }
@@ -62,9 +61,7 @@ const CreateAnOrderForm: React.FC = () => {
         session,
         selectedSender?.id,
         selectedReceiver?.id,
-        selectedCourier?.id,
-        selectedCompany?.id,
-        users),
+        selectedCourier?.id),
         {message: null, errors: ''})
 
     return (
@@ -120,15 +117,15 @@ const CreateAnOrderForm: React.FC = () => {
                         onResubForNewData={(data) => handleSelect(data, 'courier')}
                     />
                 </div>
-                <div className="order-div">
-                    <label className="block  text-gray-500">Company:</label>
-                    <DataSelectorWrapper
-                        hasInitialPlaceholderValue
-                        placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select company"}
-                        selectorData={companies}
-                        onResubForNewData={(data) => handleSelect(data, 'company')}
-                    />
-                </div>
+                {/*<div className="order-div">*/}
+                {/*    <label className="block  text-gray-500">Company:</label>*/}
+                {/*    <DataSelectorWrapper*/}
+                {/*        hasInitialPlaceholderValue*/}
+                {/*        placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select company"}*/}
+                {/*        selectorData={companies}*/}
+                {/*        onResubForNewData={(data) => handleSelect(data, 'company')}*/}
+                {/*    />*/}
+                {/*</div>*/}
                 <div className='flex justify-center py-3 text-gray-500'>
                     <SubmitButton formState={createAnOrderState}/>
                 </div>

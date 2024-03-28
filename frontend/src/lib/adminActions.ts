@@ -3,6 +3,7 @@ import axios from "@/lib/axios";
 import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import {getCookies} from "@/lib/auth";
+import {item} from "@/components/home/Table";
 
 export const createCompany = async (
     initialState: FormState,
@@ -11,6 +12,7 @@ export const createCompany = async (
     const newCompanyName = formData.get("company_name") as string;
 
     try {
+
         if (!newCompanyName.trim()) {
             return {
                 message: '',
@@ -123,7 +125,13 @@ export const addOffice = async (
     }
 
     try {
-        await axios.post(`/offices`, requestedData);
+        const jsession = await getCookies();
+
+        await axios.post(`/offices`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
         
         return {
             message: "New office was successfully added! ",
@@ -139,34 +147,22 @@ export const addOffice = async (
 }
 
 export const deleteOffice = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
+    item: item,
 )=>{
-    //console.log(item);
-    //console.log(session);
-    console.log(item.id);
+
 
     try {
-        const response = await fetch(`http://localhost:8080/api/office/${item.id}`, {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
+        const jsession = await getCookies();
 
-        });
-        if(!response.ok){
-            console.log("Failed to delete office!")
-            return {
-                message: '',
-                errors: 'Failed to delete office!'
-            };
-        }else {
-            console.log("Office was successfully deleted!")
-            return {
-                message: "Office was successfully deleted! ",
-                errors: ""
+        const response = await axios.delete(`/office/${item.id}`,{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
             }
+        });
+
+        return {
+            message: "Office was successfully deleted! ",
+            errors: ""
         }
     } catch (error) {
         console.error("Failed to delete the chosen office!", error);
@@ -176,36 +172,46 @@ export const deleteOffice = async (
         };
     }
 }
-export const deleteEmployee = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
+export const deleteUser = async (
+    item: item,
 )=>{
-    //console.log(item);
-    //console.log(session);
-    console.log(item.id);
-
     try {
-        const response = await fetch(`http://localhost:8080/api/office-employees/${item.id}`, {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
+        const jsession = await getCookies();
 
-        });
-        if(!response.ok){
-            console.log("Failed to delete employee!")
-            return {
-                message: '',
-                errors: 'Failed to delete employee!'
-            };
-        }else {
-            console.log("Employee was successfully deleted!")
-            return {
-                message: "Employee was successfully deleted! ",
-                errors: ""
+        const response = await axios.delete(`/users/${item.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
             }
+        })
+        return {
+            message: "User was successfully deleted! ",
+            errors: ""
         }
+
+    } catch (error) {
+        console.error("Failed to deleted the chosen user!", error);
+        return {
+            message: '',
+            errors: 'Failed to deleted the chosen user!'
+        };
+    }
+}
+export const deleteEmployee = async (
+    item: item,
+)=>{
+    try {
+        const jsession = await getCookies();
+
+        const response = await axios.delete(`/office-employees/${item.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+        return {
+            message: "Employee was successfully deleted! ",
+            errors: ""
+        }
+
     } catch (error) {
         console.error("Failed to deleted the chosen employee!", error);
         return {
@@ -215,15 +221,18 @@ export const deleteEmployee = async (
     }
 }
 export const promoteUser = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
+    item: item,
 ) => {
 
+    console.log("the item in question is ");
+    console.log(item);
     const requestedData = {
         userId: item.id,
         role: "EMPLOYEE",
     }
     try {
+        const jsession = await getCookies();
+
         const response = await fetch(`http://localhost:8080/api/users/add-role`, {
             method: 'PUT',
             body: JSON.stringify(requestedData),
@@ -255,8 +264,7 @@ export const promoteUser = async (
     }
 }
 export const demoteEmployee = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
+    item: item,
 ) => {
 
     const requestedData = {
@@ -264,28 +272,19 @@ export const demoteEmployee = async (
         role: "USER",
     }
     try {
-        const response = await fetch(`http://localhost:8080/api/users/remove-role`, {
-            method: 'PUT',
-            body: JSON.stringify(requestedData),
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
+        const jsession = await getCookies();
 
-        });
-        if(!response.ok){
-            console.log("Failed to demote employee!")
-            return {
-                message: '',
-                errors: 'Failed to demote employee!!'
-            };
-        }else {
-            console.log("Employee was successfully demoted!")
-            return {
-                message: "Employee was successfully demoted! ",
-                errors: ""
+        const response = await axios.put(`/office-employees/demote/${item.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
             }
+        })
+
+        return {
+            message: "Employee was successfully demoted! ",
+            errors: ""
         }
+
     } catch (error) {
         console.error("Failed to demote the chosen employee!", error);
         return {

@@ -8,6 +8,8 @@ import { AxiosError } from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import {item} from "@/components/home/Table";
+
 export type FormState = {
     message: string | { username: string; roles: string[]; };
     errors: ZodIssue[] | string;
@@ -158,7 +160,11 @@ export const deleteUser = async (session: Session | null) => {
     const jsession = cookies().get("JSESSIONID")
 
     try {
-		await axios.delete(`/users/${session?.id}`);
+		await axios.delete(`/users/${session?.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
         console.log("Deleted user");
         await signOut();
 
@@ -200,7 +206,13 @@ export const getCompanies = async (): Promise<selectorItem[] | null> => {
 
 export const getCouriers = async (): Promise<selectorItem[] | null> => {
     try {
-        const response = await axios.get("/couriers")
+        const jsession = cookies().get("JSESSIONID")
+
+        const response = await axios.get("/couriers", {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
         return response.data.map((courier: any) => ({
             title: courier.username,
@@ -217,7 +229,13 @@ export const getCouriers = async (): Promise<selectorItem[] | null> => {
 
 export const getUsers = async (): Promise<selectorItem[] | null> => {
     try {
-        const response = await axios.get("/users")
+        const jsession = cookies().get("JSESSIONID")
+
+        const response = await axios.get("/users", {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
         return response.data.map((user: any) => ({
             title: user.username,
@@ -237,12 +255,12 @@ export const getUsers = async (): Promise<selectorItem[] | null> => {
     return null;
 }
 
-export const getUserId = async (userName: string | undefined, users: selectorItem[]) => {
-    const foundUser = users.find(user => user.title === userName)
-    if (foundUser) return foundUser.id;
-
-    return null;
-}
+// export const getUserId = async (userName: string | undefined, users: selectorItem[]) => {
+//     const foundUser = users.find(user => user.title === userName)
+//     if (foundUser) return foundUser.id;
+//
+//     return null;
+// }
 
 const createNewOrderSchema = z.object({
     departureAddress: z.string().trim(),
@@ -251,13 +269,30 @@ const createNewOrderSchema = z.object({
     weight: z.string().trim(),
 });
 
+const getCompanyId = async() => {
+    try{
+        const jsession = await getCookies();
+
+        const response = await axios.get("/office-employees/logged-employee/company-id", {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+        console.log("company id is " + response.data);
+        return response.data;
+    } catch (err) {
+        if (err instanceof AxiosError) {
+            throw err;
+        }
+    }
+    return null;
+}
+
 export const createAnOrder = async (
     session: Session | null,
     senderId: string | number | undefined,
     receiverId: string | number | undefined,
     courierId: string | number | undefined,
-    companyId: string | number | undefined,
-    users: selectorItem[],
     initialState: FormState,
     formData: FormData,
 ) => {
@@ -266,8 +301,6 @@ export const createAnOrder = async (
     const arrivalAddress = formData.get('arrivalAddress');
     const sentDate = formData.get('sentDate');
     const weight = formData.get('weight');
-
-    const employeeId = await getUserId(session?.username, users);
 
     //TODO check
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
@@ -278,10 +311,10 @@ export const createAnOrder = async (
         weight,
         senderId,
         receiverId,
-        employeeId,
+        employeeId: session?.id ,
         sentDate: parsedSentDate,
         courierId,
-        companyId
+        companyId: await getCompanyId()
     }
 
     const validateSchema = createNewOrderSchema.safeParse(fields);
@@ -293,7 +326,15 @@ export const createAnOrder = async (
 	}
 
     try {
-        const response = await axios.post('/shipments', fields)
+        const jsession = await getCookies();
+        console.log(fields);
+        const response = await axios.post('/shipments', fields, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+        console.log(response);
+
 
         return {
             errors: '',
@@ -301,8 +342,6 @@ export const createAnOrder = async (
         }
 
     } catch (error) {
-        console.error("Error creating new order:", error);
-
         if (error instanceof AxiosError) {
             return {
                 errors: error.message || "Something went wrong!",
@@ -310,13 +349,20 @@ export const createAnOrder = async (
             };
 
         }
-
-		return {
-			errors: "Something went wrong!",
-			message: ""
-		};
+        return {
+            errors: "Something went wrong!",
+            message: ""
+        }
 	}
 }
+const editOrderSchema = z.object({
+    departureAddress: z.string().trim(),
+    arrivalAddress: z.string().trim(),
+    sentDate: z.date(),
+    receivedDate: z.date(),
+    weight: z.string().trim(),
+});
+
 
 export const editOrder = async (
 	session: Session | null,
@@ -330,7 +376,8 @@ export const editOrder = async (
 	const departureAddress = formData.get('departureAddress');
 	const arrivalAddress = formData.get('arrivalAddress');
 	const sentDate = formData.get('sentDate');
-	const weight = formData.get('weight');
+    const receivedDate = formData.get('receivedDate');
+    const weight = formData.get('weight');
 
 	//const employeeId = await getUserId(session?.username, users);
 
@@ -346,11 +393,11 @@ export const editOrder = async (
 	 	receiverId,
 		employeeId: session?.id,
 	 	sentDate,
-	//	 receivedDate,
-	 	courierId,
+         receivedDate,
+	 	courierId
 	 }
 
-	const validateSchema = createNewOrderSchema.safeParse(fields);
+	const validateSchema = editOrderSchema.safeParse(fields);
 	if (!validateSchema.success ) {
 		return {
 			message: "",
@@ -358,9 +405,13 @@ export const editOrder = async (
 		}
 	}
 	try {
-		const response = await axios.post('/shipments', fields)
+        const jsession = await getCookies();
 
-        signOut();
+        const response = await axios.post('/shipments', fields, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
 		return {
 			errors: '',
@@ -374,10 +425,22 @@ export const editOrder = async (
 				message: ""
 			};
 		}
+    }
+}
 
-        return {
-            errors: "Something went wrong!",
-            message: ""
-        };
+export const deleteShipment = async (item:item) => {
+    try {
+        const jsession = await getCookies();
+
+        await axios.put(`/shipments/${item.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
+
+    } catch (err) {
+        if (err instanceof AxiosError) {
+            throw  err;
+        }
     }
 }

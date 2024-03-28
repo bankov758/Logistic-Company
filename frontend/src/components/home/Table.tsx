@@ -1,7 +1,7 @@
 "use client";
 import React, {Fragment, useState} from "react";
 import {getSession, Session} from "@/lib/auth";
-import {deleteEmployee, deleteOffice, demoteEmployee, promoteUser} from "@/lib/adminActions";
+import {deleteEmployee, deleteOffice, deleteUser, demoteEmployee, promoteUser} from "@/lib/adminActions";
 
 import BaseDialog from "@/components/UI/BaseDialog";
 import EditShipmentForm from "@/components/home/EmployeeInterface/EditShipmentForm";
@@ -12,6 +12,7 @@ import AdminInterfaceUserActionsButtons from "@/components/home/AdminInterface/A
 import AdminInterfaceEmployeeActionsButtons from "@/components/home/AdminInterface/AdminInterfaceEmployeeActionButtons";
 import AdminInterfaceOfficeActionButtons from "@/components/home/AdminInterface/AdminInterfaceOfficeActionButtons";
 import AdminInterfaceCourierActionsButtons from "@/components/home/AdminInterface/AdminInterfaceCourierActionButtons";
+import {deleteShipment} from "@/lib/actions";
 
 export type column = {
     title: string;
@@ -57,11 +58,12 @@ const Table: React.FC<TableProps> = ({
     const handleAction = async (item: item, type: ActionType | null) => {
         // TODO: there is no delete user query to refer to => possible solution : ask backend || remove delete user button
         switch (type) {
-            case "deleteOffice": await deleteOffice(item, session); break;
-           // case "deleteUser": await deleteEmployee(item, session); break;
-            case "deleteEmployee": await deleteEmployee(item, session); break;
-            case "promoteUser": await promoteUser(item, session); break;
-            case "demoteEmployee": await demoteEmployee(item, session); break
+            case "deleteOffice": await deleteOffice(item); break;
+            case "deleteUser": await deleteUser(item); break;
+            case "deleteEmployee": await deleteEmployee(item); break;
+            case "promoteUser": await promoteUser(item); break;
+            case "demoteEmployee": await demoteEmployee(item); break;
+            case "deleteShipment": await deleteShipment(item); break;
             case "editOffice":
                 setEditOffice(true);
                 setSelectedItem(item);
