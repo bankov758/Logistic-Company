@@ -103,6 +103,13 @@ const AdminInterface: React.FC = () => {
         setData([]);
     }
 
+    const onSuccessAddOffice = async () => {
+        setShowCompanyInfoDialog(false);
+        setSelectedCompany(null);
+        await getAndSetCompanies();
+        setData([]);
+    }
+
     return <>
         {error &&
             <Notification status='error'>
@@ -151,7 +158,13 @@ const AdminInterface: React.FC = () => {
                     title={ "Edit company " + selectedCompany.title + "'s information"}
                     tryClose={() => setShowCompanyInfoDialog(false)}
                 >
-                    <ShowCompanyInfo session={session} companyData={companies} selectedCompany={selectedCompany} onSuccessDelete={onSuccessDeleteCompany} onSuccessEdit={onSuccessEditCompany}/>
+                    <ShowCompanyInfo
+                        companyData={companies}
+                        selectedCompany={selectedCompany}
+                        onSuccessDelete={onSuccessDeleteCompany}
+                        onSuccessEdit={onSuccessEditCompany}
+                        onSuccessAddOffice={onSuccessAddOffice}
+                    />
                 </BaseDialog>
             )
         }

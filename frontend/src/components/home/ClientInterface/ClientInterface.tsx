@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {useEffect, useState} from "react";
 import {Session, getSession} from "@/lib/auth";
@@ -80,8 +82,6 @@ const ClientInterface: React.FC = () => {
                 <h3 className="mr-2">Delete your account here ={" >"} </h3>
                 <Button className="bg-red-600 text-white font-bold py-2 px-4" fill={true} onClick={() => setShowSelfDeleteDialog(true)}>Delete User</Button>
             </div>
-
-
         </>
     );
 }

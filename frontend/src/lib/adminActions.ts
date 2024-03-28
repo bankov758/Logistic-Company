@@ -5,6 +5,8 @@ import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import {getCookies} from "@/lib/auth";
 
+// COMPANY ACTIONS START
+
 export const createCompany = async (
     initialState: FormState,
     formData: FormData,
@@ -38,7 +40,6 @@ export const createCompany = async (
         }
 
     } catch (error) {
-        console.error('Error creating company:', error);
         return {
             message: '',
             errors: 'Error creating company! '
@@ -46,7 +47,7 @@ export const createCompany = async (
     }
 };
 
-export const deleteCompany = async (initialState: FormState, selectedCompany: selectorItem) => {
+export const deleteCompany = async (selectedCompany: selectorItem) => {
 
     try {
         const jsession = await getCookies();
@@ -63,7 +64,6 @@ export const deleteCompany = async (initialState: FormState, selectedCompany: se
         }
 
     } catch (error) {
-        console.error("Failed to delete the company!", error);
         return {
             message: '',
             errors: 'Failed to delete the company!'
@@ -71,24 +71,13 @@ export const deleteCompany = async (initialState: FormState, selectedCompany: se
     }
 }
 
-export const getCompanyId = (companyName: string | undefined, companyData: selectorItem[]) => {
-    const foundCompany = companyData.find(company => company.title === companyName);
-
-    if (foundCompany) {
-        return foundCompany.id;
-    }
-
-    return null;
-}
-
 export const editCompany = async (updatedCompanyName: string, selectedCompany: selectorItem) => {
 
-    const requestedData = {
-        id: selectedCompany.id,
-        name: updatedCompanyName
-    }
-
     try {
+        const requestedData = {
+            id: selectedCompany.id,
+            name: updatedCompanyName
+        }
 
         const jsession = await getCookies();
 
@@ -103,13 +92,14 @@ export const editCompany = async (updatedCompanyName: string, selectedCompany: s
             errors: ""
         }
     } catch (error) {
-        console.error("Failed to update the company", error);
         return {
             message: '',
             errors: 'Failed to update the company'
         };
     }
 }
+
+// COMPANY ACTIONS END
 
 // USER ACTIONS START
 
@@ -226,20 +216,14 @@ export const demoteEmployee = async (initialState: FormState, userId: number) =>
 
 // OFFICE ACTIONS START
 
-export const addOffice = async (
-    companyName: string | undefined,
-    officeName: string,
-    companyData: selectorItem[] ,
-    session: { username: string; roles: string[]; } | null | undefined
-) => {
-
-    const companyId = getCompanyId(companyName, companyData);
-    const requestedData = {
-        address: officeName,
-        companyId: companyId
-    }
+export const addOffice = async (companyId: number, officeLocation: string) => {
 
     try {
+        const requestedData = {
+            address: officeLocation,
+            companyId
+        }
+
         const jsession = await getCookies();
 
         await axios.post(`/offices`, requestedData, {
@@ -253,7 +237,6 @@ export const addOffice = async (
             errors: ""
         }
     } catch (error) {
-        console.error("Failed to add a new office to the company!", error);
         return {
             message: '',
             errors: 'Failed to add a new office to the company!'

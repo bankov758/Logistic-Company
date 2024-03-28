@@ -431,7 +431,7 @@ export const deleteShipment = async (initialState: FormState, shipmentId: number
     try {
         const jsession = await getCookies();
 
-        await axios.put(`/shipments/${shipmentId}`, {
+        await axios.delete(`/shipments/${shipmentId}`, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
@@ -442,7 +442,7 @@ export const deleteShipment = async (initialState: FormState, shipmentId: number
             errors: ''
         }
 
-    } catch (err) {
+    } catch (error) {
         return {
             message: '',
             errors: "Cannot delete the shipment!"

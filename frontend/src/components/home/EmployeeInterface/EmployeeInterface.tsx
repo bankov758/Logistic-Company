@@ -48,7 +48,7 @@ const EmployeeInterface: React.FC = () => {
             </div>
             {showCreateOrderDialog &&
                 <BaseDialog title="NEW ORDER" tryClose={() => setShowCreateOrderDialog(false)}>
-                    <CreateAnOrderForm/>
+                    <CreateAnOrderForm />
                 </BaseDialog>
             }
             <FilterOrders />

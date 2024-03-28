@@ -1,14 +1,29 @@
 import React, {useEffect, useState} from "react";
-import {addOffice, deleteCompany, editCompany} from "@/lib/adminActions";
-import {Session} from "@/lib/auth";
-import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import {useFormState} from "react-dom";
 
-const ShowCompanyInfo: React.FC<{ session: Session | null ,companyData: selectorItem[], selectedCompany: selectorItem, onSuccessDelete: () => void, onSuccessEdit: () => void }> = ({ session,companyData, selectedCompany, onSuccessDelete, onSuccessEdit }) => {
+import {selectorItem} from "@/components/UI/DataSelectorWrapper";
+import {addOffice, deleteCompany, editCompany} from "@/lib/adminActions";
+
+type ShowCompanyInfoProps = {
+    companyData: selectorItem[],
+    selectedCompany: selectorItem,
+    onSuccessDelete: () => void,
+    onSuccessEdit: () => void,
+    onSuccessAddOffice: () => void
+};
+
+const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
+    selectedCompany,
+    onSuccessDelete,
+    onSuccessEdit,
+    onSuccessAddOffice
+}) => {
     const [updatedCompanyName, setUpdatedCompanyName] = useState('');
     const [officeLocation, setOfficeLocation] = useState('');
-    const [deleteCompanyState, deleteCompanyAction] = useFormState(deleteCompany, { message: '', errors: ''})
+
+    const [deleteCompanyState, deleteCompanyAction] = useFormState(deleteCompany.bind(null, selectedCompany), { message: '', errors: ''})
     const [editCompanyCompanyState, editCompanyAction] = useFormState(editCompany.bind(null, updatedCompanyName, selectedCompany), { message: '', errors: ''})
+    const [addOfficeState, addOfficeAction] = useFormState(addOffice.bind(null, Number(selectedCompany.id), officeLocation), { message: '', errors: ''})
 
     useEffect(() => {
 
@@ -20,7 +35,11 @@ const ShowCompanyInfo: React.FC<{ session: Session | null ,companyData: selector
             onSuccessEdit();
         }
 
-    }, [deleteCompanyState, editCompanyCompanyState, onSuccessDelete]);
+        if( addOfficeState.message ) {
+            onSuccessAddOffice()
+        }
+
+    }, [deleteCompanyState, editCompanyCompanyState, addOfficeState, onSuccessDelete, onSuccessEdit, onSuccessAddOffice]);
 
     return (
         <>
@@ -30,7 +49,7 @@ const ShowCompanyInfo: React.FC<{ session: Session | null ,companyData: selector
 
                 <button
                     className="action_btn_red px-12 py-1.5 "
-                    onClick={() => deleteCompanyAction(selectedCompany)}
+                    onClick={() => deleteCompanyAction()}
                 >
                     DELETE COMPANY
                 </button>
@@ -63,10 +82,9 @@ const ShowCompanyInfo: React.FC<{ session: Session | null ,companyData: selector
 
                 <div className='flex py-3 text-gray-500'>
 
-                    {/*TODO: Beti */}
                     <button
                         className="action_btn_blue px-3 py-1.5"
-                        onClick={() => addOffice(selectedCompany, officeLocation, companyData, session)}
+                        onClick={() => addOfficeAction()}
                     >
                         Add
                     </button>
