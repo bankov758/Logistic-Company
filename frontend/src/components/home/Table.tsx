@@ -77,7 +77,7 @@ const Table: React.FC<TableProps> = ({
             case "deleteEmployee": deleteEmployeeAction(item.id); break;
             case "demoteEmployee": demoteEmployeeAction(item.id); break;
             case "deleteShipment": deleteShipmentAction(item.id); break; // employee interface
-            case "editShipment":
+            case "editShipment": // employee interface
                 setEditShipment(true);
                 setSelectedItem(item);
                 setShowDialog(true);

@@ -165,7 +165,7 @@ export const deleteUser = async (session: Session | null) => {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
         });
-        console.log("Deleted user");
+
         await signOut();
 
 	} catch (err) {
@@ -204,7 +204,7 @@ export const getCompanies = async (): Promise<selectorItem[] | null> => {
 
 }
 
-export const getCouriers = async (): Promise<selectorItem[] | null> => {
+export const getCouriers = async () => {
     try {
         const jsession = cookies().get("JSESSIONID")
 
@@ -218,7 +218,9 @@ export const getCouriers = async (): Promise<selectorItem[] | null> => {
             title: courier.username,
             username: courier.username,
             id: courier.id,
+            companyName: courier.companyName
         }));
+
     } catch (err) {
         if (err instanceof AxiosError) {
             throw err;
@@ -269,7 +271,8 @@ const createNewOrderSchema = z.object({
     weight: z.string().trim(),
 });
 
-const getCompanyId = async () => {
+export const getCompanyId = async () => {
+
     try {
         const jsession = await getCookies();
 
@@ -365,46 +368,43 @@ const editOrderSchema = z.object({
 });
 
 
-export const editOrder = async (
+export const editShipment = async (
+    initialState: FormState,
 	session: Session | null,
 	senderId: string | number | undefined,
 	receiverId: string | number | undefined,
 	courierId: string | number | undefined,
 	selectedItemId: number | null,
-	initialState: FormState,
 	formData: FormData,
 ) => {
 	const departureAddress = formData.get('departureAddress');
 	const arrivalAddress = formData.get('arrivalAddress');
 	const sentDate = formData.get('sentDate');
     const receivedDate = formData.get('receivedDate');
-    const weight = formData.get('weight');
 
 	//const employeeId = await getUserId(session?.username, users);
 
-    //TODO fix
-	const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
-
-	 const fields = {
+	 const fields= {
 		selectedItemId,
 	 	departureAddress,
 	 	arrivalAddress,
-	// 	weight,
 	 	senderId,
 	 	receiverId,
 		employeeId: session?.id,
 	 	sentDate,
-         receivedDate,
+        receivedDate,
 	 	courierId
 	 }
 
 	const validateSchema = editOrderSchema.safeParse(fields);
+
 	if (!validateSchema.success ) {
 		return {
 			message: "",
 			errors: validateSchema.error.issues
 		}
 	}
+
 	try {
         const jsession = await getCookies();
 
@@ -415,17 +415,15 @@ export const editOrder = async (
         })
 
 		return {
+			message: response.data,
 			errors: '',
-			message: response.data
 		}
 
 	} catch ( error ) {
-		if( error instanceof AxiosError ) {
-			return {
-				errors: error.message || "Something went wrong!",
-				message: ""
-			};
-		}
+        return {
+            message: "",
+            errors: "Something went wrong!",
+        };
     }
 }
 

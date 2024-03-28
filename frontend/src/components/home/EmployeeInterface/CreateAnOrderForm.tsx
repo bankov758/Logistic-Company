@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {getSession, Session} from "@/lib/auth";
 import {useFormState} from "react-dom";
-import {createAnOrder, getCompanies, getCouriers, getUsers} from "@/lib/actions";
+
+import {createAnOrder, getCouriers, getUsers} from "@/lib/actions";
+import {getCompanyId} from "@/lib/actions";
+
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import SubmitButton from "@/components/UI/SubmitButton";
+
 import { AxiosError } from "axios";
 
 const CreateAnOrderForm: React.FC = () => {
@@ -31,20 +35,21 @@ const CreateAnOrderForm: React.FC = () => {
             .then( async (response) => {
                 setSession(response)
                 try {
-                    const companies = await getCompanies();
-                    const couriers = await getCouriers();
                     const users = await getUsers();
+                    const couriers = await getCouriers();
 
-                    if( companies ) {
-                        setCompanies(companies);
-                    }
-                    
+                    const companyId = await getCompanyId();
+
                     if( users ) {
                         setUsers(users);
                     }
-                    
+
+                    //TODO: fix and compare by companyName
                     if( couriers ) {
-                        setCouriers(couriers);
+                        const courierCompanyIds = couriers
+                            .filter((courier: any) => courier.companyName === companyId)
+
+                        setCouriers(courierCompanyIds);
                     }
                     
                 } catch (err) {
