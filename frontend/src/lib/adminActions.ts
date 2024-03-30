@@ -297,3 +297,81 @@ export const deleteOffice = async (initialState: FormState, officeId: number)=> 
 }
 
 // OFFICE ACTIONS END
+
+// COURIER ACTIONS START
+
+export const deleteCourier = async (initialState: FormState, courierId: number)=> {
+    try {
+        const jsession = await getCookies();
+
+        await axios.delete(`/couriers/${courierId}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Courier was successfully deleted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to deleted the chosen courier!'
+        };
+    }
+}
+
+export const demoteCourier = async (initialState: FormState, userId: number) => {
+
+    const requestedData = {
+        userId,
+        role: "USER",
+    }
+
+    try {
+        const jsession = await getCookies();
+        await axios.put(`/couriers/demote/${userId}`, requestedData,{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Courier was successfully demoted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to demote the chosen courier!'
+        };
+    }
+}
+
+export const promoteCourier = async (initialState: FormState, userId: number) => {
+
+    try {
+        const jsession = await getCookies();
+        await axios.put(`/couriers/${userId}/make-office-employee/${userId}`, {},{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Courier was successfully promoted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to promote the chosen courier!'
+        };
+    }
+}
+
+// COURIER ACTIONS END

@@ -3,7 +3,15 @@
 import React, {Fragment, useState} from "react";
 import {useFormState} from "react-dom";
 import {Session} from "@/lib/auth";
-import {deleteEmployee, deleteOffice, deleteUser, demoteEmployee, promoteUser} from "@/lib/adminActions";
+import {
+    deleteCourier,
+    deleteEmployee,
+    deleteOffice,
+    deleteUser,
+    demoteCourier,
+    demoteEmployee, promoteCourier,
+    promoteUser
+} from "@/lib/adminActions";
 
 import BaseDialog from "@/components/UI/BaseDialog";
 import EditShipmentForm from "@/components/home/EmployeeInterface/EditShipmentForm";
@@ -70,24 +78,38 @@ const Table: React.FC<TableProps> = ({
     // office actions
     const [deleteOfficeState, deleteOfficeAction] = useFormState(deleteOffice, { message: '', errors: '' });
 
+    // courier actions
+    const [deleteCourierState, deleteCourierAction] = useFormState(deleteCourier, { message: '', errors: '' });
+    const [demoteCourierState, demoteCourierAction] = useFormState(demoteCourier, { message: '', errors: '' });
+    const [promoteCourierState, promoteCourierAction] = useFormState(promoteCourier, { message: '', errors: '' });
+
+
     const handleAction = async (item: item, type: ActionType | null) => {
         switch (type) {
             case "deleteUser": deleteUserAction(item.id); break;
             case "promoteUser": promoteUserAction(item.id); break;
+
             case "deleteEmployee": deleteEmployeeAction(item.id); break;
             case "demoteEmployee": demoteEmployeeAction(item.id); break;
+
             case "deleteShipment": deleteShipmentAction(item.id); break; // employee interface
             case "editShipment": // employee interface
                 setEditShipment(true);
                 setSelectedItem(item);
                 setShowDialog(true);
                 break;
+
+            case 'deleteCourier': deleteCourierAction(item.id); break;
+            case 'demoteCourier': demoteCourierAction(item.id); break;
+            case "makeOfficeEmployee": promoteCourierAction(item.id); break;
+
             case "deleteOffice": deleteOfficeAction(item.id); break;
             case "editOffice":
                 setEditOffice(true);
                 setSelectedItem(item);
                 setShowDialog(true);
                 break;
+
             default: break;
         }
     };
