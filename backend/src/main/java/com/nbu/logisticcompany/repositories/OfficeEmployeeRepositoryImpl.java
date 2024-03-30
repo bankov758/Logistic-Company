@@ -1,6 +1,7 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.OfficeEmployee;
+import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -42,6 +43,16 @@ public class OfficeEmployeeRepositoryImpl extends AbstractRepository<OfficeEmplo
                     .setParameter("id", officeEmployeeToUpdateId)
                     .executeUpdate();
             session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public boolean isAlreadyOfficeEmployee(int userId) {
+        try {
+            getById(userId);
+            return true;
+        } catch (EntityNotFoundException ex) {
+            return false;
         }
     }
 

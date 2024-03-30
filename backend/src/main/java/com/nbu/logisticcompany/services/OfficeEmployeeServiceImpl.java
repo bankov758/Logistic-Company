@@ -6,6 +6,7 @@ import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
+import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
@@ -22,13 +23,12 @@ import static com.nbu.logisticcompany.utils.ValidationUtil.*;
 public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
 
     private final OfficeEmployeeRepository officeEmployeeRepository;
-
-    private final CourierService courierService;
+    private final CourierRepository courierRepository;
 
     @Autowired
-    public OfficeEmployeeServiceImpl(OfficeEmployeeRepository officeEmployeeRepository, CourierService _courierService) {
+    public OfficeEmployeeServiceImpl(OfficeEmployeeRepository officeEmployeeRepository, CourierRepository _courierRepository) {
         this.officeEmployeeRepository = officeEmployeeRepository;
-        courierService = _courierService;
+        courierRepository = _courierRepository;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     @Override
     public void makeCourier(int officeEmployeeToUpdateId, User updater) {
         validateAdminAction(updater, OfficeEmployee.class, Action.UPDATE);
-        if (doesUserExistAsCourier(officeEmployeeToUpdateId)){
+        if (courierRepository.isAlreadyCourier(officeEmployeeToUpdateId)){
             throw new DuplicateEntityException(OfficeEmployee.class.getSimpleName(), "id",
                                                String.valueOf(officeEmployeeToUpdateId));
         }
@@ -107,6 +107,7 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
         }
         officeEmployeeRepository.update(officeEmployeeToUpdate);
     }
+
     /**
      * Deletes an office employee by ID after validating the updater's ownership.
      *
@@ -118,15 +119,6 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     public void delete(int id, User updater) {
         validateOwnerDelete(id, updater);
         officeEmployeeRepository.delete(id);
-    }
-
-    private boolean doesUserExistAsCourier(int officeEmployeeToUpdateId) {
-        try {
-            courierService.getById(officeEmployeeToUpdateId);
-            return true;
-        } catch (EntityNotFoundException ex) {
-            return false;
-        }
     }
 
 }

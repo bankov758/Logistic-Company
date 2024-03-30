@@ -6,6 +6,7 @@ import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
+import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.utils.Action;
@@ -22,12 +23,12 @@ import static com.nbu.logisticcompany.utils.ValidationUtil.validateAdminAction;
 public class CourierServiceImpl implements CourierService {
 
     private final CourierRepository courierRepository;
-    private final OfficeEmployeeService officeEmployeeService;
+    private final OfficeEmployeeRepository officeEmployeeRepository;
 
     @Autowired
-    public CourierServiceImpl(CourierRepository courierRepository, OfficeEmployeeService _officeEmployeeService) {
+    public CourierServiceImpl(CourierRepository courierRepository, OfficeEmployeeRepository officeEmployeeRepository) {
         this.courierRepository = courierRepository;
-        officeEmployeeService = _officeEmployeeService;
+        this.officeEmployeeRepository = officeEmployeeRepository;
     }
 
     @Override
@@ -76,20 +77,11 @@ public class CourierServiceImpl implements CourierService {
     @Override
     public void makeOfficeEmployee(int courierId, int officeId, User updater) {
         validateAdminAction(updater, OfficeEmployee.class, Action.UPDATE);
-        if (doesUserExistAsOfficeEmployee(courierId)){
+        if (officeEmployeeRepository.isAlreadyOfficeEmployee(courierId)){
             throw new DuplicateEntityException(OfficeEmployee.class.getSimpleName(), "id", String.valueOf(courierId));
         }
         courierRepository.removeUserFromCouriers(courierId);
         courierRepository.makeOfficeEmployee(courierId, officeId);
-    }
-
-    private boolean doesUserExistAsOfficeEmployee(int courierId) {
-        try {
-            officeEmployeeService.getById(courierId);
-            return true;
-        } catch (EntityNotFoundException ex) {
-            return false;
-        }
     }
 
 }

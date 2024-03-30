@@ -7,4 +7,10 @@ public interface UserRepository extends BaseCRUDRepository<User> {
 
     Company getEmployeeCompany(int employeeId);
 
+    void makeOfficeEmployee(int userId, int officeId);
+
+    void makeCourier(int userId, int companyId);
+
+    void makeEmployee(int userId, int companyId);
+
 }

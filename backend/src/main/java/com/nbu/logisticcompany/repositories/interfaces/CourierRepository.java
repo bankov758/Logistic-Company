@@ -10,4 +10,6 @@ public interface CourierRepository extends BaseCRUDRepository<Courier> {
 
     void makeOfficeEmployee(int courierId, int officeId);
 
+    boolean isAlreadyCourier(int userId);
+
 }
