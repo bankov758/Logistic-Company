@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void delete(int id, User user) {
-        ValidationUtil.validateOwnerDelete(id, user.getId());
+        ValidationUtil.validateOwnerDelete(id, user);
         userRepository.delete(id);
     }
     /**
