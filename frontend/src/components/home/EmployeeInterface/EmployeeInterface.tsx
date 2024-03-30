@@ -10,6 +10,7 @@ import Button from "../../UI/BaseButton";
 import BaseDialog from "../../UI/BaseDialog";
 import Notification from "@/components/UI/Notification";
 import CreateAnOrderForm from "@/components/home/EmployeeInterface/CreateAnOrderForm";
+import SelfDeleteUserForm from "@/components/home/ClientInterface/SelfDeleteUserForm";
 
 const EmployeeInterface: React.FC = () => {
     const [showCreateOrderDialog, setShowCreateOrderDialog] = useState<boolean>(false)
@@ -18,6 +19,8 @@ const EmployeeInterface: React.FC = () => {
     const [data, setData] = useState<item[] | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [tryAgain, setTryAgain] = useState<boolean>(false);
+
+    const [showSelfDeleteDialog, setShowSelfDeleteDialog] = useState<boolean>(false);
 
     useEffect(() => {
         getSession()
@@ -51,18 +54,31 @@ const EmployeeInterface: React.FC = () => {
                     <CreateAnOrderForm employeeId={session.id}/>
                 </BaseDialog>
             }
-            <FilterOrders />
+            <FilterOrders/>
             {data &&
                 <Table
                     columns={tableColumns}
                     categories={categories}
                     session={session}
                     data={data.map((item) => ({
-                           ...item,
-                           category: "registered"
+                        ...item,
+                        category: "registered"
                     }))}
                 />
             }
+            {showSelfDeleteDialog &&
+                ( <BaseDialog title="Self deletion" tryClose={() => setShowSelfDeleteDialog(false) }>
+                    <SelfDeleteUserForm
+                        session={session}
+                        onClick={(setAction) => {setShowSelfDeleteDialog(setAction)}}
+                    />
+                </BaseDialog>)
+            }
+            <div className="p-4 shadow-lg fixed bottom-0 left-0 right-0 flex justify-center items-center">
+                <h3 className="mr-2">Delete your account here: </h3>
+                <Button className="bg-red-600 text-white font-bold py-2 px-4" fill={true}
+                        onClick={() => setShowSelfDeleteDialog(true)}>Delete User</Button>
+            </div>
         </>
     )
 };
