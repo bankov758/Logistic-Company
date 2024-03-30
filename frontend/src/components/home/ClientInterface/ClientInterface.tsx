@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {useEffect, useState} from "react";
 import {Session, getSession} from "@/lib/auth";
@@ -70,16 +72,16 @@ const ClientInterface: React.FC = () => {
             }
             {showSelfDeleteDialog &&
                 ( <BaseDialog title="Self deletion" tryClose={() => setShowSelfDeleteDialog(false) }>
-                    <SelfDeleteUserForm session={session}
-                    onClick={(setAction) => {setShowSelfDeleteDialog(setAction)}}/>
+                    <SelfDeleteUserForm 
+                        session={session}
+                        onClick={(setAction) => {setShowSelfDeleteDialog(setAction)}}
+                    />
                 </BaseDialog>)
             }
-            <div className="flex gap-x-5 items-center">
-                <h3>Delete your account here ={" >"} </h3>
-                <Button className="bg-red-600 text-white" fill={true} onClick={() => setShowSelfDeleteDialog(true)}>Delete User</Button>
+            <div className="p-4 shadow-lg fixed bottom-0 left-0 right-0 flex justify-center items-center">
+                <h3 className="mr-2">Delete your account here ={" >"} </h3>
+                <Button className="bg-red-600 text-white font-bold py-2 px-4" fill={true} onClick={() => setShowSelfDeleteDialog(true)}>Delete User</Button>
             </div>
-
-
         </>
     );
 }

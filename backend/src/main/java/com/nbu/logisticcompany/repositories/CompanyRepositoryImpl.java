@@ -4,7 +4,9 @@ import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
+import com.nbu.logisticcompany.entities.dtos.user.CourierOutDto;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -77,6 +79,18 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
                                     " user.id in (select distinct shipment.receiver.id from Shipment shipment " +
                                     "             where shipment.company.id =:companyId) ",
                             ClientOutDto.class)
+                    .setParameter("companyId", companyId)
+                    .getResultList();
+        }
+    }
+    public List<CompanyCouriersDto> getCompanyCouriers(int companyId, User user) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                            " select new com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto " +
+                                    "(courier.id, courier.username, courier.firstName,courier.lastName, courier.company.name) " +
+                                    " from Courier courier " +
+                                    " where courier.company.id = :companyId ",
+                            CompanyCouriersDto.class)
                     .setParameter("companyId", companyId)
                     .getResultList();
         }

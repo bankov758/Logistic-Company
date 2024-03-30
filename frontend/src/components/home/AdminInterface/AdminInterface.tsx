@@ -34,24 +34,27 @@ const AdminInterface: React.FC = () => {
     const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
     const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
 
+    const getAndSetCompanies = async () => {
+        try {
+            const companies = await getCompanies();
+
+            if( companies ) {
+                setCompanies(companies);
+            } else {
+                setError("Something went wrong!")
+            }
+        } catch (err) {
+            if( err instanceof AxiosError ) {
+                setError(err)
+            }
+        }
+    }
+
     useEffect(() => {
         getSession()
             .then( async (response) => {
                 setSession(response)
-                
-                try {
-                    const companies = await getCompanies();
-
-                    if( companies ) {
-                        setCompanies(companies);
-                    } else {
-                        setError("Something went wrong!")
-                    }
-                } catch (err) {
-                    if( err instanceof AxiosError ) {
-                        setError(err)
-                    } 
-                }
+                await getAndSetCompanies();
             });
     }, []);
 
@@ -78,6 +81,33 @@ const AdminInterface: React.FC = () => {
                 setData(combinedData);
             })
             .catch(error => setError(error));
+    }
+
+    //TODO: turn this into one function
+    const onSuccessCreateCompany = async () => {
+        setShowCreateDialog(false);
+        await getAndSetCompanies()
+    }
+
+    const onSuccessDeleteCompany = async () => {
+        setShowCompanyInfoDialog(false);
+        setSelectedCompany(null);
+        await getAndSetCompanies();
+        setData([]);
+    }
+
+    const onSuccessEditCompany = async () => {
+        setShowCompanyInfoDialog(false);
+        setSelectedCompany(null);
+        await getAndSetCompanies();
+        setData([]);
+    }
+
+    const onSuccessAddOffice = async () => {
+        setShowCompanyInfoDialog(false);
+        setSelectedCompany(null);
+        await getAndSetCompanies();
+        setData([]);
     }
 
     return <>
@@ -118,7 +148,7 @@ const AdminInterface: React.FC = () => {
         {/* create company dialog  */}
         {showCreateDialog &&
             (<BaseDialog title="Create a company" tryClose={() => setShowCreateDialog(false)}>
-                <CreateCompanyForm session={session} />
+                <CreateCompanyForm onSuccess={onSuccessCreateCompany} />
             </BaseDialog>)
         }
         {/* company info dialog */}
@@ -128,11 +158,17 @@ const AdminInterface: React.FC = () => {
                     title={ "Edit company " + selectedCompany.title + "'s information"}
                     tryClose={() => setShowCompanyInfoDialog(false)}
                 >
-                    <ShowCompanyInfo session={session} companyData={companies} selectedCompany={selectedCompany.title}/>
+                    <ShowCompanyInfo
+                        companyData={companies}
+                        selectedCompany={selectedCompany}
+                        onSuccessDelete={onSuccessDeleteCompany}
+                        onSuccessEdit={onSuccessEditCompany}
+                        onSuccessAddOffice={onSuccessAddOffice}
+                    />
                 </BaseDialog>
             )
         }
-        {/* clients + employees + offices */}
+        {/* clients + employees + currier + offices */}
         {data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 &&
             data
                 .map((individualData: item[], index: number) => {

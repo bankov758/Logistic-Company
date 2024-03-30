@@ -4,7 +4,7 @@ const axiosInstance = Axios.create({
     baseURL: "http://localhost:8080/api",
     headers: {
         "Content-Type": "application/json",
-        Accept: "*/*"
+        Accept: "*/*",
     },
     withCredentials: true
 });

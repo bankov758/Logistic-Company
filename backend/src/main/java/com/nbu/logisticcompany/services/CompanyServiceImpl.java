@@ -4,9 +4,7 @@ import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
-import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
-import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
-import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.*;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
@@ -60,6 +58,11 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<ClientOutDto> getCompanyClients(int companyId, User user){
         return companyRepository.getCompanyClients(companyId, user);
+    }
+
+    @Override
+    public List<CompanyCouriersDto> getCompanyCouriers(int companyId, User user){
+        return companyRepository.getCompanyCouriers(companyId, user);
     }
     /**
      * Creates a new company after ensuring no duplicate exists and the creator has admin privileges.

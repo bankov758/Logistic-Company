@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {getSession, Session} from "@/lib/auth";
 import {useFormState} from "react-dom";
-import {createAnOrder, FormState, getCompanies, getCouriers, getUserId, getUsers} from "@/lib/actions";
+
+import {createAnOrder, getCouriers, getUsers} from "@/lib/actions";
+import {getCompanyId} from "@/lib/actions";
+
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import SubmitButton from "@/components/UI/SubmitButton";
+
+import { AxiosError } from "axios";
 
 const CreateAnOrderForm: React.FC = () => {
 
@@ -18,31 +23,40 @@ const CreateAnOrderForm: React.FC = () => {
     const [selectedSender, setSelectedSender] = useState<selectorItem | null>(null);
     const [selectedReceiver, setSelectedReceiver] = useState<selectorItem | null>(null);
 
+    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,
+            session,
+            selectedSender?.id,
+            selectedReceiver?.id,
+            selectedCourier?.id),
+        {message: null, errors: ''})
+
     useEffect(() => {
         getSession()
             .then( async (response) => {
                 setSession(response)
                 try {
-                    const companies = await getCompanies(response);
-                    const users = await getUsers(response);
-                    const couriers = await getCouriers(response);
-                    if( companies ) {
-                        setCompanies(companies);
-                    } else {
-                        setError("Something went wrong when requesting companies!")
-                    }
+                    const users = await getUsers();
+
+                    const companyId = await getCompanyId();
+                    const couriers = await getCouriers(companyId);
+
                     if( users ) {
                         setUsers(users);
-                    }else {
-                        setError("Something went wrong when requesting users!")
                     }
-                    if( couriers ) {
+                    if ( couriers ) {
                         setCouriers(couriers);
-                    }else {
-                        setError("Something went wrong when requesting users!")
                     }
+
+                    //TODO: fix and compare by companyName
+                    // if( couriers ) {
+                    //     const courierCompanyIds = couriers
+                    //         .filter((courier: any) => courier.companyName === companyId)
+                    //
+                    //     setCouriers(courierCompanyIds);
+                    // }
+                    
                 } catch (err) {
-                    if( err instanceof Error ) {
+                    if( err instanceof AxiosError ) {
                         setError(err)
                     }
                 }
@@ -55,18 +69,9 @@ const CreateAnOrderForm: React.FC = () => {
             case 'sender' : setSelectedSender(data); break;
             case 'receiver' : setSelectedReceiver(data); break;
             case 'courier' :  setSelectedCourier(data); break;
-            case 'company' : setSelectedCompany(data); break;
             default: break;
         }
     }
-    const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,
-        session,
-        selectedSender?.id,
-        selectedReceiver?.id,
-        selectedCourier?.id,
-        selectedCompany?.id,
-        users),
-        {message: null, errors: ''})
 
     return (
         <>
@@ -121,15 +126,15 @@ const CreateAnOrderForm: React.FC = () => {
                         onResubForNewData={(data) => handleSelect(data, 'courier')}
                     />
                 </div>
-                <div className="order-div">
-                    <label className="block  text-gray-500">Company:</label>
-                    <DataSelectorWrapper
-                        hasInitialPlaceholderValue
-                        placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select company"}
-                        selectorData={companies}
-                        onResubForNewData={(data) => handleSelect(data, 'company')}
-                    />
-                </div>
+                {/*<div className="order-div">*/}
+                {/*    <label className="block  text-gray-500">Company:</label>*/}
+                {/*    <DataSelectorWrapper*/}
+                {/*        hasInitialPlaceholderValue*/}
+                {/*        placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select company"}*/}
+                {/*        selectorData={companies}*/}
+                {/*        onResubForNewData={(data) => handleSelect(data, 'company')}*/}
+                {/*    />*/}
+                {/*</div>*/}
                 <div className='flex justify-center py-3 text-gray-500'>
                     <SubmitButton formState={createAnOrderState}/>
                 </div>

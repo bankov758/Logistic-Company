@@ -1,20 +1,23 @@
 "use server";
-import {Session} from "@/lib/auth";
+
 import axios from "@/lib/axios";
 import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
+import {getCookies} from "@/lib/auth";
+
+// COMPANY ACTIONS START
 
 export const createCompany = async (
-    session: Session | null,
     initialState: FormState,
     formData: FormData,
 ) => {
     const newCompanyName = formData.get("company_name") as string;
 
     try {
+
         if (!newCompanyName.trim()) {
             return {
-                message: null,
+                message: '',
                 errors: "Company name cannot be empty!"
             }
         }
@@ -23,16 +26,20 @@ export const createCompany = async (
             name: newCompanyName.trim(),
         };
 
-        await axios.post('/companies', requestData);
+        const jsession = await getCookies();
+
+        await axios.post('/companies', requestData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
 
         return {
-            message: "You've successfully create a company! ",
+            message: "You've successfully create a company!",
             errors: ""
         }
 
     } catch (error) {
-
-        console.error('Error creating company:', error);
         return {
             message: '',
             errors: 'Error creating company! '
@@ -40,22 +47,23 @@ export const createCompany = async (
     }
 };
 
-export const deleteCompany = async (
-    companyName: string | undefined,
-    companyData: selectorItem[] ,
-    session: { username: string; roles: string[]; } | null | undefined
-) => {
+export const deleteCompany = async (selectedCompany: selectorItem) => {
 
-    const companyId = getCompanyId(companyName, companyData);
     try {
-        await axios.delete(`/companies/${companyId}`);
+        const jsession = await getCookies();
+
+        await axios.delete(`/companies/${selectedCompany.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
         
         return {
             message: "Company was successfully deleted!",
             errors: ""
         }
+
     } catch (error) {
-        console.error("Failed to delete the company!", error);
         return {
             message: '',
             errors: 'Failed to delete the company!'
@@ -63,35 +71,27 @@ export const deleteCompany = async (
     }
 }
 
-export const getCompanyId = (companyName: string | undefined, companyData: selectorItem[]) => {
-    const foundCompany = companyData.find(company => company.title === companyName);
-    if (foundCompany) {
-        return foundCompany.id;
-    }
+export const editCompany = async (updatedCompanyName: string, selectedCompany: selectorItem) => {
 
-    return null;
-}
-
-export const editCompany = async (
-    companyName: string | undefined,
-    updatedCompanyName: string,
-    companyData: selectorItem[] , session: { username: string; roles: string[]; } | null | undefined
-) => {
-
-    const companyId = getCompanyId(companyName, companyData);
-    const requestedData = {
-        id: companyId,
-        name: updatedCompanyName
-    }
     try {
-        await axios.put(`/companies`, requestedData);
+        const requestedData = {
+            id: selectedCompany.id,
+            name: updatedCompanyName
+        }
+
+        const jsession = await getCookies();
+
+        await axios.put(`/companies`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
 
         return {
             message: "Company was successfully updated! ",
             errors: ""
         }
     } catch (error) {
-        console.error("Failed to update the company", error);
         return {
             message: '',
             errors: 'Failed to update the company'
@@ -99,28 +99,144 @@ export const editCompany = async (
     }
 }
 
-export const addOffice = async (
-    companyName: string | undefined,
-    officeName: string,
-    companyData: selectorItem[] ,
-    session: { username: string; roles: string[]; } | null | undefined
-) => {
+// COMPANY ACTIONS END
 
-    const companyId = getCompanyId(companyName, companyData);
+// USER ACTIONS START
+
+export const deleteUser = async (initialState: FormState, userId: number)=> {
+    try {
+        const jsession = await getCookies();
+
+        await axios.delete(`/users/${userId}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "User was successfully deleted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to deleted the chosen user!'
+        };
+    }
+}
+
+export const promoteUser = async (initialState: FormState, userId: number) => {
+
     const requestedData = {
-        address: officeName,
-        companyId: companyId
+        userId,
+        role: "EMPLOYEE",
     }
 
     try {
-        await axios.post(`/offices`, requestedData);
-        
+        const jsession = await getCookies();
+
+        await axios.put(`/users/add-role`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession}`
+            },
+
+        });
+
+        return {
+            message: "User was successfully promoted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to promote the chosen user!'
+        };
+    }
+}
+
+// USER ACTIONS END
+
+// EMPLOYEE ACTIONS START
+
+export const deleteEmployee = async (initialState: FormState, employeeId: number)=> {
+    try {
+        const jsession = await getCookies();
+
+        await axios.delete(`/office-employees/${employeeId}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Employee was successfully deleted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to deleted the chosen employee!'
+        };
+    }
+}
+
+export const demoteEmployee = async (initialState: FormState, userId: number) => {
+
+    const requestedData = {
+        userId,
+        role: "USER",
+    }
+
+    try {
+        const jsession = await getCookies();
+
+        await axios.put(`/office-employees/demote/${userId}`, requestedData,{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Employee was successfully demoted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to demote the chosen employee!'
+        };
+    }
+}
+
+// EMPLOYEE ACTIONS END
+
+// OFFICE ACTIONS START
+
+export const addOffice = async (companyId: number, officeLocation: string) => {
+
+    try {
+        const requestedData = {
+            address: officeLocation,
+            companyId
+        }
+
+        const jsession = await getCookies();
+
+        await axios.post(`/offices`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
+
         return {
             message: "New office was successfully added! ",
             errors: ""
         }
     } catch (error) {
-        console.error("Failed to add a new office to the company!", error);
         return {
             message: '',
             errors: 'Failed to add a new office to the company!'
@@ -128,159 +244,26 @@ export const addOffice = async (
     }
 }
 
-export const deleteOffice = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
-)=>{
-    //console.log(item);
-    //console.log(session);
-    console.log(item.id);
-
+export const deleteOffice = async (initialState: FormState, officeId: number)=> {
     try {
-        const response = await fetch(`http://localhost:8080/api/office/${item.id}`, {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
+        const jsession = await getCookies();
 
-        });
-        if(!response.ok){
-            console.log("Failed to delete office!")
-            return {
-                message: '',
-                errors: 'Failed to delete office!'
-            };
-        }else {
-            console.log("Office was successfully deleted!")
-            return {
-                message: "Office was successfully deleted! ",
-                errors: ""
+        const response = await axios.delete(`/office/${officeId}`,{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
             }
+        });
+
+        return {
+            message: "Office was successfully deleted! ",
+            errors: ""
         }
     } catch (error) {
-        console.error("Failed to delete the chosen office!", error);
         return {
             message: '',
             errors: 'Failed to delete the chosen office!'
         };
     }
 }
-export const deleteEmployee = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
-)=>{
-    //console.log(item);
-    //console.log(session);
-    console.log(item.id);
 
-    try {
-        const response = await fetch(`http://localhost:8080/api/office-employees/${item.id}`, {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
-
-        });
-        if(!response.ok){
-            console.log("Failed to delete employee!")
-            return {
-                message: '',
-                errors: 'Failed to delete employee!'
-            };
-        }else {
-            console.log("Employee was successfully deleted!")
-            return {
-                message: "Employee was successfully deleted! ",
-                errors: ""
-            }
-        }
-    } catch (error) {
-        console.error("Failed to deleted the chosen employee!", error);
-        return {
-            message: '',
-            errors: 'Failed to deleted the chosen employee!'
-        };
-    }
-}
-export const promoteUser = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
-) => {
-
-    const requestedData = {
-        userId: item.id,
-        role: "EMPLOYEE",
-    }
-    try {
-        const response = await fetch(`http://localhost:8080/api/users/add-role`, {
-            method: 'PUT',
-            body: JSON.stringify(requestedData),
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
-
-        });
-        if(!response.ok){
-            console.log("Failed to promote user!")
-            return {
-                message: '',
-                errors: 'Failed to promote user!'
-            };
-        }else {
-            console.log("User was successfully promoted!")
-            return {
-                message: "User was successfully promoted! ",
-                errors: ""
-            }
-        }
-    } catch (error) {
-        console.error("Failed to promote the chosen user!", error);
-        return {
-            message: '',
-            errors: 'Failed to promote the chosen user!'
-        };
-    }
-}
-export const demoteEmployee = async (
-    item: any,
-    session: { username: string; roles: string[]; } | null | undefined
-) => {
-
-    const requestedData = {
-        userId: item.id,
-        role: "USER",
-    }
-    try {
-        const response = await fetch(`http://localhost:8080/api/users/remove-role`, {
-            method: 'PUT',
-            body: JSON.stringify(requestedData),
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*"
-            },
-
-        });
-        if(!response.ok){
-            console.log("Failed to demote employee!")
-            return {
-                message: '',
-                errors: 'Failed to demote employee!!'
-            };
-        }else {
-            console.log("Employee was successfully demoted!")
-            return {
-                message: "Employee was successfully demoted! ",
-                errors: ""
-            }
-        }
-    } catch (error) {
-        console.error("Failed to demote the chosen employee!", error);
-        return {
-            message: '',
-            errors: 'Failed to demote the chosen employee!'
-        };
-    }
-}
+// OFFICE ACTIONS END

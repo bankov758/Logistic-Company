@@ -1,10 +1,14 @@
 "use server"; //module level Server Actions defined by 'use server' React directive
 
 import {z, ZodIssue} from "zod";
-import {Session, signIn, signOut} from "@/lib/auth";
+import {getCookies, Session, signIn, signOut} from "@/lib/auth";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import axios from "@/lib/axios";
 import { AxiosError } from "axios";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+import {item} from "@/components/home/Table";
 
 export type FormState = {
     message: string | { username: string; roles: string[]; };
@@ -42,7 +46,16 @@ export const login = async (initialState: FormState, formData: FormData) => {
         //make an API call to the server to login the user
         const response = await axios.post('/auth/login', fields)
 
-        await signIn(response.data.username, response.data.roles, response.data.id)
+        const jsession = response.headers['set-cookie']![0].split('; ')[0].split('=')[1];
+
+        await signIn(
+            {
+                username: response.data.username,
+                roles: response.data.roles,
+                id: response.data.id
+            },
+            jsession
+        )
 
         return {
             errors: '',
@@ -110,9 +123,18 @@ export const register = async (initialState: FormState, formData: FormData) => {
     }
 
     try {
-        const response = await axios.post('/auth/signup', fields)
+        const response = await axios.post('/auth/signup', fields);
 
-        await signIn(response.data.username, response.data.roles, response.data.id);
+        const jsession = response.headers['set-cookie']![0].split('; ')[0].split('=')[1];
+
+        await signIn(
+            {
+                username: response.data.username,
+                roles: response.data.roles,
+                id: response.data.id
+            },
+            jsession
+        )
 
         return {
             errors: '',
@@ -120,7 +142,7 @@ export const register = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
-        if (error instanceof Error) {
+        if (error instanceof AxiosError) {
             return {
                 errors: error.message || "Something went wrong!",
                 message: ""
@@ -135,8 +157,14 @@ export const register = async (initialState: FormState, formData: FormData) => {
 }
 
 export const deleteUser = async (session: Session | null) => {
-	try {
-		await axios.get(`/users/${session?.id}`);
+    const jsession = cookies().get("JSESSIONID")
+
+    try {
+		await axios.delete(`/users/${session?.id}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
 
         await signOut();
 
@@ -145,11 +173,20 @@ export const deleteUser = async (session: Session | null) => {
 			throw err;
 		}
 	}
+
+    redirect('/login');
 }
 
 export const getCompanies = async (): Promise<selectorItem[] | null> => {
+
     try {
-        const response = await axios.get("/companies")
+        const jsession = await getCookies();
+
+        const response = await axios.get("/companies", {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
         return response.data.map((company: any) => ({
             title: company.name,
@@ -167,15 +204,23 @@ export const getCompanies = async (): Promise<selectorItem[] | null> => {
 
 }
 
-export const getCouriers = async (): Promise<selectorItem[] | null> => {
+export const getCouriers = async (companyId:number) => {
     try {
-        const response = await axios.get("/couriers")
+        const jsession = cookies().get("JSESSIONID")
+
+        const response = await axios.get(`/companies/${companyId}/couriers`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
         return response.data.map((courier: any) => ({
             title: courier.username,
             username: courier.username,
             id: courier.id,
+            companyName: courier.companyName
         }));
+
     } catch (err) {
         if (err instanceof AxiosError) {
             throw err;
@@ -186,7 +231,13 @@ export const getCouriers = async (): Promise<selectorItem[] | null> => {
 
 export const getUsers = async (): Promise<selectorItem[] | null> => {
     try {
-        const response = await axios.get("/users")
+        const jsession = cookies().get("JSESSIONID")
+
+        const response = await axios.get("/users", {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
         return response.data.map((user: any) => ({
             title: user.username,
@@ -220,13 +271,31 @@ const createNewOrderSchema = z.object({
     weight: z.string().trim(),
 });
 
+export const getCompanyId = async () => {
+
+    try {
+        const jsession = await getCookies();
+
+        const response = await axios.get("/office-employees/logged-employee/company-id", {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return response.data;
+    } catch (err) {
+        if (err instanceof AxiosError) {
+            throw err;
+        }
+    }
+    return null;
+}
+
 export const createAnOrder = async (
     session: Session | null,
     senderId: string | number | undefined,
     receiverId: string | number | undefined,
     courierId: string | number | undefined,
-    companyId: string | number | undefined,
-    users: selectorItem[],
     initialState: FormState,
     formData: FormData,
 ) => {
@@ -236,10 +305,10 @@ export const createAnOrder = async (
     const sentDate = formData.get('sentDate');
     const weight = formData.get('weight');
 
-    const employeeId = await getUserId(session?.username, users);
-
     //TODO check
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
+
+    const companyId = await getCompanyId();
 
     const fields = {
         departureAddress,
@@ -247,7 +316,7 @@ export const createAnOrder = async (
         weight,
         senderId,
         receiverId,
-        employeeId,
+        employeeId: session?.id ,
         sentDate: parsedSentDate,
         courierId,
         companyId
@@ -262,93 +331,132 @@ export const createAnOrder = async (
 	}
 
     try {
-        const response = await axios.post('/shipments', fields)
+        const jsession = await getCookies();
+
+        const response = await axios.post('/shipments', fields, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
         return {
+            message: response.data,
             errors: '',
-            message: response.data
         }
 
     } catch (error) {
-        console.error("Error creating new order:", error);
-
-        if (error instanceof AxiosError) {
+        if (error instanceof AxiosError && error.response) {
             return {
-                errors: error.message || "Something went wrong!",
+                errors: error.response.data || "Something went wrong!",
                 message: ""
             };
 
         }
-
-		return {
-			errors: "Something went wrong!",
-			message: ""
-		};
+        return {
+            errors: "Something went wrong!",
+            message: ""
+        }
 	}
 }
 
-export const editOrder = async (
+const editOrderSchema = z.object({
+    departureAddress: z.string().trim().optional(),
+    arrivalAddress: z.string().trim().optional(),
+    sentDate: z.date().optional(),
+    receivedDate: z.date().optional(),
+    //weight: z.string().trim(),
+});
+
+
+export const editShipment = async (
 	session: Session | null,
 	senderId: string | number | undefined,
 	receiverId: string | number | undefined,
 	courierId: string | number | undefined,
-	selectedItemId: number | null,
-	initialState: FormState,
-	formData: FormData,
+	selectedItem: any | null,
+    users: selectorItem[],
+    initialState: FormState,
+    formData: FormData,
 ) => {
 	const departureAddress = formData.get('departureAddress');
 	const arrivalAddress = formData.get('arrivalAddress');
 	const sentDate = formData.get('sentDate');
-	const weight = formData.get('weight');
+    const receivedDate = formData.get('receivedDate');
 
-	console.log(FormData);
-	//const employeeId = await getUserId(session?.username, users);
+    cogitnsole.log(selectedItem);
+    //console.log(users);
+	const foundSenderId = await getUserId(selectedItem?.sender, users);
+	const foundReceiverId = await getUserId(selectedItem?.receiver, users);
+	const foundCourierId = await getUserId(selectedItem?.courier, users);
 
-    //TODO fix
-	const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
+    const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
+    const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 
-	 const fields = {
-		selectedItemId,
-	 	departureAddress,
-	 	arrivalAddress,
-	// 	weight,
-	 	senderId,
-	 	receiverId,
+    const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
+    const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
+
+	 const fields= {
+		selectedItemId: selectedItem?.id,
+	 	departureAddress: departureAddress || selectedItem?.departureAddress,
+	 	arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
+	 	senderId: senderId || foundSenderId,
+	 	receiverId: receiverId || foundReceiverId,
 		employeeId: session?.id,
-	 	sentDate,
-	//	 receivedDate,
-	 	courierId,
+	 	sentDate: parsedSentDate || parsedOldSentDate,
+        receivedDate: parsedReceivedDate || parsedOldReceivedDate,
+	 	courierId: courierId || foundCourierId
 	 }
+     console.log(fields);
+	const validateSchema = editOrderSchema.safeParse(fields);
 
-	console.log(fields);
-	const validateSchema = createNewOrderSchema.safeParse(fields);
 	if (!validateSchema.success ) {
 		return {
 			message: "",
 			errors: validateSchema.error.issues
 		}
 	}
-	try {
-		const response = await axios.post('/shipments', fields)
 
-        signOut();
+	try {
+        const jsession = await getCookies();
+
+        const response = await axios.post('/shipments', fields, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
 
 		return {
+			message: response.data,
 			errors: '',
-			message: response.data
 		}
 
 	} catch ( error ) {
-		if( error instanceof AxiosError ) {
-			return {
-				errors: error.message || "Something went wrong!",
-				message: ""
-			};
-		}
+        return {
+            message: "",
+            errors: "Something went wrong!",
+        };
+    }
+}
+
+export const deleteShipment = async (initialState: FormState, shipmentId: number) => {
+    try {
+        const jsession = await getCookies();
+
+        await axios.delete(`/shipments/${shipmentId}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
 
         return {
-            errors: "Something went wrong!",
-            message: ""
-        };
+            message: "The shipment was successfully removed!",
+            errors: ''
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: "Cannot delete the shipment!"
+        }
     }
 }
