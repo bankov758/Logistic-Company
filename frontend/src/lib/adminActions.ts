@@ -211,6 +211,29 @@ export const demoteEmployee = async (initialState: FormState, userId: number) =>
         };
     }
 }
+export const makeCourier = async (initialState: FormState, userId: number) => {
+
+    try {
+        const jsession = await getCookies();
+            await axios.put(`/office-employees/make-courier/${userId}`,{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Employee was successfully demoted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+
+        return {
+            message: '',
+            errors: 'Failed to demote the chosen employee!'
+        };
+    }
+}
 
 // EMPLOYEE ACTIONS END
 

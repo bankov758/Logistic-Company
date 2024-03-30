@@ -9,7 +9,7 @@ import {
     deleteOffice,
     deleteUser,
     demoteCourier,
-    demoteEmployee, promoteCourier,
+    demoteEmployee, makeCourier, promoteCourier,
     promoteUser
 } from "@/lib/adminActions";
 
@@ -71,6 +71,7 @@ const Table: React.FC<TableProps> = ({
     // employee actions
     const [deleteEmployeeState, deleteEmployeeAction] = useFormState(deleteEmployee, { message: '', errors: '' });
     const [demoteEmployeeState, demoteEmployeeAction] = useFormState(demoteEmployee, { message: '', errors: '' });
+    const [makeCourierState, makeCourierAction] = useFormState(makeCourier, { message: '', errors: '' });
 
     // shipment actions
     const [deleteShipmentState, deleteShipmentAction] = useFormState(deleteShipment, { message: '', errors: '' });
@@ -91,6 +92,7 @@ const Table: React.FC<TableProps> = ({
 
             case "deleteEmployee": deleteEmployeeAction(item.id); break;
             case "demoteEmployee": demoteEmployeeAction(item.id); break;
+            case "makeCourier": makeCourierAction(item.id); break;
 
             case "deleteShipment": deleteShipmentAction(item.id); break; // employee interface
             case "editShipment": // employee interface
