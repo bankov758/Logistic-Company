@@ -292,7 +292,7 @@ export const getCompanyId = async () => {
 }
 
 export const createAnOrder = async (
-    session: Session | null,
+    employeeId: number,
     senderId: string | number | undefined,
     receiverId: string | number | undefined,
     courierId: string | number | undefined,
@@ -305,18 +305,17 @@ export const createAnOrder = async (
     const sentDate = formData.get('sentDate');
     const weight = formData.get('weight');
 
-    //TODO check
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
 
     const companyId = await getCompanyId();
 
-    const fields = {
+    const fields= {
         departureAddress,
         arrivalAddress,
         weight,
         senderId,
         receiverId,
-        employeeId: session?.id ,
+        employeeId,
         sentDate: parsedSentDate,
         courierId,
         companyId
@@ -383,12 +382,19 @@ export const editShipment = async (
 	const sentDate = formData.get('sentDate');
     const receivedDate = formData.get('receivedDate');
 
-    cogitnsole.log(selectedItem);
-    //console.log(users);
-	const foundSenderId = await getUserId(selectedItem?.sender, users);
-	const foundReceiverId = await getUserId(selectedItem?.receiver, users);
-	const foundCourierId = await getUserId(selectedItem?.courier, users);
+    let foundSenderId;
+    let foundReceiverId;
+    let foundCourierId;
 
+    if ( !senderId ) {
+        foundSenderId = await getUserId(selectedItem?.sender, users);
+    }
+    if ( !receiverId ) {
+        foundReceiverId = await getUserId(selectedItem?.receiver, users);
+    }
+    if ( !courierId ) {
+        foundCourierId = await getUserId(selectedItem?.courier, users);
+    }
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
     const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 

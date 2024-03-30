@@ -46,9 +46,9 @@ const EmployeeInterface: React.FC = () => {
                 <br/>
                 <Button fill onClick={() => setShowCreateOrderDialog(true)}>Create an order</Button>
             </div>
-            {showCreateOrderDialog &&
+            {showCreateOrderDialog && session &&
                 <BaseDialog title="NEW ORDER" tryClose={() => setShowCreateOrderDialog(false)}>
-                    <CreateAnOrderForm />
+                    <CreateAnOrderForm employeeId={session.id}/>
                 </BaseDialog>
             }
             <FilterOrders />
