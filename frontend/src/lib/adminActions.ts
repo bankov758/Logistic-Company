@@ -99,6 +99,36 @@ export const editCompany = async (updatedCompanyName: string, selectedCompany: s
         };
     }
 }
+export const addTariff = async (companyId: number, pricePerKG: number, officeDiscount: number) => {
+
+    try {
+        const requestedData = {
+            pricePerKG,
+            officeDiscount,
+            companyId
+        }
+
+        const jsession = await getCookies();
+
+        await axios.post(`/tariffs`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
+
+        return {
+            message: "Tariff was successfully added! ",
+            errors: ""
+        }
+    } catch (error) {
+        console.log(error)
+        return {
+            message: '',
+            errors: 'Failed to add a tariff to the company!'
+        };
+    }
+}
+
 
 // COMPANY ACTIONS END
 
@@ -316,14 +346,14 @@ export const editOffice = async (officeId: number, companyId: {  id: number; nam
         });
 
         return {
-            message: "New office was successfully added! ",
+            message: "New office was successfully edited! ",
             errors: ""
         }
     } catch (error) {
         console.log(error);
         return {
             message: '',
-            errors: 'Failed to add a new office to the company!'
+            errors: 'Failed to edit the office!'
         };
     }
 }

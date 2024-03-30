@@ -1,6 +1,6 @@
 "use client";
 
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {useFormState} from "react-dom";
 import {Session} from "@/lib/auth";
 import {
@@ -78,6 +78,9 @@ const Table: React.FC<TableProps> = ({
     const [demoteEmployeeState, demoteEmployeeAction] = useFormState(demoteEmployee, { message: '', errors: '' });
     const [makeCourierState, makeCourierAction] = useFormState(makeCourier,{ message: '', errors: '' })
 
+    useEffect(() => {
+        console.log(makeCourierState)
+    }, [makeCourierState]);
     // shipment actions
     const [deleteShipmentState, deleteShipmentAction] = useFormState(deleteShipment, { message: '', errors: '' });
 
