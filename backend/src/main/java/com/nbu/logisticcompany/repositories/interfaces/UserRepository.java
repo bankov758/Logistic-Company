@@ -13,4 +13,6 @@ public interface UserRepository extends BaseCRUDRepository<User> {
 
     void makeEmployee(int userId, int companyId);
 
+    boolean isAlreadyEmployee(int userId);
+
 }

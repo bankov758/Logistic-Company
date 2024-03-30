@@ -2,6 +2,7 @@ package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Courier;
+import com.nbu.logisticcompany.entities.Employee;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
@@ -12,8 +13,6 @@ import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
-import com.nbu.logisticcompany.services.interfaces.CourierService;
-import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
@@ -147,7 +146,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void makeOfficeEmployee(int userId, int officeId, User updater) {
         ValidationUtil.validateAdminAction(updater, User.class, Action.UPDATE);
-        if (officeEmployeeRepository.isAlreadyOfficeEmployee(userId)){
+        if (userRepository.isAlreadyEmployee(userId)) {
+            throw new DuplicateEntityException(Employee.class.getSimpleName(), "id", String.valueOf(userId));
+        }
+        if (officeEmployeeRepository.isAlreadyOfficeEmployee(userId)) {
             throw new DuplicateEntityException(OfficeEmployee.class.getSimpleName(), "id", String.valueOf(userId));
         }
         userRepository.makeOfficeEmployee(userId, officeId);
@@ -158,7 +160,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void makeCourier(int userId, int companyId, User updater) {
         ValidationUtil.validateAdminAction(updater, User.class, Action.UPDATE);
-        if (courierRepository.isAlreadyCourier(userId)){
+        if (userRepository.isAlreadyEmployee(userId)) {
+            throw new DuplicateEntityException(Employee.class.getSimpleName(), "id", String.valueOf(userId));
+        }
+        if (courierRepository.isAlreadyCourier(userId)) {
             throw new DuplicateEntityException(Courier.class.getSimpleName(), "id", String.valueOf(userId));
         }
         userRepository.makeCourier(userId, companyId);

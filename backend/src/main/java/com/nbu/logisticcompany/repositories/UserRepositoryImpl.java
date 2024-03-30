@@ -1,6 +1,7 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Company;
+import com.nbu.logisticcompany.entities.Employee;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
@@ -79,6 +80,22 @@ public class UserRepositoryImpl extends AbstractRepository<User> implements User
                 .setParameter("companyId", companyId)
                 .executeUpdate();
             session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public boolean isAlreadyEmployee(int userId){
+        try (Session session = sessionFactory.openSession()) {
+            try {
+                Employee employee = session.createQuery(" select employee from Employee employee" +
+                                                            " where employee.id =: employeeId ",
+                                                        Employee.class)
+                    .setParameter("employeeId",  userId)
+                    .getSingleResult();
+                return employee != null;
+            } catch (Exception ex) {
+                return false;
+            }
         }
     }
 
