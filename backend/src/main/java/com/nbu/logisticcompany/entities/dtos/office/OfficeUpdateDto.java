@@ -1,20 +1,16 @@
 package com.nbu.logisticcompany.entities.dtos.office;
 
-import com.nbu.logisticcompany.entities.Company;
-
 public class OfficeUpdateDto {
 
     private int id;
     private String address;
-    private Company companyId;
 
     public OfficeUpdateDto() {
     }
 
-    public OfficeUpdateDto(int id, String address, Company companyId) {
+    public OfficeUpdateDto(int id, String address) {
         this.id = id;
         this.address = address;
-        this.companyId = companyId;
     }
 
     public int getId() {
@@ -33,11 +29,4 @@ public class OfficeUpdateDto {
         this.address = address;
     }
 
-    public Company getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Company companyId) {
-        this.companyId = companyId;
-    }
 }
