@@ -257,12 +257,12 @@ export const getUsers = async (): Promise<selectorItem[] | null> => {
     return null;
 }
 
-// export const getUserId = async (userName: string | undefined, users: selectorItem[]) => {
-//     const foundUser = users.find(user => user.title === userName)
-//     if (foundUser) return foundUser.id;
-//
-//     return null;
-// }
+export const getUserId = async (userName: string | undefined, users: selectorItem[]) => {
+    const foundUser = users.find(user => user.title === userName)
+    if (foundUser) return foundUser.id;
+
+    return null;
+}
 
 const createNewOrderSchema = z.object({
     departureAddress: z.string().trim(),
@@ -374,6 +374,7 @@ export const editShipment = async (
 	receiverId: string | number | undefined,
 	courierId: string | number | undefined,
 	selectedItem: any | null,
+    users: selectorItem[],
     initialState: FormState,
     formData: FormData,
 ) => {
@@ -381,19 +382,29 @@ export const editShipment = async (
 	const arrivalAddress = formData.get('arrivalAddress');
 	const sentDate = formData.get('sentDate');
     const receivedDate = formData.get('receivedDate');
-    console.log(selectedItem);
-	//const employeeId = await getUserId(session?.username, users);
-    //  const newSentDate = new Date(sentDate);
+
+    cogitnsole.log(selectedItem);
+    //console.log(users);
+	const foundSenderId = await getUserId(selectedItem?.sender, users);
+	const foundReceiverId = await getUserId(selectedItem?.receiver, users);
+	const foundCourierId = await getUserId(selectedItem?.courier, users);
+
+    const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
+    const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
+
+    const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
+    const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
+
 	 const fields= {
 		selectedItemId: selectedItem?.id,
 	 	departureAddress: departureAddress || selectedItem?.departureAddress,
 	 	arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
-	 	senderId: senderId || selectedItem?.senderId,
-	 	receiverId: receiverId || selectedItem?.receiverId,
+	 	senderId: senderId || foundSenderId,
+	 	receiverId: receiverId || foundReceiverId,
 		employeeId: session?.id,
-	 	sentDate: sentDate || selectedItem?.sentDate,
-        receivedDate: receivedDate || selectedItem?.receivedDate,
-	 	courierId: courierId || selectedItem?.courierId
+	 	sentDate: parsedSentDate || parsedOldSentDate,
+        receivedDate: parsedReceivedDate || parsedOldReceivedDate,
+	 	courierId: courierId || foundCourierId
 	 }
      console.log(fields);
 	const validateSchema = editOrderSchema.safeParse(fields);

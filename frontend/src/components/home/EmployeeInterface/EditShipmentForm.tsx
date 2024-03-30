@@ -31,7 +31,8 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
             selectedSender?.id,
             selectedReceiver?.id,
             selectedCourier?.id,
-            selectedItem),
+            selectedItem,
+            users),
         {message: null, errors: ''}
     )
 
