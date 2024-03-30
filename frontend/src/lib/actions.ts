@@ -368,7 +368,7 @@ const editOrderSchema = z.object({
 
 
 export const editShipment = async (
-	session: Session | null,
+	employeeId: number,
 	senderId: string | number | undefined,
 	receiverId: string | number | undefined,
 	courierId: string | number | undefined,
@@ -401,18 +401,23 @@ export const editShipment = async (
     const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
     const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
 
+    const companyId = await getCompanyId();
+
 	 const fields= {
-		selectedItemId: selectedItem?.id,
+		id: selectedItem?.id,
 	 	departureAddress: departureAddress || selectedItem?.departureAddress,
 	 	arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
 	 	senderId: senderId || foundSenderId,
 	 	receiverId: receiverId || foundReceiverId,
-		employeeId: session?.id,
+		employeeId,
 	 	sentDate: parsedSentDate || parsedOldSentDate,
         receivedDate: parsedReceivedDate || parsedOldReceivedDate,
-	 	courierId: courierId || foundCourierId
+	 	courierId: courierId || foundCourierId,
+        companyId,
+        receivedFromOffice: selectedItem.receivedFromOffice,
+        sentFromOffice: selectedItem.sentFromOffice
 	 }
-     console.log(fields);
+
 	const validateSchema = editOrderSchema.safeParse(fields);
 
 	if (!validateSchema.success ) {

@@ -100,7 +100,7 @@ const Table: React.FC<TableProps> = ({
     return (
         <div className="px-8 py-2 min-w-full">
             <table className="min-w-full">
-                {showDialog && selectedItem &&
+                {showDialog && selectedItem && session &&
                     <BaseDialog
                         title="Edit item"
                         tryClose={() => {
@@ -110,7 +110,7 @@ const Table: React.FC<TableProps> = ({
                         }}
                     >
                         {editShipment &&
-                            <EditShipmentForm selectedItem={selectedItem}/>
+                            <EditShipmentForm selectedItem={selectedItem} employeeId={session.id}/>
                         }
                         {editOffice &&
                             <EditOfficeForm selectedItem={selectedItem}/>

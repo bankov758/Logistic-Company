@@ -15,19 +15,18 @@ const options = [
     {value: "Closed", placeholder: "Closed"},
 ];
 
-const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
-    const [session, setSession] = useState<null | Session>(null);
+const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number }> = ({selectedItem, employeeId}) => {
     const [error, setError] = useState<Error | null | string>(null);
 
-    const [couriers, setCouriers] = useState<selectorItem[]>([]);
     const [users, setUsers] = useState<selectorItem[]>([]);
-    const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
-    const [selectedCourier, setSelectedCourier] = useState<selectorItem | null> (null);
+    const [couriers, setCouriers] = useState<selectorItem[]>([]);
+
     const [selectedSender, setSelectedSender] = useState<selectorItem | null>(null);
     const [selectedReceiver, setSelectedReceiver] = useState<selectorItem | null>(null);
+    const [selectedCourier, setSelectedCourier] = useState<selectorItem | null> (null);
 
     const [editShipmentState, editShipmentAction] = useFormState(editShipment.bind(null,
-            session,
+            employeeId,
             selectedSender?.id,
             selectedReceiver?.id,
             selectedCourier?.id,
@@ -37,27 +36,27 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
     )
 
     useEffect(() => {
-        getSession()
-            .then( async (response) => {
-                setSession(response)
-                try {
-                    const users = await getUsers();
-                    const companyId = await getCompanyId();
-                    const couriers = await getCouriers(companyId);
+        const fetchDropdownData = async() => {
+            try {
+                const users = await getUsers();
+                const companyId = await getCompanyId();
+                const couriers = await getCouriers(companyId);
 
-                    if( users ) {
-                        setUsers(users);
-                    }
-
-                    if( couriers ) {
-                        setCouriers(couriers);
-                    }
-                } catch (err) {
-                    if( err instanceof Error ) {
-                        setError(err)
-                    }
+                if( users ) {
+                    setUsers(users);
                 }
-            });
+
+                if( couriers ) {
+                    setCouriers(couriers);
+                }
+            } catch (err) {
+                if( err instanceof Error ) {
+                    setError(err)
+                }
+            }
+        }
+
+        fetchDropdownData();
     }, []);
 
 
