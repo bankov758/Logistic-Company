@@ -1,5 +1,6 @@
 "use client";
-import React, {Fragment, useEffect, useState} from "react";
+
+import React, {Fragment, useState} from "react";
 import {useFormState} from "react-dom";
 import {Session} from "@/lib/auth";
 import {deleteEmployee, deleteOffice, deleteUser, demoteEmployee, promoteUser} from "@/lib/adminActions";
@@ -7,7 +8,6 @@ import {deleteEmployee, deleteOffice, deleteUser, demoteEmployee, promoteUser} f
 import BaseDialog from "@/components/UI/BaseDialog";
 import EditShipmentForm from "@/components/home/EmployeeInterface/EditShipmentForm";
 import EditOfficeForm from "@/components/home/AdminInterface/EditOfficeForm";
-import AddRoleForm from "@/components/home/AdminInterface/AddRoleForm";
 import EmployeeInterfaceActionsButtons from "@/components/home/EmployeeInterface/EmployeeInterfaceActionsButtons";
 import AdminInterfaceUserActionsButtons from "@/components/home/AdminInterface/AdminInterfaceUserActionButtons";
 import AdminInterfaceEmployeeActionsButtons from "@/components/home/AdminInterface/AdminInterfaceEmployeeActionButtons";
@@ -40,20 +40,21 @@ type TableProps = {
     categories: category[];
     data: item[];
     session: Session | null;
+    onEditOfficeSuccess: () => void;
 };
 
 const Table: React.FC<TableProps> = ({
     columns,
     categories,
     data,
-    session
+    session,
+    onEditOfficeSuccess
 }) => {
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<item | null>(null);
 
     const [editShipment, setEditShipment] = useState<boolean>(false);
     const [editOffice, setEditOffice] = useState<boolean>(false);
-    const [addRole, setAddRole] = useState<boolean>(false);
 
     // user actions
     const [deleteUserState, deleteUserAction] = useFormState(deleteUser, { message: '', errors: '' });
@@ -68,7 +69,6 @@ const Table: React.FC<TableProps> = ({
 
     // office actions
     const [deleteOfficeState, deleteOfficeAction] = useFormState(deleteOffice, { message: '', errors: '' });
-
 
     const handleAction = async (item: item, type: ActionType | null) => {
         switch (type) {
@@ -85,11 +85,6 @@ const Table: React.FC<TableProps> = ({
             case "deleteOffice": deleteOfficeAction(item.id); break;
             case "editOffice":
                 setEditOffice(true);
-                setSelectedItem(item);
-                setShowDialog(true);
-                break;
-            case "addRole":
-                setAddRole(true);
                 setSelectedItem(item);
                 setShowDialog(true);
                 break;
@@ -113,10 +108,7 @@ const Table: React.FC<TableProps> = ({
                             <EditShipmentForm selectedItem={selectedItem} employeeId={session.id}/>
                         }
                         {editOffice &&
-                            <EditOfficeForm selectedItem={selectedItem}/>
-                        }
-                        {addRole &&
-                            <AddRoleForm selectedItem={selectedItem}/>
+                            <EditOfficeForm selectedItem={selectedItem} onEditOfficeSuccess={onEditOfficeSuccess}/>
                         }
                     </BaseDialog>
                 }

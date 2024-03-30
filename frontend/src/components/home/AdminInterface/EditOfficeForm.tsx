@@ -1,30 +1,29 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {item} from "@/components/home/Table";
+import {useFormState} from "react-dom";
+import {editOffice} from "@/lib/adminActions";
+import SubmitButton from "@/components/UI/SubmitButton";
 
-const EditOfficeForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
+const EditOfficeForm: React.FC<{ selectedItem: item, onEditOfficeSuccess: () => void }> = ({selectedItem, onEditOfficeSuccess}) => {
+    const [editOfficeState, editOfficeAction] = useFormState(editOffice.bind(null, selectedItem.id, selectedItem.companyId), { message: '', errors: '' });
 
-    const submitForm = (e:any) => {
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData);
-    }
+    useEffect(() => {
 
+        if( editOfficeState.message ) {
+            onEditOfficeSuccess();
+        }
+    }, [editOfficeState]);
     return (
-        <form onSubmit={submitForm}>
-            <h3 className="flex justify-center">Edit an office:</h3><br/>
+        <form action={editOfficeAction}>
+            <h3 className="flex justify-center mb-4">Edit an office:</h3>
+
             <div className="order-div">
                 <label className="block  text-gray-500">Address:</label>
-                <input type="text" id="adress" className="input-info-dialog"/>
+                <input type="text" id="address" name='address' className="input-info-dialog"/>
             </div>
-            <div className="order-div">
-                <label className="flex text-gray-500">Company name:</label>
-                <input type="text" id="companyName" className="input-info-dialog justify-center"/>
-            </div>
+
             <div className='flex justify-center py-3 text-gray-500'>
-                <button
-                    className="action_btn_green px-8 py-3"
-                >
-                    Edit
-                </button>
+                <SubmitButton formState={editOfficeState}/>
             </div>
         </form>
     )

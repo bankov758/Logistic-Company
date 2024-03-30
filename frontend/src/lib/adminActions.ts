@@ -244,11 +244,41 @@ export const addOffice = async (companyId: number, officeLocation: string) => {
     }
 }
 
+export const editOffice = async (officeId: number, companyId: {  id: number; name: string; }, initialState: FormState, formData: FormData) => {
+
+    try {
+        const requestedData = {
+            id: officeId,
+            address: formData.get('address'),
+            companyId
+        }
+
+        const jsession = await getCookies();
+
+        await axios.put(`/offices`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
+
+        return {
+            message: "New office was successfully added! ",
+            errors: ""
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            message: '',
+            errors: 'Failed to add a new office to the company!'
+        };
+    }
+}
+
 export const deleteOffice = async (initialState: FormState, officeId: number)=> {
     try {
         const jsession = await getCookies();
 
-        const response = await axios.delete(`/office/${officeId}`,{
+        await axios.delete(`/office/${officeId}`,{
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }

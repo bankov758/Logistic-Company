@@ -110,6 +110,12 @@ const AdminInterface: React.FC = () => {
         setData([]);
     }
 
+    const onEditOfficeSuccess = async () => {
+        setSelectedCompany(null);
+        await getAndSetCompanies();
+        setData([]);
+    }
+
     return <>
         {error &&
             <Notification status='error'>
@@ -180,6 +186,7 @@ const AdminInterface: React.FC = () => {
                             columns={adminColumns[index]}
                             categories={adminCategories[index]}
                             session={session}
+                            onEditOfficeSuccess={onEditOfficeSuccess}
                             data=
                                 {
                                     individualData
