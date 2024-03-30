@@ -58,7 +58,7 @@ public class CourierServiceImpl implements CourierService {
 
     @Override
     public void delete(int courierToDeleteId, User deleter) {
-        ValidationUtil.validateOwnerDelete(courierToDeleteId, deleter.getId());
+        ValidationUtil.validateOwnerDelete(courierToDeleteId, deleter);
         courierRepository.delete(courierToDeleteId);
     }
 

@@ -23,7 +23,7 @@ public class ValidationUtil {
 
     private static final String UNAUTHORIZED_DEFAULT = "Unauthorized action";
     private static final String UNAUTHORIZED_USER_UPDATE = "Only the owner of the account can make changes";
-    private static final String UNAUTHORIZED_USER_DELETE = "Only the owner of the account can delete it";
+    private static final String UNAUTHORIZED_USER_DELETE = "Only the owner of the account or an admin can delete it";
     private static final String UNAUTHORIZED_ADMIN_ACTION = "Only Admins can %s %s entities";
     private static final String UNAUTHORIZED_OFFICE_EMPLOYEE_ACTION =
             "Only office employees from the same company as the %s can modify it";
@@ -65,8 +65,10 @@ public class ValidationUtil {
         }
     }
 
-    public static void validateOwnerDelete(int userToDeleteId, int destroyerId) {
-        if (userToDeleteId != destroyerId) {
+    public static void validateOwnerDelete(int userToDeleteId, User destroyer) {
+        Set<Role> userRoles = destroyer == null || destroyer.getRoles() == null ? new HashSet<>() : destroyer.getRoles();
+        int destroyerId = destroyer == null ? -1 : destroyer.getId();
+        if (userToDeleteId != destroyerId && !userRoles.contains(Role.ADMIN)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_USER_DELETE);
         }
     }

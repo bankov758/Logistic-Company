@@ -106,7 +106,7 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
      */
     @Override
     public void delete(int id, User updater) {
-        validateOwnerDelete(id, updater.getId());
+        validateOwnerDelete(id, updater);
         officeEmployeeRepository.delete(id);
     }
 
