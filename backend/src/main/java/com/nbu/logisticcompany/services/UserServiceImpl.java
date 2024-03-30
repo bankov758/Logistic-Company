@@ -151,6 +151,8 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateEntityException(OfficeEmployee.class.getSimpleName(), "id", String.valueOf(userId));
         }
         userRepository.makeOfficeEmployee(userId, officeId);
+        User user = getById(userId);
+        addRole(user, Role.EMPLOYEE.toString(), updater);
     }
 
     @Override
@@ -160,6 +162,8 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateEntityException(Courier.class.getSimpleName(), "id", String.valueOf(userId));
         }
         userRepository.makeCourier(userId, companyId);
+        User user = getById(userId);
+        addRole(user, Role.EMPLOYEE.toString(), updater);
     }
 
     /**
