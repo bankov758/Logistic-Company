@@ -4,6 +4,7 @@ import axios from "@/lib/axios";
 import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import {getCookies} from "@/lib/auth";
+import {AxiosError} from "axios";
 
 // COMPANY ACTIONS START
 
@@ -211,26 +212,29 @@ export const demoteEmployee = async (initialState: FormState, userId: number) =>
         };
     }
 }
+
 export const makeCourier = async (initialState: FormState, userId: number) => {
 
     try {
+        const requestData = {}
+
         const jsession = await getCookies();
-            await axios.put(`/office-employees/make-courier/${userId}`,{
+
+        await axios.put(`/office-employees/make-courier/${userId}`, requestData,{
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
         })
 
         return {
-            message: "Employee was successfully demoted! ",
+            message: "Employee was successfully appointed into courier! ",
             errors: ""
         }
 
     } catch (error) {
-
         return {
             message: '',
-            errors: 'Failed to demote the chosen employee!'
+            errors: 'Failed to make the chosen employee into courier!'
         };
     }
 }
@@ -238,6 +242,33 @@ export const makeCourier = async (initialState: FormState, userId: number) => {
 // EMPLOYEE ACTIONS END
 
 // OFFICE ACTIONS START
+
+export const getOffices = async (companyId: number): Promise<selectorItem[] | null> => {
+
+    try {
+        const jsession = await getCookies();
+
+        const response = await axios.get(`/companies/${companyId}/offices`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return response.data.map((office: any) => ({
+            title: office.address,
+            code: office.address.split(' ').join('_'),
+            id: office.id,
+        }));
+
+    } catch (err) {
+        if (err instanceof AxiosError) {
+            throw err;
+        }
+    }
+
+    return null;
+
+}
 
 export const addOffice = async (companyId: number, officeLocation: string) => {
 
@@ -374,11 +405,11 @@ export const demoteCourier = async (initialState: FormState, userId: number) => 
     }
 }
 
-export const promoteCourier = async (initialState: FormState, userId: number) => {
+export const promoteCourier = async ( userId: number, officeId: number,initialState: FormState) => {
 
     try {
         const jsession = await getCookies();
-        await axios.put(`/couriers/${userId}/make-office-employee/${userId}`, {},{
+        await axios.put(`/couriers/${userId}/make-office-employee/${officeId}`, {},{
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }

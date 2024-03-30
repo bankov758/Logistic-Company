@@ -187,6 +187,7 @@ const AdminInterface: React.FC = () => {
                             categories={adminCategories[index]}
                             session={session}
                             onEditOfficeSuccess={onEditOfficeSuccess}
+                            selectedCompany={selectedCompany}
                             data=
                                 {
                                     individualData

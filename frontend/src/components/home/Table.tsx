@@ -22,6 +22,8 @@ import AdminInterfaceEmployeeActionsButtons from "@/components/home/AdminInterfa
 import AdminInterfaceOfficeActionButtons from "@/components/home/AdminInterface/AdminInterfaceOfficeActionButtons";
 import AdminInterfaceCourierActionsButtons from "@/components/home/AdminInterface/AdminInterfaceCourierActionButtons";
 import {deleteShipment} from "@/lib/actions";
+import MakeEmployeeIntoCourierForm from "@/components/home/AdminInterface/MakeEmployeeIntoCourierForm";
+import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 
 export type column = {
     title: string;
@@ -49,6 +51,7 @@ type TableProps = {
     data: item[];
     session: Session | null;
     onEditOfficeSuccess: () => void;
+    selectedCompany?: selectorItem;
 };
 
 const Table: React.FC<TableProps> = ({
@@ -56,13 +59,15 @@ const Table: React.FC<TableProps> = ({
     categories,
     data,
     session,
-    onEditOfficeSuccess
+    onEditOfficeSuccess,
+    selectedCompany
 }) => {
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<item | null>(null);
 
     const [editShipment, setEditShipment] = useState<boolean>(false);
     const [editOffice, setEditOffice] = useState<boolean>(false);
+    const [makeEmployeeIntoCourier, setMakeEmployeeIntoCourier] = useState<boolean>(false);
 
     // user actions
     const [deleteUserState, deleteUserAction] = useFormState(deleteUser, { message: '', errors: '' });
@@ -71,7 +76,7 @@ const Table: React.FC<TableProps> = ({
     // employee actions
     const [deleteEmployeeState, deleteEmployeeAction] = useFormState(deleteEmployee, { message: '', errors: '' });
     const [demoteEmployeeState, demoteEmployeeAction] = useFormState(demoteEmployee, { message: '', errors: '' });
-    const [makeCourierState, makeCourierAction] = useFormState(makeCourier, { message: '', errors: '' });
+    const [makeCourierState, makeCourierAction] = useFormState(makeCourier,{ message: '', errors: '' })
 
     // shipment actions
     const [deleteShipmentState, deleteShipmentAction] = useFormState(deleteShipment, { message: '', errors: '' });
@@ -82,7 +87,7 @@ const Table: React.FC<TableProps> = ({
     // courier actions
     const [deleteCourierState, deleteCourierAction] = useFormState(deleteCourier, { message: '', errors: '' });
     const [demoteCourierState, demoteCourierAction] = useFormState(demoteCourier, { message: '', errors: '' });
-    const [promoteCourierState, promoteCourierAction] = useFormState(promoteCourier, { message: '', errors: '' });
+    // const [promoteCourierState, promoteCourierAction] = useFormState(promoteCourier, { message: '', errors: '' });
 
 
     const handleAction = async (item: item, type: ActionType | null) => {
@@ -103,7 +108,10 @@ const Table: React.FC<TableProps> = ({
 
             case 'deleteCourier': deleteCourierAction(item.id); break;
             case 'demoteCourier': demoteCourierAction(item.id); break;
-            case "makeOfficeEmployee": promoteCourierAction(item.id); break;
+            case "makeOfficeEmployee":
+                setMakeEmployeeIntoCourier(true);
+                setShowDialog(true);
+                setSelectedItem(item); break;
 
             case "deleteOffice": deleteOfficeAction(item.id); break;
             case "editOffice":
@@ -133,6 +141,9 @@ const Table: React.FC<TableProps> = ({
                         }
                         {editOffice &&
                             <EditOfficeForm selectedItem={selectedItem} onEditOfficeSuccess={onEditOfficeSuccess}/>
+                        }
+                        {makeEmployeeIntoCourier && selectedCompany &&
+                            <MakeEmployeeIntoCourierForm selectedItem={selectedItem} selectedCompanyId={selectedCompany.id as number}/>
                         }
                     </BaseDialog>
                 }
