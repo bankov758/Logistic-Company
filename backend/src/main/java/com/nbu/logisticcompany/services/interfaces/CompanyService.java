@@ -3,9 +3,7 @@ package com.nbu.logisticcompany.services.interfaces;
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
-import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
-import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
-import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +22,8 @@ public interface CompanyService {
     List<CompanyEmployeesDto> getCompanyEmployees(int companyId, User user);
 
     List<ClientOutDto> getCompanyClients(int companyId, User user);
+
+    List<CompanyCouriersDto> getCompanyCouriers(int companyId, User user);
 
     void create(Company company, User creator);
 

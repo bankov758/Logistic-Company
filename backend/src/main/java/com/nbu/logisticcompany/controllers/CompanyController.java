@@ -10,7 +10,9 @@ import com.nbu.logisticcompany.entities.dtos.company.CompanyUpdateDto;
 import com.nbu.logisticcompany.entities.dtos.office.OfficeOutDto;
 import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
+import com.nbu.logisticcompany.entities.dtos.user.CourierOutDto;
 import com.nbu.logisticcompany.mappers.CompanyMapper;
 import com.nbu.logisticcompany.mappers.OfficeMapper;
 import com.nbu.logisticcompany.mappers.ShipmentMapper;
@@ -86,6 +88,12 @@ public class CompanyController {
     public List<ClientOutDto> getCompanyClients(HttpSession session, @PathVariable int id) {
         User creator = authenticationHelper.tryGetUser(session);
         return companyService.getCompanyClients(id, creator);
+    }
+
+    @GetMapping("/{id}/couriers")
+    public List<CompanyCouriersDto> getCompanyCouriers(HttpSession session, @PathVariable int id) {
+        User creator = authenticationHelper.tryGetUser(session);
+        return companyService.getCompanyCouriers(id, creator);
     }
 
     @GetMapping("/{id}/not-delivered")

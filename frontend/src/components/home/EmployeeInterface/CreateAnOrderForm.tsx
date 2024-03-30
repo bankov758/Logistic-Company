@@ -36,21 +36,24 @@ const CreateAnOrderForm: React.FC = () => {
                 setSession(response)
                 try {
                     const users = await getUsers();
-                    const couriers = await getCouriers();
 
                     const companyId = await getCompanyId();
+                    const couriers = await getCouriers(companyId);
 
                     if( users ) {
                         setUsers(users);
                     }
+                    if ( couriers ) {
+                        setCouriers(couriers);
+                    }
 
                     //TODO: fix and compare by companyName
-                    if( couriers ) {
-                        const courierCompanyIds = couriers
-                            .filter((courier: any) => courier.companyName === companyId)
-
-                        setCouriers(courierCompanyIds);
-                    }
+                    // if( couriers ) {
+                    //     const courierCompanyIds = couriers
+                    //         .filter((courier: any) => courier.companyName === companyId)
+                    //
+                    //     setCouriers(courierCompanyIds);
+                    // }
                     
                 } catch (err) {
                     if( err instanceof AxiosError ) {

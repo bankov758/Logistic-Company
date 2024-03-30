@@ -204,11 +204,11 @@ export const getCompanies = async (): Promise<selectorItem[] | null> => {
 
 }
 
-export const getCouriers = async () => {
+export const getCouriers = async (companyId:number) => {
     try {
         const jsession = cookies().get("JSESSIONID")
 
-        const response = await axios.get("/couriers", {
+        const response = await axios.get(`/companies/${companyId}/couriers`, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
@@ -360,42 +360,42 @@ export const createAnOrder = async (
 }
 
 const editOrderSchema = z.object({
-    departureAddress: z.string().trim(),
-    arrivalAddress: z.string().trim(),
-    sentDate: z.date(),
-    receivedDate: z.date(),
-    weight: z.string().trim(),
+    departureAddress: z.string().trim().optional(),
+    arrivalAddress: z.string().trim().optional(),
+    sentDate: z.date().optional(),
+    receivedDate: z.date().optional(),
+    //weight: z.string().trim(),
 });
 
 
 export const editShipment = async (
-    initialState: FormState,
 	session: Session | null,
 	senderId: string | number | undefined,
 	receiverId: string | number | undefined,
 	courierId: string | number | undefined,
-	selectedItemId: number | null,
-	formData: FormData,
+	selectedItem: any | null,
+    initialState: FormState,
+    formData: FormData,
 ) => {
 	const departureAddress = formData.get('departureAddress');
 	const arrivalAddress = formData.get('arrivalAddress');
 	const sentDate = formData.get('sentDate');
     const receivedDate = formData.get('receivedDate');
-
+    console.log(selectedItem);
 	//const employeeId = await getUserId(session?.username, users);
-
+    //  const newSentDate = new Date(sentDate);
 	 const fields= {
-		selectedItemId,
-	 	departureAddress,
-	 	arrivalAddress,
-	 	senderId,
-	 	receiverId,
+		selectedItemId: selectedItem?.id,
+	 	departureAddress: departureAddress || selectedItem?.departureAddress,
+	 	arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
+	 	senderId: senderId || selectedItem?.senderId,
+	 	receiverId: receiverId || selectedItem?.receiverId,
 		employeeId: session?.id,
-	 	sentDate,
-        receivedDate,
-	 	courierId
+	 	sentDate: sentDate || selectedItem?.sentDate,
+        receivedDate: receivedDate || selectedItem?.receivedDate,
+	 	courierId: courierId || selectedItem?.courierId
 	 }
-
+     console.log(fields);
 	const validateSchema = editOrderSchema.safeParse(fields);
 
 	if (!validateSchema.success ) {

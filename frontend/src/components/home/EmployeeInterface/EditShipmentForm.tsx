@@ -7,7 +7,7 @@ import {useFormState} from "react-dom";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 
 import {getSession, Session} from "@/lib/auth";
-import {editShipment, getCouriers, getUsers} from "@/lib/actions";
+import {editShipment, getCompanyId, getCouriers, getUsers} from "@/lib/actions";
 
 // Example usage:
 const options = [
@@ -31,7 +31,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
             selectedSender?.id,
             selectedReceiver?.id,
             selectedCourier?.id,
-            selectedItem.id),
+            selectedItem),
         {message: null, errors: ''}
     )
 
@@ -41,20 +41,16 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
                 setSession(response)
                 try {
                     const users = await getUsers();
-                    const couriers = await getCouriers();
+                    const companyId = await getCompanyId();
+                    const couriers = await getCouriers(companyId);
 
                     if( users ) {
                         setUsers(users);
-                    }else {
-                        setError("Something went wrong when requesting users!")
                     }
 
                     if( couriers ) {
                         setCouriers(couriers);
-                    } else {
-                        setError("Something went wrong when requesting users!")
                     }
-
                 } catch (err) {
                     if( err instanceof Error ) {
                         setError(err)
@@ -80,7 +76,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
 
             <div className="order-div">
                 <label className="block text-gray-500">Sender:</label>
-                { users &&
+                {users &&
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
                         placeholderValue={selectedSender && Object.keys(selectedSender).length > 0 ? selectedSender.title : "Select user"}
@@ -92,7 +88,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
 
             <div className="order-div">
                 <label className="block  text-gray-500">Receiver:</label>
-                { users &&
+                {users &&
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
                         placeholderValue={selectedReceiver && Object.keys(selectedReceiver).length > 0 ? selectedReceiver.title : "Select user"}
@@ -104,7 +100,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
 
             <div className="order-div">
                 <label className="block  text-gray-500">Courier:</label>
-                { couriers &&
+                {couriers &&
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
                         placeholderValue={selectedCourier && Object.keys(selectedCourier).length > 0 ? selectedCourier.title : "Select courier"}
@@ -142,9 +138,18 @@ const EditShipmentForm: React.FC<{ selectedItem: item }> = ({selectedItem}) => {
                 />
             </div>
 
+            {/*<div className="order-div">*/}
+            {/*    <label htmlFor="weight" className="block  text-gray-500">Weight:</label>*/}
+            {/*    <input*/}
+            {/*        type='text'*/}
+            {/*        id="weight" name="weight"*/}
+            {/*        className="block text-gray-500 rounded-xl border-2 py-1.5 px-1 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line"*/}
+            {/*    />*/}
+            {/*</div>*/}
+
             <div className='flex justify-center py-3 text-gray-500'>
                 <div className='flex justify-center py-3 text-gray-500'>
-                    <SubmitButton formState={editShipmentState} />
+                    <SubmitButton formState={editShipmentState}/>
                 </div>
             </div>
         </form>
