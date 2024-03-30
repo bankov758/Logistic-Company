@@ -155,7 +155,7 @@ public class ShipmentServiceImpl implements ShipmentService {
      */
     private void validateCompany(Shipment shipment) {
         int shipmentCompanyId = shipment.getCompany().getId();
-        Courier courier = courierService.getCourierFromShipment(shipment.getId());
+        Courier courier = shipment.getCourier();
         int officeEmployeeCompanyId = shipment.getEmployee().getCompany().getId();
         if (courier == null || shipmentCompanyId != courier.getCompany().getId()) {
             throw new InvalidDataException("Shipment and courier companies do not match");
