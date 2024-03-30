@@ -1,6 +1,7 @@
 package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Courier;
+import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -61,6 +62,16 @@ public class CourierRepositoryImpl extends AbstractRepository<Courier> implement
                 .setParameter("officeId", officeId)
                 .executeUpdate();
             session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public boolean isAlreadyCourier(int userId) {
+        try {
+            getById(userId);
+            return true;
+        } catch (EntityNotFoundException ex) {
+            return false;
         }
     }
 

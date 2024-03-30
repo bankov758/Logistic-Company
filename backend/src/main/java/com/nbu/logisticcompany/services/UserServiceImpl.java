@@ -1,14 +1,21 @@
 package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Company;
+import com.nbu.logisticcompany.entities.Courier;
+import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
+import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
+import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
+import com.nbu.logisticcompany.services.interfaces.CourierService;
+import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.services.interfaces.UserService;
+import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +30,14 @@ public class UserServiceImpl implements UserService {
     private static final String UNAUTHORIZED_ROLE_UPDATE = "Only an admin account can change roles";
 
     private final UserRepository userRepository;
+    private final OfficeEmployeeRepository officeEmployeeRepository;
+    private final CourierRepository courierRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, OfficeEmployeeRepository _officeEmployeeRepository, CourierRepository _courierRepository) {
         this.userRepository = userRepository;
+        officeEmployeeRepository = _officeEmployeeRepository;
+        courierRepository = _courierRepository;
     }
 
     @Override
@@ -79,6 +90,7 @@ public class UserServiceImpl implements UserService {
         addRole(alreadySaved, Role.USER.name(), getById(user.getId()));
         return alreadySaved;
     }
+
     /**
      * Updates an existing user's information. If a new password is provided, it will be hashed before update.
      * Only the owner of the account or an authorized updater can perform the update.
@@ -101,6 +113,7 @@ public class UserServiceImpl implements UserService {
 //        }
         userRepository.update(userToUpdate);
     }
+
     /**
      * Adds a specified role to a user if the updater has the right to modify roles.
      * Validates the updater's rights to add the role before updating the user's role list.
@@ -116,7 +129,9 @@ public class UserServiceImpl implements UserService {
         user.getRoles().add(Role.valueOf(role));
         userRepository.update(user);
     }
-    /** Same as addRole, but for removal of roles
+
+    /**
+     * Same as {@link UserServiceImpl#addRole(User, String, User)}, but for removal of roles
      *
      * @param user The user to whom the role will be added.
      * @param role The role to be added to the user. Must be a valid role name that corresponds to the {@link Role} enum.
@@ -128,6 +143,25 @@ public class UserServiceImpl implements UserService {
         user.getRoles().remove(Role.valueOf(role));
         userRepository.update(user);
     }
+
+    @Override
+    public void makeOfficeEmployee(int userId, int officeId, User updater) {
+        ValidationUtil.validateAdminAction(updater, User.class, Action.UPDATE);
+        if (officeEmployeeRepository.isAlreadyOfficeEmployee(userId)){
+            throw new DuplicateEntityException(OfficeEmployee.class.getSimpleName(), "id", String.valueOf(userId));
+        }
+        userRepository.makeOfficeEmployee(userId, officeId);
+    }
+
+    @Override
+    public void makeCourier(int userId, int companyId, User updater) {
+        ValidationUtil.validateAdminAction(updater, User.class, Action.UPDATE);
+        if (courierRepository.isAlreadyCourier(userId)){
+            throw new DuplicateEntityException(Courier.class.getSimpleName(), "id", String.valueOf(userId));
+        }
+        userRepository.makeCourier(userId, companyId);
+    }
+
     /**
      * Deletes a user from the repository based on user ID, if the requesting user has appropriate permissions.
      * Validates that the requesting user is the same as the deleting user (user self deletion)
@@ -140,6 +174,7 @@ public class UserServiceImpl implements UserService {
         ValidationUtil.validateOwnerDelete(id, user);
         userRepository.delete(id);
     }
+
     /**
      * Validates updater's authority for role assignment and role validity.
      * Ensures the updater has 'ADMIN' role to proceed. Validates the specified role against existing {@link Role} enums.

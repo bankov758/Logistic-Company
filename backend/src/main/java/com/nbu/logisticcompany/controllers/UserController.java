@@ -88,6 +88,20 @@ public class UserController {
         return user;
     }
 
+    @PutMapping("/{userId}/make-office-employee/{officeId}")
+    public ResponseEntity<?> makeOfficeEmployee(HttpSession session, @PathVariable int userId, @PathVariable int officeId) {
+        User updater = authenticationHelper.tryGetUser(session);
+        userService.makeOfficeEmployee(userId, officeId, updater);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{userId}/make-courier/{companyId}")
+    public ResponseEntity<?> makeCourier(HttpSession session, @PathVariable int userId, @PathVariable int companyId) {
+        User updater = authenticationHelper.tryGetUser(session);
+        userService.makeCourier(userId, companyId, updater);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public void delete(HttpSession session, @PathVariable int id) {
         User user = authenticationHelper.tryGetUser(session);

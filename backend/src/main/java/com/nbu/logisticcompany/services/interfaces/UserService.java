@@ -24,6 +24,10 @@ public interface UserService {
 
     void removeRole(User user, String role, User updater);
 
+    void makeOfficeEmployee(int userId, int officeId, User updater);
+
+    void makeCourier(int userId, int companyId, User updater);
+
     void delete(int id, User user);
 
 }

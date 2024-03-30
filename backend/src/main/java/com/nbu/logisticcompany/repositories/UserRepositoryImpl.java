@@ -2,21 +2,27 @@ package com.nbu.logisticcompany.repositories;
 
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
+import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
+import com.nbu.logisticcompany.repositories.interfaces.OfficeRepository;
 import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+
 /**
  * Implementation of {@link UserRepository} using Hibernate for data access.
  */
 @Repository
 public class UserRepositoryImpl extends AbstractRepository<User> implements UserRepository {
 
+    private final OfficeRepository officeRepository;
+    private final CompanyRepository companyRepository;
 
-    public UserRepositoryImpl(SessionFactory sessionFactory) {
+    public UserRepositoryImpl(SessionFactory sessionFactory, OfficeRepository _officeRepository, CompanyRepository _companyRepository) {
         super(User.class, sessionFactory);
+        officeRepository = _officeRepository;
+        companyRepository = _companyRepository;
     }
 
     /**
@@ -34,6 +40,45 @@ public class UserRepositoryImpl extends AbstractRepository<User> implements User
                             Company.class)
                     .setParameter("employeeId", employeeId)
                     .getSingleResult();
+        }
+    }
+
+    @Override
+    public void makeOfficeEmployee(int userId, int officeId) {
+        try (Session session = sessionFactory.openSession()) {
+            int companyId = officeRepository.getOfficeCompany(officeId).getId();
+            makeEmployee(userId, companyId);
+            session.getTransaction().begin();
+            session.createSQLQuery(" INSERT INTO office_employee (id, office_id) VALUES (:id, :officeId); ")
+                .setParameter("id", userId)
+                .setParameter("officeId", officeId)
+                .executeUpdate();
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void makeCourier(int userId, int companyId) {
+        try (Session session = sessionFactory.openSession()) {
+            makeEmployee(userId, companyId);
+            session.getTransaction().begin();
+            session.createSQLQuery(" INSERT INTO courier (id) VALUES (:id); ")
+                .setParameter("id", userId)
+                .executeUpdate();
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void makeEmployee(int userId, int companyId) {
+        try (Session session = sessionFactory.openSession()) {
+            companyRepository.getById(companyId);
+            session.getTransaction().begin();
+            session.createSQLQuery(" INSERT INTO employee (id, company_id) VALUES (:id, :companyId); ")
+                .setParameter("id", userId)
+                .setParameter("companyId", companyId)
+                .executeUpdate();
+            session.getTransaction().commit();
         }
     }
 

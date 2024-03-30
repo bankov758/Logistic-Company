@@ -8,4 +8,6 @@ public interface OfficeEmployeeRepository extends BaseCRUDRepository<OfficeEmplo
 
     void makeCourier(int officeEmployeeToUpdateId);
 
+    boolean isAlreadyOfficeEmployee(int userId);
+
 }
