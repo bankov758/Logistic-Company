@@ -1,10 +1,11 @@
 "use client";
-import React, {Fragment, useEffect} from "react";
-import {useFormState} from "react-dom";
-import Link from "next/link";
 
+import React, {Fragment, useEffect} from "react";
+import Link from "next/link";
+import {useFormState} from "react-dom";
 import {useRouter} from "next/navigation";
 import {login} from "@/lib/actions";
+
 import SubmitButton from "@/components/UI/SubmitButton";
 
 const LoginPage: React.FC = () => {
@@ -15,7 +16,7 @@ const LoginPage: React.FC = () => {
         if (loginState.message && typeof loginState.message === 'object' && loginState.message?.username) {
             router.push("/", { scroll: false });
         }
-    }, [loginState]);
+    }, [loginState, router]);
 
     return (
         <Fragment>
@@ -38,10 +39,8 @@ const LoginPage: React.FC = () => {
                         <div className="flex justify-center">
                             <SubmitButton formState={loginState} />
                         </div>
-                        <p>
-                            Not a member yet?
-                            <Link href="/register">Sign up</Link>
-                        </p>
+                        <p>Not a member yet?</p>
+                        <Link href="/register" className='hover:font-bold'>Sign up</Link>
                     </form>
                 </div>
             </div>
