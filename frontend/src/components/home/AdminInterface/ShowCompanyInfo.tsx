@@ -99,13 +99,13 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
 
                 <input type="text" id="tariff" name="tariff" className="input-info-dialog"
                        onChange={(e) => setTariff(Number(e.target.value))}
-                       placeholder="Sofia"/>
+                       placeholder="5"/>
 
                 <label htmlFor="discount" className="block text-gray-500">Set user discount:</label>
 
                 <input type="text" id="discount" name="discount" className="input-info-dialog"
                        onChange={(e) => setDiscount(Number(e.target.value))}
-                       placeholder="Sofia"/>
+                       placeholder="10"/>
 
                 <div className='flex py-3 text-gray-500'>
 
@@ -113,7 +113,7 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
                         className="action_btn_blue px-3 py-1.5"
                         onClick={() => addTariffAction()}
                     >
-                        Add
+                        Set
                     </button>
                 </div>
             </div>
