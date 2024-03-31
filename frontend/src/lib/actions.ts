@@ -63,16 +63,27 @@ export const login = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
+        // Handle non-Axios errors
         if (error instanceof Error) {
             return {
+                message: "",
                 errors: error.message || "Something went wrong!",
-                message: ""
             };
         }
 
+        // Check if it's an Axios error with a modified structure
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+
+        // Handle any other potential errors
         return {
-            errors: "Something went wrong!",
-            message: ""
+            message: "",
+            errors: "Something went wrong",
         };
     }
 }
@@ -142,24 +153,37 @@ export const register = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
-        if (error instanceof AxiosError) {
+        // Handle non-Axios errors
+        if (error instanceof Error) {
             return {
+                message: "",
                 errors: error.message || "Something went wrong!",
-                message: ""
             };
         }
 
+        // Check if it's an Axios error with a modified structure
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+
+        // Handle any other potential errors
         return {
-            errors: "Something went wrong!",
-            message: ""
+            message: "",
+            errors: "Something went wrong",
         };
     }
 }
 
+// USER ACTIONS START
+
 export const deleteUser = async (session: Session | null) => {
-    const jsession = cookies().get("JSESSIONID")
 
     try {
+        const jsession = await getCookies();
 		await axios.delete(`/users/${session?.id}`, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
@@ -168,14 +192,35 @@ export const deleteUser = async (session: Session | null) => {
 
         await signOut();
 
-	} catch (err) {
-		if( err instanceof AxiosError ) {
-			throw err;
-		}
+	} catch (error) {
+        // Handle non-Axios errors
+        if (error instanceof Error) {
+            return {
+                message: "",
+                errors: error.message || "Something went wrong!",
+            };
+        }
+
+        // Check if it's an Axios error with a modified structure
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+
+        // Handle any other potential errors
+        return {
+            message: "",
+            errors: "Something went wrong",
+        };
 	}
 
     redirect('/login');
 }
+
+// USER ACTIONS END
 
 export const getCompanies = async (): Promise<selectorItem[] | null> => {
 
