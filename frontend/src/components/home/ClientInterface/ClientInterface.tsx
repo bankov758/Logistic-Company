@@ -1,7 +1,6 @@
 "use client";
 
-import React, {Fragment} from "react";
-import {useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {Session, getSession} from "@/lib/auth";
 
 import {categories, tableColumns} from "@/data/client/ordersTableData";
@@ -83,7 +82,6 @@ const ClientInterface: React.FC = () => {
                             <p>No Data available!</p>
                         }
                     </Fragment>
-
             }
             {showSelfDeleteDialog &&
                 (

@@ -33,10 +33,11 @@ const useHttp = () => {
         } catch (_err) {
             const error = _err as ErrorType | AxiosError;
             setError(error);
+            setIsLoading(false);
         }
 
         return null;
-    }, [])
+    }, []);
 
     return {
         isLoading,
