@@ -50,7 +50,7 @@ type TableProps = {
     categories: category[];
     data: item[];
     session: Session | null;
-    onEditOfficeSuccess: () => void;
+    onEditOfficeSuccess?: () => void;
     selectedCompany?: selectorItem;
 };
 
@@ -78,9 +78,6 @@ const Table: React.FC<TableProps> = ({
     const [demoteEmployeeState, demoteEmployeeAction] = useFormState(demoteEmployee, { message: '', errors: '' });
     const [makeCourierState, makeCourierAction] = useFormState(makeCourier,{ message: '', errors: '' })
 
-    useEffect(() => {
-        console.log(makeCourierState)
-    }, [makeCourierState]);
     // shipment actions
     const [deleteShipmentState, deleteShipmentAction] = useFormState(deleteShipment, { message: '', errors: '' });
 
@@ -143,7 +140,7 @@ const Table: React.FC<TableProps> = ({
                             <EditShipmentForm selectedItem={selectedItem} employeeId={session.id}/>
                         }
                         {editOffice &&
-                            <EditOfficeForm selectedItem={selectedItem} onEditOfficeSuccess={onEditOfficeSuccess}/>
+                            <EditOfficeForm selectedItem={selectedItem} onEditOfficeSuccess={onEditOfficeSuccess ?? (() => {})}/>
                         }
                         {makeEmployeeIntoCourier && selectedCompany &&
                             <MakeEmployeeIntoCourierForm selectedItem={selectedItem} selectedCompanyId={selectedCompany.id as number}/>
