@@ -7,6 +7,8 @@ import {useRouter} from "next/navigation";
 import {register} from "@/lib/actions";
 
 import SubmitButton from "@/components/UI/SubmitButton";
+import UserIcon from "../../../public/icons/user.svg";
+import InputSA from "@/components/UI/Input-SA";
 
 const RegistrationPage = () => {
     const [registerState, registerAction] = useFormState(register, { message: null, errors: '' })
@@ -16,7 +18,7 @@ const RegistrationPage = () => {
         if(registerState.message?.username) {
             router.push("/", { scroll: false });
         }
-    }, [registerState]);
+    }, [router, registerState]);
 
     return (
         <Fragment>
@@ -26,38 +28,38 @@ const RegistrationPage = () => {
                 </div>
 
                 <form action={registerAction}>
+
                     <div className="input-group">
-                        <label className="block">Username</label>
-                        <input type="text" name="username"
-                               className="block p-3 w-full rounded-xl border-0 py-1.5  ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></input>
+                        <label className="block" htmlFor="username">Username</label>
+                        <InputSA id="username" name="username" required placeholder="Username" iconSrc={UserIcon} />
                     </div>
+
                     <div className="input-group">
-                        <label className="block">Firstname</label>
-                        <input type="text" name="firstName"
-                               className="input-style"></input>
+                        <label className="block" htmlFor='firstName'>Firstname</label>
+                        <InputSA id="firstName" name="firstName" required placeholder="First Name" iconSrc={UserIcon} />
                     </div>
+
                     <div className="input-group">
-                        <label className="block">Lastname</label>
-                        <input type="text" name="lastName"
-                               className="input-style"></input>
+                        <label className="block" htmlFor="lastName">Lastname</label>
+                        <InputSA id="lastName" name="lastName" required placeholder="Last Name" iconSrc={UserIcon} />
                     </div>
+
                     <div className="input-group">
-                        <label className="block">Password</label>
-                        <input type="password" name="password"
-                               className="input-style"></input>
+                        <label className="block" htmlFor="password">Password</label>
+                        <InputSA id="password" type="password" name="password" required placeholder="Password" iconSrc={UserIcon} />
                     </div>
+
                     <div className="input-group">
-                        <label className="block">Password</label>
-                        <input type="password" name="confirmPassword"
-                               className="input-style"></input>
+                        <label className="block" htmlFor="confirmPassword">Confirm Password</label>
+                        <InputSA id="confirmPassword" type="password" name="confirmPassword" required placeholder="Confirm Password" iconSrc={UserIcon} />
                     </div>
-                    <div className="flex justify-center">
+
+                    <div className="flex justify-center items-center">
                         <SubmitButton formState={registerState}/>
                     </div>
-                    <p>
-                        Already a member?
-                        <Link href="/login"> Sign in </Link>
-                    </p>
+
+                    <p>Already a member?</p>
+                    <Link href="/login" className='hover:font-bold'>Sign in</Link>
                 </form>
             </div>
         </Fragment>
