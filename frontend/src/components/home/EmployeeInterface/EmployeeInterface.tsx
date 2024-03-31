@@ -4,7 +4,7 @@ import { categories, tableColumns } from "@/data/employee/ordersTableData";
 import {getSession, Session} from "@/lib/auth";
 import axios from "@/lib/axios";
 
-import FilterOrders from "./FilterOrders";
+import FilterOrders, {FilterOptions} from "./FilterOrders";
 import Table, { item } from "../Table";
 import Button from "../../UI/BaseButton";
 import BaseDialog from "../../UI/BaseDialog";
@@ -16,7 +16,10 @@ const EmployeeInterface: React.FC = () => {
     const [showCreateOrderDialog, setShowCreateOrderDialog] = useState<boolean>(false)
     
     const [session, setSession] = useState<null | Session>(null);
+
     const [data, setData] = useState<item[] | null>(null);
+    const [unfilteredData, setUnfilteredData] = useState<item[] | null>(null);
+
     const [error, setError] = useState<Error | null>(null);
     const [tryAgain, setTryAgain] = useState<boolean>(false);
 
@@ -28,11 +31,49 @@ const EmployeeInterface: React.FC = () => {
                 setSession(response)
                 setError(null);
 
-                axios.get("/shipments/logged-user")
-                .then(response => setData(response.data))
+                axios.get("/shipments/logged-company")
+                .then(response => {
+                    setData(response.data);
+                    setUnfilteredData(response.data);
+                })
                 .catch(error => setError(error));
             })
     }, []);
+
+    const onFilterOrders = (filterOptions: FilterOptions) => {
+        setData(prevState => {
+
+            if( unfilteredData ) {
+
+                return unfilteredData.filter((item: item) => {
+                    if( filterOptions.clientName && !filterOptions.employeeName && !filterOptions.orderType ) {
+                        return item.sender === filterOptions.clientName;
+
+                    } else if( filterOptions.clientName && filterOptions.employeeName && !filterOptions.orderType ) {
+                        return item.sender === filterOptions.clientName && item.employee === filterOptions.employeeName;
+
+                    } else if( !filterOptions.clientName && filterOptions.employeeName && !filterOptions.orderType ) {
+                        return item.employee === filterOptions.employeeName;
+
+                    } else if( filterOptions.clientName && !filterOptions.employeeName && filterOptions.orderType ) {
+                        return item.sender === filterOptions.clientName && item.status === filterOptions.orderType.title;
+
+                    } else if( filterOptions.clientName && filterOptions.employeeName && filterOptions.orderType ) {
+                        return item.sender === filterOptions.clientName && item.employee === filterOptions.employeeName && item.status === filterOptions.orderType.title;
+
+                    } else if( !filterOptions.clientName && filterOptions.employeeName && filterOptions.orderType ) {
+                        return item.employee === filterOptions.employeeName && item.status === filterOptions.orderType.title;
+
+                    } else if( !filterOptions.clientName && !filterOptions.employeeName && filterOptions.orderType ) {
+                        return item.status === filterOptions.orderType.title;
+                    }
+                })
+            }
+
+            prevState = unfilteredData;
+            return prevState;
+        });
+    }
 
     return (
         <>
@@ -54,7 +95,7 @@ const EmployeeInterface: React.FC = () => {
                     <CreateAnOrderForm employeeId={session.id}/>
                 </BaseDialog>
             }
-            <FilterOrders/>
+            <FilterOrders onFilterOrders={onFilterOrders} />
             {data &&
                 <Table
                     columns={tableColumns}
