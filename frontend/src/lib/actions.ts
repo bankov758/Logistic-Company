@@ -63,23 +63,24 @@ export const login = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
+        console.log(error);
+
         // Handle non-Axios errors
         if (error instanceof Error) {
             return {
                 message: "",
                 errors: error.message || "Something went wrong!",
             };
+
         }
-
         // Check if it's an Axios error with a modified structure
-        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
 
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
             return {
                 message: "",
                 errors: error.message
             }
         }
-
         // Handle any other potential errors
         return {
             message: "",

@@ -21,7 +21,7 @@ const AdminInterfaceCourierActionsButtons: React.FC<{ onClick: (actionType: Acti
             </button>
             <button
                 className="action_btn_green"
-                onClick={() => onClick("makeOfficeEmployee")}
+                onClick={() => onClick("makeCourierIntoEmployee")}
 
             >
                 Make office employee

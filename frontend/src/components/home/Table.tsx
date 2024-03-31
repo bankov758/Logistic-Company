@@ -9,8 +9,8 @@ import {
     deleteOffice,
     deleteUser,
     demoteCourier,
-    demoteEmployee, makeCourier, promoteCourier,
-    promoteUser
+    demoteEmployee, makeCourier,  promoteCourierIntoEmployee,
+    promoteUserIntoCourier, promoteUserIntoEmployee
 } from "@/lib/adminActions";
 
 import BaseDialog from "@/components/UI/BaseDialog";
@@ -22,8 +22,8 @@ import AdminInterfaceEmployeeActionsButtons from "@/components/home/AdminInterfa
 import AdminInterfaceOfficeActionButtons from "@/components/home/AdminInterface/AdminInterfaceOfficeActionButtons";
 import AdminInterfaceCourierActionsButtons from "@/components/home/AdminInterface/AdminInterfaceCourierActionButtons";
 import {deleteShipment} from "@/lib/actions";
-import MakeEmployeeIntoCourierForm from "@/components/home/AdminInterface/MakeEmployeeIntoCourierForm";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
+import MakeEmployeeForm from "@/components/home/AdminInterface/MakeEmployeeForm";
 
 export type column = {
     title: string;
@@ -43,7 +43,7 @@ export type item = Record<string, any> & {
     category: string;
 };
 
-export type ActionType = "demoteEmployee" | "promoteUser" | "deleteUser" | "deleteEmployee" | "deleteOffice" | "editShipment" | "editOffice" | "addRole" | "deleteShipment" | "deleteCourier" | "demoteCourier" | "makeOfficeEmployee" | "makeCourier";
+export type ActionType = "demoteEmployee" | "promoteUserIntoEmployee" | "promoteUserIntoCourier" | "deleteUser" | "deleteEmployee" | "deleteOffice" | "editShipment" | "editOffice" | "addRole" | "deleteShipment" | "deleteCourier" | "demoteCourier" | "makeCourierIntoEmployee" | "makeEmployeeIntoCourier";
 
 type TableProps = {
     columns: column[];
@@ -67,16 +67,18 @@ const Table: React.FC<TableProps> = ({
 
     const [editShipment, setEditShipment] = useState<boolean>(false);
     const [editOffice, setEditOffice] = useState<boolean>(false);
-    const [makeEmployeeIntoCourier, setMakeEmployeeIntoCourier] = useState<boolean>(false);
+    const [makeCourierIntoEmployee, setMakeCourierIntoEmployee] = useState<boolean>(false);
+    const [makeUserIntoEmployee, setMakeUserIntoEmployee] = useState<boolean>(false);
 
     // user actions
     const [deleteUserState, deleteUserAction] = useFormState(deleteUser, { message: '', errors: '' });
-    const [promoteUserState, promoteUserAction] = useFormState(promoteUser, { message: '', errors: '' });
+    const [promoteUserIntoCourierState, promoteUserIntoCourierAction] = useFormState(promoteUserIntoCourier.bind(null, selectedItem!.id, Number(selectedCompany?.id)), { message: '', errors: '' });
 
     // employee actions
     const [deleteEmployeeState, deleteEmployeeAction] = useFormState(deleteEmployee, { message: '', errors: '' });
     const [demoteEmployeeState, demoteEmployeeAction] = useFormState(demoteEmployee, { message: '', errors: '' });
-    const [makeCourierState, makeCourierAction] = useFormState(makeCourier,{ message: '', errors: '' })
+    const [makeEmployeeIntoCourierState, makeEmployeeIntoCourierAction] = useFormState(makeCourier,{ message: '', errors: '' })
+
 
     // shipment actions
     const [deleteShipmentState, deleteShipmentAction] = useFormState(deleteShipment, { message: '', errors: '' });
@@ -92,30 +94,36 @@ const Table: React.FC<TableProps> = ({
 
     const handleAction = async (item: item, type: ActionType | null) => {
         switch (type) {
-            case "deleteUser": deleteUserAction(item.id); break;
-            case "promoteUser": promoteUserAction(item.id); break;
-
-            case "deleteEmployee": deleteEmployeeAction(item.id); break;
-            case "demoteEmployee": demoteEmployeeAction(item.id); break;
-            case "makeCourier": makeCourierAction(item.id); break;
-
-            case "deleteShipment": deleteShipmentAction(item.id); break; // employee interface
-            case "editShipment": // employee interface
-                setEditShipment(true);
+            case "deleteUser": deleteUserAction(item.id); break;         //admin interface
+            case "promoteUserIntoCourier": promoteUserIntoCourierAction; break;
+            case "promoteUserIntoEmployee":
+                setMakeUserIntoEmployee(true);
                 setSelectedItem(item);
                 setShowDialog(true);
                 break;
 
+            case "deleteEmployee": deleteEmployeeAction(item.id); break;
+            case "demoteEmployee": demoteEmployeeAction(item.id); break;
+            case "makeEmployeeIntoCourier": makeEmployeeIntoCourierAction(item.id); break;
+
             case 'deleteCourier': deleteCourierAction(item.id); break;
             case 'demoteCourier': demoteCourierAction(item.id); break;
-            case "makeOfficeEmployee":
-                setMakeEmployeeIntoCourier(true);
+            case "makeCourierIntoEmployee":
+                setMakeCourierIntoEmployee(true);
+                setSelectedItem(item);
                 setShowDialog(true);
-                setSelectedItem(item); break;
+                break;
 
             case "deleteOffice": deleteOfficeAction(item.id); break;
             case "editOffice":
                 setEditOffice(true);
+                setSelectedItem(item);
+                setShowDialog(true);
+                break;
+
+            case "deleteShipment": deleteShipmentAction(item.id); break; // employee interface
+            case "editShipment": // employee interface
+                setEditShipment(true);
                 setSelectedItem(item);
                 setShowDialog(true);
                 break;
@@ -134,6 +142,7 @@ const Table: React.FC<TableProps> = ({
                             setShowDialog(false);
                             setEditShipment(false);
                             setEditOffice(false);
+                            setMakeCourierIntoEmployee(false);
                         }}
                     >
                         {editShipment &&
@@ -142,8 +151,11 @@ const Table: React.FC<TableProps> = ({
                         {editOffice &&
                             <EditOfficeForm selectedItem={selectedItem} onEditOfficeSuccess={onEditOfficeSuccess ?? (() => {})}/>
                         }
-                        {makeEmployeeIntoCourier && selectedCompany &&
-                            <MakeEmployeeIntoCourierForm selectedItem={selectedItem} selectedCompanyId={selectedCompany.id as number}/>
+                        {makeCourierIntoEmployee && selectedCompany &&
+                            <MakeEmployeeForm actionFunction={promoteCourierIntoEmployee} selectedItem={selectedItem} selectedCompanyId={selectedCompany.id as number}/>
+                        }
+                        {makeUserIntoEmployee && selectedCompany &&
+                            <MakeEmployeeForm actionFunction={promoteUserIntoEmployee} selectedItem={selectedItem} selectedCompanyId={selectedCompany.id as number}/>
                         }
                     </BaseDialog>
                 }

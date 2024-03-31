@@ -1,18 +1,18 @@
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import React, {useEffect, useState} from "react";
-import {getCompanyId, getCouriers, getUsers} from "@/lib/actions";
-import {getOffices, makeCourier, promoteCourier} from "@/lib/adminActions";
+import {FormState, getCompanyId, getCouriers, getUsers} from "@/lib/actions";
+import {getOffices, makeCourier, promoteCourier, promoteUserIntoEmployee} from "@/lib/adminActions";
 import {item} from "@/components/home/Table";
 import SubmitButton from "@/components/UI/SubmitButton";
 import {useFormState} from "react-dom";
 import {AxiosError} from "axios";
 
-const MakeEmployeeIntoCourierForm:React.FC<{selectedItem: item; selectedCompanyId: number}> = ({selectedItem, selectedCompanyId}) => {
+const MakeUserIntoEmployeeForm:React.FC<{actionFunction: (userId: number, officeId: number, initialState: FormState) => Promise<FormState>,  selectedItem: item; selectedCompanyId: number}> = ({actionFunction ,selectedItem, selectedCompanyId}) => {
 
     const [error, setError] = useState<Error | null | string>(null);
     const [offices, setOffices] = useState<selectorItem[]>([]);
     const [selectedOffice, setSelectedOffice] = useState<selectorItem> (offices[0]);
-    const [makeCourierState, makeCourierAction] = useFormState(promoteCourier.bind(null, selectedItem.id, selectedOffice?.id as number), {message: '', errors: ''})
+    const [makeCourierState, makeCourierAction] = useFormState(actionFunction.bind(null, selectedItem.id, selectedOffice?.id as number), {message: '', errors: ''})
 
     useEffect(() => {
         console.log(makeCourierState)
@@ -40,9 +40,9 @@ const MakeEmployeeIntoCourierForm:React.FC<{selectedItem: item; selectedCompanyI
 
     return <>
         <form action={makeCourierAction}>
-            <h3>Choose witch office you would like the courier to work in:</h3>
-            <div className="order-div">
-                <label className="block  text-gray-500">Courier:</label>
+            <h4 className="flex justify-center p-4">Choose witch office you would like the courier to work in:</h4>
+            <div className="order-div ">
+                <label className="block font-bold ">Office:</label>
                 {offices &&
                     <DataSelectorWrapper
                         hasInitialPlaceholderValue
@@ -60,4 +60,4 @@ const MakeEmployeeIntoCourierForm:React.FC<{selectedItem: item; selectedCompanyI
 
 }
 
-export default MakeEmployeeIntoCourierForm;
+export default MakeUserIntoEmployeeForm;
