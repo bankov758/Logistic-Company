@@ -115,7 +115,7 @@ const EmployeeInterface: React.FC = () => {
                     />
                 </BaseDialog>)
             }
-            <div className="p-4 shadow-lg fixed bottom-0 left-0 right-0 flex justify-center items-center">
+            <div className="p-4 bottom-0 left-0 right-0 flex justify-center items-center z-50">
                 <h3 className="mr-2">Delete your account here: </h3>
                 <Button className="bg-red-600 text-white font-bold py-2 px-4" fill={true}
                         onClick={() => setShowSelfDeleteDialog(true)}>Delete User</Button>

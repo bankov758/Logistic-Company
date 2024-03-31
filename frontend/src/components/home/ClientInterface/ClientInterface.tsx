@@ -97,7 +97,7 @@ const ClientInterface: React.FC = () => {
                     </BaseDialog>
                 )
             }
-            <div className="p-4 shadow-lg fixed bottom-0 left-0 right-0 flex justify-center items-center">
+            <div className="p-4 bottom-0 left-0 right-0 flex justify-center items-center">
                 <h3 className="mr-2">Delete your account here:</h3>
                 <Button
                     onClick={() => setShowSelfDeleteDialog(true)}
