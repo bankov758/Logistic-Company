@@ -27,14 +27,13 @@ const onFulfilled = (response: AxiosResponse) => {
 }
 
 const onRejected = (_err: AxiosError) => {
-    console.log(_err)
     // Check if the error has a response and modify it accordingly
     if( _err.response ) {
         // Default message from the error object
         let message = _err.message;
 
         // If the status code if 400, try to get the message from the response data
-        if(_err.response.status === 400 && Array.isArray(_err.response.data) && _err.response.data.length > 0 || _err.response.status === 404 && typeof _err.response.data === "string") {
+        if(_err.response.status === 400 && Array.isArray(_err.response.data) && _err.response.data.length > 0 || (_err.response.status === 404 || _err.response.status === 409) && typeof _err.response.data === "string") {
             message = _err.response.status === 400 ? _err.response.data[0] : _err.response.data;
         }
 
@@ -50,7 +49,9 @@ const onRejected = (_err: AxiosError) => {
     }
 
     // If the error does not have a response, simply reject as is
-    return Promise.reject(_err);
+    return Promise.reject({
+        message: _err.message
+    });
 };
 
 axiosInstance.interceptors.response.use(onFulfilled, onRejected)
