@@ -106,7 +106,7 @@ export const addTariff = async (companyId: number, pricePerKG: number, officeDis
         const requestedData = {
             pricePerKG,
             officeDiscount,
-            companyId
+            companyID: companyId
         }
 
         const jsession = await getCookies();
@@ -122,7 +122,6 @@ export const addTariff = async (companyId: number, pricePerKG: number, officeDis
             errors: ""
         }
     } catch (error) {
-        console.log(error)
         return {
             message: '',
             errors: 'Failed to add a tariff to the company!'
