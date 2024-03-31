@@ -27,7 +27,6 @@ const onFulfilled = (response: AxiosResponse) => {
 }
 
 const onRejected = (_err: AxiosError) => {
-
     // Check if the error has a response and modify it accordingly
     if( _err.response ) {
         // Default message from the error object
@@ -40,7 +39,7 @@ const onRejected = (_err: AxiosError) => {
 
         // Construct a new error object with modified properties
         const modifiedError: ErrorType = {
-            status: _err.status,
+            status: _err.response.status,
             message
         }
 

@@ -63,8 +63,6 @@ export const login = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
-        console.log(error);
-
         // Handle non-Axios errors
         if (error instanceof Error) {
             return {

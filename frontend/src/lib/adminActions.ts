@@ -182,15 +182,13 @@ export const promoteUserIntoEmployee = async (userId: number, officeId: number, 
 }
 
 export const promoteUserIntoCourier = async (userId: number, companyId: number, initialState: FormState) => {
-
     try {
         const jsession = await getCookies();
 
-        await axios.put(`/users/${userId}/make-courier/${companyId}`, {
+        await axios.put(`/users/${userId}/make-courier/${companyId}`,{},{
             headers: {
                 Cookie: `JSESSIONID=${jsession}`
             },
-
         });
 
         return {
@@ -199,9 +197,26 @@ export const promoteUserIntoCourier = async (userId: number, companyId: number, 
         }
 
     } catch (error) {
+        // Handle non-Axios errors
+        if (error instanceof Error) {
+            return {
+                message: "",
+                errors: error.message || "Something went wrong!",
+            };
+
+        }
+        // Check if it's an Axios error with a modified structure
+
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+        // Handle any other potential errors
         return {
-            message: '',
-            errors: 'Failed to promote the chosen user into courier!'
+            message: "",
+            errors: "Something went wrong",
         };
     }
 }

@@ -72,7 +72,7 @@ const Table: React.FC<TableProps> = ({
 
     // user actions
     const [deleteUserState, deleteUserAction] = useFormState(deleteUser, { message: '', errors: '' });
-    const [promoteUserIntoCourierState, promoteUserIntoCourierAction] = useFormState(promoteUserIntoCourier.bind(null, selectedItem!.id, Number(selectedCompany?.id)), { message: '', errors: '' });
+    const [promoteUserIntoCourierState, promoteUserIntoCourierAction] = useFormState(promoteUserIntoCourier.bind(null, selectedItem!?.id, Number(selectedCompany?.id)), { message: '', errors: '' });
 
     // employee actions
     const [deleteEmployeeState, deleteEmployeeAction] = useFormState(deleteEmployee, { message: '', errors: '' });
@@ -95,7 +95,10 @@ const Table: React.FC<TableProps> = ({
     const handleAction = async (item: item, type: ActionType | null) => {
         switch (type) {
             case "deleteUser": deleteUserAction(item.id); break;         //admin interface
-            case "promoteUserIntoCourier": promoteUserIntoCourierAction; break;
+            case "promoteUserIntoCourier":
+                setSelectedItem(item);
+                promoteUserIntoCourierAction();
+                break;
             case "promoteUserIntoEmployee":
                 setMakeUserIntoEmployee(true);
                 setSelectedItem(item);
