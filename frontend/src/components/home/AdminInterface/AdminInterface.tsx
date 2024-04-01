@@ -26,7 +26,9 @@ import SkeletonLoadingAnimation from "@/components/UI/SkeletonLoadingAnimation";
 
 const AdminInterface: React.FC = () => {
     const [session, setSession] = useState<null | Session>(null);
-    
+
+    const [actionSuccessMessage, setActionSuccessMessage] = useState<{  message: string; errors: string; }>({ message: "", errors: ""})
+
     const [data, setData] = useState<item[][] | null>(null);
     const [error, setError] = useState<AxiosError | Error | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -132,11 +134,11 @@ const AdminInterface: React.FC = () => {
     // company info dialog actions END
 
     // reset the data
-    const onActionSuccess = async () => {
-        console.log('resetting')
+    const onActionSuccess = async (data: {  message: string; errors: string; }) => {
         setSelectedCompany(null);
         await getAndSetCompanies();
         setData([]);
+        setActionSuccessMessage(data)
     }
 
     return <>
@@ -146,6 +148,11 @@ const AdminInterface: React.FC = () => {
                     <p>{error.message}</p>
                     <button className='base-btn-blue' onClick={() => setTryAgain(!tryAgain)}>Try again</button>
                 </div>
+            </Notification>
+        }
+        { actionSuccessMessage && (actionSuccessMessage.message || actionSuccessMessage.errors) &&
+            <Notification status={actionSuccessMessage.message ? "success" : "error"} timeout={5000} >
+                <p>{actionSuccessMessage.message || actionSuccessMessage.errors }</p>
             </Notification>
         }
         <h3 className="flex justify-start w-full px-2 py-2 mb-12">

@@ -9,7 +9,7 @@ import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWra
 import {getSession, Session} from "@/lib/auth";
 import {editShipment, getCompanyId, getCouriers, getUsers} from "@/lib/actions";
 
-const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onActionSuccess: () => void }> = ({selectedItem, employeeId, onActionSuccess}) => {
+const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onActionSuccess: (data: {  message: string; errors: string; }) => void }> = ({selectedItem, employeeId, onActionSuccess}) => {
     const [error, setError] = useState<Error | null | string>(null);
 
     const [users, setUsers] = useState<selectorItem[]>([]);
@@ -31,7 +31,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onAct
 
     useEffect(() => {
 
-        if( editShipmentState.message ) onActionSuccess();
+        if( editShipmentState.message ) onActionSuccess(editShipmentState);
 
     }, [editShipmentState]);
 

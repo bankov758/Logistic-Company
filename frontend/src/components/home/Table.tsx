@@ -51,7 +51,7 @@ type TableProps = {
     categories: category[];
     data: item[];
     session: Session | null;
-    onActionSuccess?: () => void;
+    onActionSuccess?: (data: {  message: string; errors: string; }) => void;
     selectedCompany?: selectorItem;
 };
 
@@ -92,14 +92,16 @@ const Table: React.FC<TableProps> = ({
     // const [promoteCourierState, promoteCourierAction] = useFormState(promoteCourier, { message: '', errors: '' });
 
     useEffect(() => {
-
-        if(
-            deleteUserState.message || promoteUserIntoCourierState.message || deleteEmployeeState.message ||
+        let condition = deleteUserState.message || promoteUserIntoCourierState.message || deleteEmployeeState.message ||
             demoteEmployeeState.message || makeEmployeeIntoCourierState.message || deleteShipmentState.message ||
-            deleteOfficeState.message || deleteCourierState.message || demoteCourierState.message
-        ) {
-            onActionSuccess ? onActionSuccess() : null;
+            deleteOfficeState.message || deleteCourierState.message || demoteCourierState.message;
+
+        if(condition) {
+            // onActionSuccess ? onActionSuccess(condition) : null;
         }
+
+        // if( deleteUserState.message ) onActionSuccess(deleteUserState);
+        // else if()
 
     }, [onActionSuccess, deleteUserState, promoteUserIntoCourierState, deleteEmployeeState, demoteEmployeeState, makeEmployeeIntoCourierState, deleteShipmentState, deleteOfficeState, deleteCourierState, demoteCourierState]);
 
@@ -148,11 +150,6 @@ const Table: React.FC<TableProps> = ({
 
     return (
         <>
-            { deleteUserState && (deleteUserState.message || deleteUserState.errors) &&
-                <Notification status={deleteUserState.message ? "success" : "error"} timeout={5000} >
-                    {deleteUserState.message || deleteUserState.errors}
-                </Notification>
-            }
             <div className="px-8 py-2 min-w-full">
                 <table className="min-w-full">
                     {showDialog && selectedItem && session &&
