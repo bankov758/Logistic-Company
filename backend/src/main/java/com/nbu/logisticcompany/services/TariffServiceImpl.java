@@ -7,6 +7,7 @@ import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.TariffsRepository;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
+import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,10 @@ import java.util.List;
 public class TariffServiceImpl implements TariffsService {
 
     private final TariffsRepository tariffsRepository;
-    private final ValidationUtil validationUtil;
 
     @Autowired
-    public TariffServiceImpl(TariffsRepository tariffsRepository, ValidationUtil validationUtil) {
+    public TariffServiceImpl(TariffsRepository tariffsRepository) {
         this.tariffsRepository = tariffsRepository;
-        this.validationUtil = validationUtil;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class TariffServiceImpl implements TariffsService {
      */
     @Override
     public void create(Tariff tariff, User creator) {
-        validationUtil.authorizeOfficeEmployeeAction(tariff.getCompany().getId(), creator, Tariff.class);
+        ValidationUtil.validateAdminAction(creator, Tariff.class, Action.CREATE);
         boolean duplicateTariff = true;
         try {
             tariffsRepository.getByCompany(tariff.getCompany().getId());
@@ -73,7 +72,7 @@ public class TariffServiceImpl implements TariffsService {
      */
     @Override
     public void update(Tariff tariffToUpdate, User updater) {
-        validationUtil.authorizeOfficeEmployeeAction(tariffToUpdate.getCompany().getId(), updater, Tariff.class);
+        ValidationUtil.validateAdminAction(updater, Tariff.class, Action.UPDATE);
         tariffsRepository.update(tariffToUpdate);
     }
 
@@ -87,8 +86,7 @@ public class TariffServiceImpl implements TariffsService {
      */
     @Override
     public void delete(int tariffId, User destroyer) {
-        Tariff tariff = tariffsRepository.getById(tariffId);
-        validationUtil.authorizeOfficeEmployeeAction(tariff.getCompany().getId(), destroyer, Tariff.class);
+        ValidationUtil.validateAdminAction(destroyer, Tariff.class, Action.DELETE);
         tariffsRepository.delete(tariffId);
     }
 
