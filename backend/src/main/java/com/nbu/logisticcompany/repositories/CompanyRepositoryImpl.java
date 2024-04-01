@@ -6,7 +6,6 @@ import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
-import com.nbu.logisticcompany.entities.dtos.user.CourierOutDto;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -72,7 +71,7 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
     public List<ClientOutDto> getCompanyClients(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(
-                            " select new com.nbu.logisticcompany.entities.dtos.user.ClientOutDto(user.firstName, user.lastName) " +
+                            " select new com.nbu.logisticcompany.entities.dtos.user.ClientOutDto(user.id, user.firstName, user.lastName) " +
                                     " from User user " +
                                     " where user.id in (select distinct shipment.sender.id from Shipment shipment " +
                                     "                   where shipment.company.id =:companyId) or " +
