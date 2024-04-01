@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useFormState} from "react-dom";
 
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
-import {addOffice, deleteCompany, editCompany} from "@/lib/adminActions";
+import {addOffice, addTariff, deleteCompany, editCompany} from "@/lib/adminActions";
 
 type ShowCompanyInfoProps = {
     companyData: selectorItem[],
@@ -20,10 +20,13 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
 }) => {
     const [updatedCompanyName, setUpdatedCompanyName] = useState('');
     const [officeLocation, setOfficeLocation] = useState('');
+    const [tariff, setTariff] = useState<number>(0);
+    const [discount, setDiscount] = useState<number>(0);
 
     const [deleteCompanyState, deleteCompanyAction] = useFormState(deleteCompany.bind(null, selectedCompany), { message: '', errors: ''})
     const [editCompanyCompanyState, editCompanyAction] = useFormState(editCompany.bind(null, updatedCompanyName, selectedCompany), { message: '', errors: ''})
     const [addOfficeState, addOfficeAction] = useFormState(addOffice.bind(null, Number(selectedCompany.id), officeLocation), { message: '', errors: ''})
+    const [addTariffState, addTariffAction] = useFormState(addTariff.bind(null, Number(selectedCompany.id), tariff, discount), { message: '', errors: ''})
 
     useEffect(() => {
 
@@ -78,7 +81,7 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
 
                 <input type="text" id="office_location" name="office_location" className="input-info-dialog"
                        onChange={(e) => setOfficeLocation(e.target.value)}
-                       placeholder="Sofia" />
+                       placeholder="Sofia"/>
 
                 <div className='flex py-3 text-gray-500'>
 
@@ -87,6 +90,30 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
                         onClick={() => addOfficeAction()}
                     >
                         Add
+                    </button>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-x-2 pb-4">
+                <label htmlFor="tariff" className="block text-gray-500">Set price per kilogram:</label>
+
+                <input type="text" id="tariff" name="tariff" className="input-info-dialog"
+                       onChange={(e) => setTariff(Number(e.target.value))}
+                       placeholder="5"/>
+
+                <label htmlFor="discount" className="block text-gray-500">Set user discount:</label>
+
+                <input type="text" id="discount" name="discount" className="input-info-dialog"
+                       onChange={(e) => setDiscount(Number(e.target.value))}
+                       placeholder="10"/>
+
+                <div className='flex py-3 text-gray-500'>
+
+                    <button
+                        className="action_btn_blue px-3 py-1.5"
+                        onClick={() => addTariffAction()}
+                    >
+                        Set
                     </button>
                 </div>
             </div>

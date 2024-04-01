@@ -14,9 +14,15 @@ const AdminInterfaceUserActionsButtons: React.FC<{  onClick: (actionType: Action
 
             <button
                 className="action_btn_green"
-                onClick={() => onClick("promoteUser")}
+                onClick={() => onClick("promoteUserIntoEmployee")}
             >
-                Promote
+                Make employee
+            </button>
+            <button
+                className="action_btn_green"
+                onClick={() => onClick("promoteUserIntoCourier")}
+            >
+                Make courier
             </button>
         </td>
     )

@@ -10,10 +10,12 @@ const Notification = dynamic(() => import('./Notification'));
 
 type SubmitButtonProps = {
 	formState: FormState;
+	className?: string;
 };
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
-   formState,
+	formState,
+	className
 }) => {
 	const { pending } = useFormStatus();
 
@@ -21,27 +23,33 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 		<Fragment>
 			{!pending &&
 				(
-					formState.errors && !formState.message ||
+					formState.errors ||
 					formState.message && typeof formState.message === "string"
 				) && (
-				<Notification
-					status={formState.message ? "success" : "error"}
-					timeout={4000}
-				>
-					{formState.message ||
-						(
-							Array.isArray(formState.errors) ?
-								formState.errors!.map((error: ZodIssue) => error.message).join("\n") :
-								formState.errors
-						)
-					}
-				</Notification>
-			)}
+					<Notification
+						status={formState.message ? "success" : "error"}
+						timeout={4000}
+					>
+						{ formState.message && typeof formState.message === 'string' ?
+							<span>{formState.message}</span> :
+
+							(
+								Array.isArray(formState.errors) ?
+
+								formState.errors!.map((error: ZodIssue, index: number) => (
+									<span key={index} className='block'>{error.message}</span>
+								)) :
+
+								<span>{formState.errors}</span>
+							)
+						}
+					</Notification>
+				)}
 			<button
 				type="submit"
 				aria-disabled={pending}
 				disabled={pending}
-				className={`base-btn`.trim()}
+				className={`base-btn ${className ?? ""}`.trim()}
 			>
 				{pending ? "Submitting" : "Submit"}
 			</button>

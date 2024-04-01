@@ -63,16 +63,26 @@ export const login = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
+        // Handle non-Axios errors
         if (error instanceof Error) {
             return {
+                message: "",
                 errors: error.message || "Something went wrong!",
-                message: ""
             };
-        }
 
+        }
+        // Check if it's an Axios error with a modified structure
+
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+        // Handle any other potential errors
         return {
-            errors: "Something went wrong!",
-            message: ""
+            message: "",
+            errors: "Something went wrong",
         };
     }
 }
@@ -142,24 +152,37 @@ export const register = async (initialState: FormState, formData: FormData) => {
         }
 
     } catch (error) {
-        if (error instanceof AxiosError) {
+        // Handle non-Axios errors
+        if (error instanceof Error) {
             return {
+                message: "",
                 errors: error.message || "Something went wrong!",
-                message: ""
             };
         }
 
+        // Check if it's an Axios error with a modified structure
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+
+        // Handle any other potential errors
         return {
-            errors: "Something went wrong!",
-            message: ""
+            message: "",
+            errors: "Something went wrong",
         };
     }
 }
 
+// USER ACTIONS START
+
 export const deleteUser = async (session: Session | null) => {
-    const jsession = cookies().get("JSESSIONID")
 
     try {
+        const jsession = await getCookies();
 		await axios.delete(`/users/${session?.id}`, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
@@ -168,14 +191,35 @@ export const deleteUser = async (session: Session | null) => {
 
         await signOut();
 
-	} catch (err) {
-		if( err instanceof AxiosError ) {
-			throw err;
-		}
+	} catch (error) {
+        // Handle non-Axios errors
+        if (error instanceof Error) {
+            return {
+                message: "",
+                errors: error.message || "Something went wrong!",
+            };
+        }
+
+        // Check if it's an Axios error with a modified structure
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+
+        // Handle any other potential errors
+        return {
+            message: "",
+            errors: "Something went wrong",
+        };
 	}
 
     redirect('/login');
 }
+
+// USER ACTIONS END
 
 export const getCompanies = async (): Promise<selectorItem[] | null> => {
 
@@ -292,7 +336,7 @@ export const getCompanyId = async () => {
 }
 
 export const createAnOrder = async (
-    session: Session | null,
+    employeeId: number,
     senderId: string | number | undefined,
     receiverId: string | number | undefined,
     courierId: string | number | undefined,
@@ -305,18 +349,17 @@ export const createAnOrder = async (
     const sentDate = formData.get('sentDate');
     const weight = formData.get('weight');
 
-    //TODO check
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
 
     const companyId = await getCompanyId();
 
-    const fields = {
+    const fields= {
         departureAddress,
         arrivalAddress,
         weight,
         senderId,
         receiverId,
-        employeeId: session?.id ,
+        employeeId,
         sentDate: parsedSentDate,
         courierId,
         companyId
@@ -369,7 +412,7 @@ const editOrderSchema = z.object({
 
 
 export const editShipment = async (
-	session: Session | null,
+	employeeId: number,
 	senderId: string | number | undefined,
 	receiverId: string | number | undefined,
 	courierId: string | number | undefined,
@@ -383,30 +426,42 @@ export const editShipment = async (
 	const sentDate = formData.get('sentDate');
     const receivedDate = formData.get('receivedDate');
 
-    cogitnsole.log(selectedItem);
-    //console.log(users);
-	const foundSenderId = await getUserId(selectedItem?.sender, users);
-	const foundReceiverId = await getUserId(selectedItem?.receiver, users);
-	const foundCourierId = await getUserId(selectedItem?.courier, users);
+    let foundSenderId;
+    let foundReceiverId;
+    let foundCourierId;
 
+    if ( !senderId ) {
+        foundSenderId = await getUserId(selectedItem?.sender, users);
+    }
+    if ( !receiverId ) {
+        foundReceiverId = await getUserId(selectedItem?.receiver, users);
+    }
+    if ( !courierId ) {
+        foundCourierId = await getUserId(selectedItem?.courier, users);
+    }
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
     const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 
     const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
     const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
 
+    const companyId = await getCompanyId();
+
 	 const fields= {
-		selectedItemId: selectedItem?.id,
+		id: selectedItem?.id,
 	 	departureAddress: departureAddress || selectedItem?.departureAddress,
 	 	arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
 	 	senderId: senderId || foundSenderId,
 	 	receiverId: receiverId || foundReceiverId,
-		employeeId: session?.id,
+		employeeId,
 	 	sentDate: parsedSentDate || parsedOldSentDate,
         receivedDate: parsedReceivedDate || parsedOldReceivedDate,
-	 	courierId: courierId || foundCourierId
+	 	courierId: courierId || foundCourierId,
+        companyId,
+        receivedFromOffice: selectedItem.receivedFromOffice,
+        sentFromOffice: selectedItem.sentFromOffice
 	 }
-     console.log(fields);
+
 	const validateSchema = editOrderSchema.safeParse(fields);
 
 	if (!validateSchema.success ) {

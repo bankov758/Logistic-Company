@@ -7,7 +7,9 @@ import DataSelectorWrapper, { selectorItem } from "@/components/UI/DataSelectorW
 import Input from "@/components/UI/Input";
 import useInput from "@/hooks/useInput";
 
-const FilterOrders: React.FC = () => {
+export type FilterOptions = { clientName: string; employeeName: string; orderType: selectorItem | null; }
+
+const FilterOrders: React.FC<{ onFilterOrders: ({ clientName, employeeName, orderType }: FilterOptions) => void }> = ({ onFilterOrders }) => {
     const [orderFilterType, setOrderFilterType] = useState<selectorItem | null>(null);
 
     const orderFilterTypeData: selectorItem[] = useMemo(() => {
@@ -50,15 +52,11 @@ const FilterOrders: React.FC = () => {
     const filterOrders = async (event: FormEvent) => {
         event.preventDefault();
 
-        //TODO: fetch request using the enteredClientName value, the enteredEmployeeName value, the orderFilterType value
-
-        if( orderFilterType ) {
-            //...
-        }
-
-        console.log('enteredClientName >>> ', enteredClientName);
-        console.log('enteredEmployeeName >>> ', enteredEmployeeName);
-        console.log('orderFilterType >>> ', orderFilterType);
+        onFilterOrders({
+            clientName: enteredClientName,
+            employeeName: enteredEmployeeName,
+            orderType: orderFilterType
+        })
     }
 
     return (
@@ -77,6 +75,7 @@ const FilterOrders: React.FC = () => {
                     iconAlt="User icon"
                     showRemoveIcon
                 />
+
                 <Input
                     id='employee_name'
                     type='text'

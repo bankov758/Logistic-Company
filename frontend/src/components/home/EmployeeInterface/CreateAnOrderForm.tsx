@@ -10,57 +10,59 @@ import SubmitButton from "@/components/UI/SubmitButton";
 
 import { AxiosError } from "axios";
 
-const CreateAnOrderForm: React.FC = () => {
+const CreateAnOrderForm: React.FC<{ employeeId: number }> = ({ employeeId }) => {
 
-    const [session, setSession] = useState<null | Session>(null);
     const [error, setError] = useState<Error | null | string>(null);
 
-    const [companies, setCompanies] = useState<selectorItem[]>([]);
-    const [couriers, setCouriers] = useState<selectorItem[]>([]);
     const [users, setUsers] = useState<selectorItem[]>([]);
-    const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
-    const [selectedCourier, setSelectedCourier] = useState<selectorItem | null> (null);
+    const [couriers, setCouriers] = useState<selectorItem[]>([]);
+
     const [selectedSender, setSelectedSender] = useState<selectorItem | null>(null);
     const [selectedReceiver, setSelectedReceiver] = useState<selectorItem | null>(null);
+    const [selectedCourier, setSelectedCourier] = useState<selectorItem | null> (null);
 
     const [createAnOrderState, createAnOrderAction] = useFormState(createAnOrder.bind(null,
-            session,
+            employeeId,
             selectedSender?.id,
             selectedReceiver?.id,
             selectedCourier?.id),
-        {message: null, errors: ''})
+        {message: null, errors: ''}
+    );
+
+
 
     useEffect(() => {
-        getSession()
-            .then( async (response) => {
-                setSession(response)
-                try {
-                    const users = await getUsers();
 
-                    const companyId = await getCompanyId();
-                    const couriers = await getCouriers(companyId);
+        const fetchDropdownData = async () => {
+            try {
+                const users = await getUsers();
 
-                    if( users ) {
-                        setUsers(users);
-                    }
-                    if ( couriers ) {
-                        setCouriers(couriers);
-                    }
+                const companyId = await getCompanyId();
+                const couriers = await getCouriers(companyId);
 
-                    //TODO: fix and compare by companyName
-                    // if( couriers ) {
-                    //     const courierCompanyIds = couriers
-                    //         .filter((courier: any) => courier.companyName === companyId)
-                    //
-                    //     setCouriers(courierCompanyIds);
-                    // }
-                    
-                } catch (err) {
-                    if( err instanceof AxiosError ) {
-                        setError(err)
-                    }
+                if( users ) {
+                    setUsers(users);
                 }
-            });
+                if ( couriers ) {
+                    setCouriers(couriers);
+                }
+
+                //TODO: fix and compare by companyName
+                // if( couriers ) {
+                //     const courierCompanyIds = couriers
+                //         .filter((courier: any) => courier.companyName === companyId)
+                //
+                //     setCouriers(courierCompanyIds);
+                // }
+
+            } catch (err) {
+                if( err instanceof AxiosError ) {
+                    setError(err)
+                }
+            }
+        }
+
+        fetchDropdownData();
     }, []);
 
 
@@ -80,21 +82,25 @@ const CreateAnOrderForm: React.FC = () => {
             <form action={createAnOrderAction}>
                 <div className="order-div">
                     <label className="block text-gray-500">Sender:</label>
-                    <DataSelectorWrapper
-                        hasInitialPlaceholderValue
-                        placeholderValue={selectedSender && Object.keys(selectedSender).length > 0 ? selectedSender.title : "Select user"}
-                        selectorData={users}
-                        onResubForNewData={(data) => handleSelect(data, 'sender')}
-                    />
+                    { users &&
+                        <DataSelectorWrapper
+                            hasInitialPlaceholderValue
+                            placeholderValue={selectedSender && Object.keys(selectedSender).length > 0 ? selectedSender.title : "Select user"}
+                            selectorData={users}
+                            onResubForNewData={(data) => handleSelect(data, 'sender')}
+                        />
+                    }
                 </div>
                 <div className="order-div">
                     <label className="block text-gray-500">Receiver:</label>
-                    <DataSelectorWrapper
-                        hasInitialPlaceholderValue
-                        placeholderValue={selectedReceiver && Object.keys(selectedReceiver).length > 0 ? selectedReceiver.title : "Select user"}
-                        selectorData={users}
-                        onResubForNewData={(data) => handleSelect(data, 'receiver')}
-                    />
+                    { users &&
+                        <DataSelectorWrapper
+                            hasInitialPlaceholderValue
+                            placeholderValue={selectedReceiver && Object.keys(selectedReceiver).length > 0 ? selectedReceiver.title : "Select user"}
+                            selectorData={users}
+                            onResubForNewData={(data) => handleSelect(data, 'receiver')}
+                        />
+                    }
                 </div>
                 <div className="order-div">
                     <label htmlFor="departure_place" className="block  text-gray-500">Departure location:</label>
@@ -119,22 +125,15 @@ const CreateAnOrderForm: React.FC = () => {
                 </div>
                 <div className="order-div">
                     <label className="block  text-gray-500">Courier:</label>
-                    <DataSelectorWrapper
-                        hasInitialPlaceholderValue
-                        placeholderValue={selectedCourier && Object.keys(selectedCourier).length > 0 ? selectedCourier.title : "Select courier"}
-                        selectorData={couriers}
-                        onResubForNewData={(data) => handleSelect(data, 'courier')}
-                    />
+                    { couriers &&
+                        <DataSelectorWrapper
+                            hasInitialPlaceholderValue
+                            placeholderValue={selectedCourier && Object.keys(selectedCourier).length > 0 ? selectedCourier.title : "Select courier"}
+                            selectorData={couriers}
+                            onResubForNewData={(data) => handleSelect(data, 'courier')}
+                        />
+                    }
                 </div>
-                {/*<div className="order-div">*/}
-                {/*    <label className="block  text-gray-500">Company:</label>*/}
-                {/*    <DataSelectorWrapper*/}
-                {/*        hasInitialPlaceholderValue*/}
-                {/*        placeholderValue={selectedCompany && Object.keys(selectedCompany).length > 0 ? selectedCompany.title : "Select company"}*/}
-                {/*        selectorData={companies}*/}
-                {/*        onResubForNewData={(data) => handleSelect(data, 'company')}*/}
-                {/*    />*/}
-                {/*</div>*/}
                 <div className='flex justify-center py-3 text-gray-500'>
                     <SubmitButton formState={createAnOrderState}/>
                 </div>

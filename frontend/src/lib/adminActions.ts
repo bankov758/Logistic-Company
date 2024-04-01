@@ -4,6 +4,7 @@ import axios from "@/lib/axios";
 import {FormState} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import {getCookies} from "@/lib/auth";
+import {AxiosError} from "axios";
 
 // COMPANY ACTIONS START
 
@@ -99,6 +100,35 @@ export const editCompany = async (updatedCompanyName: string, selectedCompany: s
     }
 }
 
+export const addTariff = async (companyId: number, pricePerKG: number, officeDiscount: number) => {
+
+    try {
+        const requestedData = {
+            pricePerKG,
+            officeDiscount,
+            companyID: companyId
+        }
+
+        const jsession = await getCookies();
+
+        await axios.post(`/tariffs`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
+
+        return {
+            message: "Tariff was successfully added! ",
+            errors: ""
+        }
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to add a tariff to the company!'
+        };
+    }
+}
+
 // COMPANY ACTIONS END
 
 // USER ACTIONS START
@@ -126,17 +156,11 @@ export const deleteUser = async (initialState: FormState, userId: number)=> {
     }
 }
 
-export const promoteUser = async (initialState: FormState, userId: number) => {
-
-    const requestedData = {
-        userId,
-        role: "EMPLOYEE",
-    }
-
+export const promoteUserIntoEmployee = async (userId: number, officeId: number, initialState: FormState) => {
     try {
         const jsession = await getCookies();
 
-        await axios.put(`/users/add-role`, requestedData, {
+        await axios.put(`/users/${userId}/make-office-employee/${officeId}`, {
             headers: {
                 Cookie: `JSESSIONID=${jsession}`
             },
@@ -144,14 +168,54 @@ export const promoteUser = async (initialState: FormState, userId: number) => {
         });
 
         return {
-            message: "User was successfully promoted! ",
+            message: "User was successfully promoted into employee! ",
             errors: ""
         }
 
     } catch (error) {
         return {
             message: '',
-            errors: 'Failed to promote the chosen user!'
+            errors: 'Failed to promote the chosen user into employee!'
+        };
+    }
+}
+
+export const promoteUserIntoCourier = async (userId: number, companyId: number, initialState: FormState) => {
+    try {
+        const jsession = await getCookies();
+
+        await axios.put(`/users/${userId}/make-courier/${companyId}`,{},{
+            headers: {
+                Cookie: `JSESSIONID=${jsession}`
+            },
+        });
+
+        return {
+            message: "User was successfully promoted into courier! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        // Handle non-Axios errors
+        if (error instanceof Error) {
+            return {
+                message: "",
+                errors: error.message || "Something went wrong!",
+            };
+
+        }
+        // Check if it's an Axios error with a modified structure
+
+        if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
+            return {
+                message: "",
+                errors: error.message
+            }
+        }
+        // Handle any other potential errors
+        return {
+            message: "",
+            errors: "Something went wrong",
         };
     }
 }
@@ -212,9 +276,62 @@ export const demoteEmployee = async (initialState: FormState, userId: number) =>
     }
 }
 
+export const makeCourier = async (initialState: FormState, userId: number) => {
+
+    try {
+        const requestData = {}
+
+        const jsession = await getCookies();
+
+        await axios.put(`/office-employees/make-courier/${userId}`, requestData,{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Employee was successfully appointed into courier! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to make the chosen employee into courier!'
+        };
+    }
+}
+
 // EMPLOYEE ACTIONS END
 
 // OFFICE ACTIONS START
+
+export const getOffices = async (companyId: number): Promise<selectorItem[] | null> => {
+
+    try {
+        const jsession = await getCookies();
+
+        const response = await axios.get(`/companies/${companyId}/offices`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return response.data.map((office: any) => ({
+            title: office.address,
+            code: office.address.split(' ').join('_'),
+            id: office.id,
+        }));
+
+    } catch (err) {
+        if (err instanceof AxiosError) {
+            throw err;
+        }
+    }
+
+    return null;
+
+}
 
 export const addOffice = async (companyId: number, officeLocation: string) => {
 
@@ -244,11 +361,41 @@ export const addOffice = async (companyId: number, officeLocation: string) => {
     }
 }
 
+export const editOffice = async (officeId: number, companyId: {  id: number; name: string; }, initialState: FormState, formData: FormData) => {
+
+    try {
+        const requestedData = {
+            id: officeId,
+            address: formData.get('address'),
+            companyId
+        }
+
+        const jsession = await getCookies();
+
+        await axios.put(`/offices`, requestedData, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        });
+
+        return {
+            message: "New office was successfully edited! ",
+            errors: ""
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            message: '',
+            errors: 'Failed to edit the office!'
+        };
+    }
+}
+
 export const deleteOffice = async (initialState: FormState, officeId: number)=> {
     try {
         const jsession = await getCookies();
 
-        const response = await axios.delete(`/office/${officeId}`,{
+        await axios.delete(`/office/${officeId}`,{
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
@@ -267,3 +414,81 @@ export const deleteOffice = async (initialState: FormState, officeId: number)=> 
 }
 
 // OFFICE ACTIONS END
+
+// COURIER ACTIONS START
+
+export const deleteCourier = async (initialState: FormState, courierId: number)=> {
+    try {
+        const jsession = await getCookies();
+
+        await axios.delete(`/couriers/${courierId}`, {
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Courier was successfully deleted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to deleted the chosen courier!'
+        };
+    }
+}
+
+export const demoteCourier = async (initialState: FormState, userId: number) => {
+
+    const requestedData = {
+        userId,
+        role: "USER",
+    }
+
+    try {
+        const jsession = await getCookies();
+        await axios.put(`/couriers/demote/${userId}`, requestedData,{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Courier was successfully demoted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to demote the chosen courier!'
+        };
+    }
+}
+
+export const promoteCourierIntoEmployee = async ( userId: number, officeId: number,initialState: FormState) => {
+
+    try {
+        const jsession = await getCookies();
+        await axios.put(`/couriers/${userId}/make-office-employee/${officeId}`, {},{
+            headers: {
+                Cookie: `JSESSIONID=${jsession?.value}`
+            }
+        })
+
+        return {
+            message: "Courier was successfully promoted! ",
+            errors: ""
+        }
+
+    } catch (error) {
+        return {
+            message: '',
+            errors: 'Failed to promote the chosen courier!'
+        };
+    }
+}
+
+// COURIER ACTIONS END
