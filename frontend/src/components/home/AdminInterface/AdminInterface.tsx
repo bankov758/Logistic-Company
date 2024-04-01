@@ -100,6 +100,9 @@ const AdminInterface: React.FC = () => {
     }
 
     //TODO: turn this into one function
+
+    // company info dialog actions START
+
     const onSuccessCreateCompany = async () => {
         setShowCreateCompanyDialog(false);
         await getAndSetCompanies()
@@ -126,7 +129,11 @@ const AdminInterface: React.FC = () => {
         setData([]);
     }
 
-    const onEditOfficeSuccess = async () => {
+    // company info dialog actions END
+
+    // reset the data
+    const onActionSuccess = async () => {
+        console.log('resetting')
         setSelectedCompany(null);
         await getAndSetCompanies();
         setData([]);
@@ -203,7 +210,7 @@ const AdminInterface: React.FC = () => {
                             columns={adminColumns[index]}
                             categories={adminCategories[index]}
                             session={session}
-                            onEditOfficeSuccess={onEditOfficeSuccess}
+                            onActionSuccess={onActionSuccess}
                             selectedCompany={selectedCompany}
                             data=
                                 {

@@ -7,7 +7,7 @@ import SubmitButton from "@/components/UI/SubmitButton";
 import {useFormState} from "react-dom";
 import {AxiosError} from "axios";
 
-const MakeUserIntoEmployeeForm:React.FC<{actionFunction: (userId: number, officeId: number, initialState: FormState) => Promise<FormState>,  selectedItem: item; selectedCompanyId: number}> = ({actionFunction ,selectedItem, selectedCompanyId}) => {
+const MakeUserIntoEmployeeForm:React.FC<{actionFunction: (userId: number, officeId: number, initialState: FormState) => Promise<FormState>,  selectedItem: item; selectedCompanyId: number; onActionSuccess: () => void}> = ({actionFunction, selectedItem, selectedCompanyId, onActionSuccess}) => {
 
     const [error, setError] = useState<Error | null | string>(null);
     const [offices, setOffices] = useState<selectorItem[]>([]);
@@ -15,7 +15,9 @@ const MakeUserIntoEmployeeForm:React.FC<{actionFunction: (userId: number, office
     const [makeCourierState, makeCourierAction] = useFormState(actionFunction.bind(null, selectedItem.id, selectedOffice?.id as number), {message: '', errors: ''})
 
     useEffect(() => {
-        console.log(makeCourierState)
+
+        if( makeCourierState.message ) onActionSuccess();
+
     }, [makeCourierState]);
 
     useEffect(() => {

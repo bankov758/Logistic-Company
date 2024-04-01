@@ -24,6 +24,7 @@ import AdminInterfaceCourierActionsButtons from "@/components/home/AdminInterfac
 import {deleteShipment} from "@/lib/actions";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import MakeEmployeeForm from "@/components/home/AdminInterface/MakeEmployeeForm";
+import Notification from "@/components/UI/Notification";
 
 export type column = {
     title: string;
@@ -50,7 +51,7 @@ type TableProps = {
     categories: category[];
     data: item[];
     session: Session | null;
-    onEditOfficeSuccess?: () => void;
+    onActionSuccess?: () => void;
     selectedCompany?: selectorItem;
 };
 
@@ -59,7 +60,7 @@ const Table: React.FC<TableProps> = ({
     categories,
     data,
     session,
-    onEditOfficeSuccess,
+    onActionSuccess,
     selectedCompany
 }) => {
     const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -79,7 +80,6 @@ const Table: React.FC<TableProps> = ({
     const [demoteEmployeeState, demoteEmployeeAction] = useFormState(demoteEmployee, { message: '', errors: '' });
     const [makeEmployeeIntoCourierState, makeEmployeeIntoCourierAction] = useFormState(makeCourier,{ message: '', errors: '' })
 
-
     // shipment actions
     const [deleteShipmentState, deleteShipmentAction] = useFormState(deleteShipment, { message: '', errors: '' });
 
@@ -91,10 +91,21 @@ const Table: React.FC<TableProps> = ({
     const [demoteCourierState, demoteCourierAction] = useFormState(demoteCourier, { message: '', errors: '' });
     // const [promoteCourierState, promoteCourierAction] = useFormState(promoteCourier, { message: '', errors: '' });
 
+    useEffect(() => {
+
+        if(
+            deleteUserState.message || promoteUserIntoCourierState.message || deleteEmployeeState.message ||
+            demoteEmployeeState.message || makeEmployeeIntoCourierState.message || deleteShipmentState.message ||
+            deleteOfficeState.message || deleteCourierState.message || demoteCourierState.message
+        ) {
+            onActionSuccess ? onActionSuccess() : null;
+        }
+
+    }, [onActionSuccess, deleteUserState, promoteUserIntoCourierState, deleteEmployeeState, demoteEmployeeState, makeEmployeeIntoCourierState, deleteShipmentState, deleteOfficeState, deleteCourierState, demoteCourierState]);
 
     const handleAction = async (item: item, type: ActionType | null) => {
         switch (type) {
-            case "deleteUser": deleteUserAction(item.id); break;         //admin interface
+            case "deleteUser": deleteUserAction(item.id); break; //admin interface
             case "promoteUserIntoCourier":
                 setSelectedItem(item);
                 promoteUserIntoCourierAction();
@@ -136,152 +147,176 @@ const Table: React.FC<TableProps> = ({
     };
 
     return (
-        <div className="px-8 py-2 min-w-full">
-            <table className="min-w-full">
-                {showDialog && selectedItem && session &&
-                    <BaseDialog
-                        title="Edit item"
-                        tryClose={() => {
-                            setShowDialog(false);
-                            setEditShipment(false);
-                            setEditOffice(false);
-                            setMakeCourierIntoEmployee(false);
-                        }}
-                    >
-                        {editShipment &&
-                            <EditShipmentForm selectedItem={selectedItem} employeeId={session.id}/>
-                        }
-                        {editOffice &&
-                            <EditOfficeForm selectedItem={selectedItem} onEditOfficeSuccess={onEditOfficeSuccess ?? (() => {})}/>
-                        }
-                        {makeCourierIntoEmployee && selectedCompany &&
-                            <MakeEmployeeForm actionFunction={promoteCourierIntoEmployee} selectedItem={selectedItem} selectedCompanyId={selectedCompany.id as number}/>
-                        }
-                        {makeUserIntoEmployee && selectedCompany &&
-                            <MakeEmployeeForm actionFunction={promoteUserIntoEmployee} selectedItem={selectedItem} selectedCompanyId={selectedCompany.id as number}/>
-                        }
-                    </BaseDialog>
-                }
-                <thead className='bg-white'>
-                <tr className='text-sm font-semibold text-black'>
-                    {columns.map((column: column) => {
+        <>
+            { deleteUserState && (deleteUserState.message || deleteUserState.errors) &&
+                <Notification status={deleteUserState.message ? "success" : "error"} timeout={5000} >
+                    {deleteUserState.message || deleteUserState.errors}
+                </Notification>
+            }
+            <div className="px-8 py-2 min-w-full">
+                <table className="min-w-full">
+                    {showDialog && selectedItem && session &&
+                        <BaseDialog
+                            title="Edit item"
+                            tryClose={() => {
+                                setShowDialog(false);
+                                setEditShipment(false);
+                                setEditOffice(false);
+                                setMakeCourierIntoEmployee(false);
+                            }}
+                        >
+                            {editShipment &&
+                                <EditShipmentForm
+                                    selectedItem={selectedItem}
+                                    employeeId={session.id}
+                                    onActionSuccess={onActionSuccess ?? (() => {})}
+                                />
+                            }
+                            {editOffice &&
+                                <EditOfficeForm
+                                    selectedItem={selectedItem}
+                                    onActionSuccess={onActionSuccess ?? (() => {})}
+                                />
+                            }
+                            {makeCourierIntoEmployee && selectedCompany &&
+                                <MakeEmployeeForm
+                                    actionFunction={promoteCourierIntoEmployee}
+                                    selectedItem={selectedItem}
+                                    selectedCompanyId={selectedCompany.id as number}
+                                    onActionSuccess={onActionSuccess ?? (() => {})}
+                                />
+                            }
+                            {makeUserIntoEmployee && selectedCompany &&
+                                <MakeEmployeeForm
+                                    actionFunction={promoteUserIntoEmployee}
+                                    selectedItem={selectedItem}
+                                    selectedCompanyId={selectedCompany.id as number}
+                                    onActionSuccess={onActionSuccess ?? (() => {})}
+                                />
+                            }
+                        </BaseDialog>
+                    }
+                    <thead className='bg-white'>
+                    <tr className='text-sm font-semibold text-black'>
+                        {columns.map((column: column) => {
 
-                        if (column.hide) {
+                            if (column.hide) {
+                                return (
+                                    <th key={column.id} className="text-left px-4 py-3 relative">
+                                        <span className='accessibility'>{column.title}</span>
+                                    </th>
+                                );
+                            }
+
                             return (
-                                <th key={column.id} className="text-left px-4 py-3 relative">
-                                    <span className='accessibility'>{column.title}</span>
+                                <th key={column.id} className="text-left px-4 py-3" scope='col'>
+                                    {column.title}
                                 </th>
-                            );
-                        }
-
+                            )
+                        })}
+                    </tr>
+                    </thead>
+                    <tbody className="bg-white">
+                    {categories.map((category: category) => {
                         return (
-                            <th key={column.id} className="text-left px-4 py-3" scope='col'>
-                                {column.title}
-                            </th>
-                        )
-                    })}
-                </tr>
-                </thead>
-                <tbody className="bg-white">
-                {categories.map((category: category) => {
-                    return (
-                        <Fragment key={category.id}>
-                            <tr className="border-t text-sm font-semibold text-black">
-                                <th
-                                    className="bg-[#FAF9FB] px-4 py-3 text-left"
-                                    colSpan={columns.length}
-                                    scope="colgroup"
-                                >
-                                    {category.title}
-                                </th>
-                            </tr>
-                            {
-                                data
-                                    .filter((item: item) => item.category === category.code)
-                                    .map((rowItem: item, index: number) => {
-                                        return (
-                                            <tr key={index} className="border-t text-sm font-semibold text-black">
+                            <Fragment key={category.id}>
+                                <tr className="border-t text-sm font-semibold text-black">
+                                    <th
+                                        className="bg-[#FAF9FB] px-4 py-3 text-left"
+                                        colSpan={columns.length}
+                                        scope="colgroup"
+                                    >
+                                        {category.title}
+                                    </th>
+                                </tr>
+                                {
+                                    data
+                                        .filter((item: item) => item.category === category.code)
+                                        .map((rowItem: item, index: number) => {
+                                            return (
+                                                <tr key={index} className="border-t text-sm font-semibold text-black">
 
-                                                {columns.map((column: column) => {
+                                                    {columns.map((column: column) => {
 
-                                                    if (column.hide) {
+                                                        if (column.hide) {
 
-                                                        if (column.code === 'employeeInterfaceActions') {
+                                                            if (column.code === 'employeeInterfaceActions') {
 
-                                                            return (
-                                                                <EmployeeInterfaceActionsButtons
-                                                                    key={column.id}
-                                                                    onClick={(actionType) => handleAction(rowItem, actionType)}
-                                                                />
-                                                            )
-
-                                                        }
-                                                        if (column.code === 'adminInterfaceActions') {
-                                                            if (category.code === 'clients') {
                                                                 return (
-                                                                    <AdminInterfaceUserActionsButtons
+                                                                    <EmployeeInterfaceActionsButtons
                                                                         key={column.id}
                                                                         onClick={(actionType) => handleAction(rowItem, actionType)}
                                                                     />
                                                                 )
-                                                            } else if (category.code === "employees") {
-                                                                return (
-                                                                    <AdminInterfaceEmployeeActionsButtons
-                                                                        key={column.id}
-                                                                        onClick={(actionType) => handleAction(rowItem, actionType)}                                                                    />
-                                                                )
-                                                            } else if (category.code === "couriers") {
-                                                                return (
-                                                                    <AdminInterfaceCourierActionsButtons
-                                                                        key={column.id}
-                                                                        onClick={(actionType) => handleAction(rowItem, actionType)}                                                                    />
-                                                                )
-                                                            } else if (category.code === "offices") {
-                                                               return (
-                                                                   <AdminInterfaceOfficeActionButtons
-                                                                       key={column.id}
-                                                                       onClick={(actionType) => handleAction(rowItem, actionType)}
-                                                                   />
-                                                               )
+
+                                                            }
+                                                            if (column.code === 'adminInterfaceActions') {
+                                                                if (category.code === 'clients') {
+                                                                    return (
+                                                                        <AdminInterfaceUserActionsButtons
+                                                                            key={column.id}
+                                                                            onClick={(actionType) => handleAction(rowItem, actionType)}
+                                                                        />
+                                                                    )
+                                                                } else if (category.code === "employees") {
+                                                                    return (
+                                                                        <AdminInterfaceEmployeeActionsButtons
+                                                                            key={column.id}
+                                                                            onClick={(actionType) => handleAction(rowItem, actionType)}/>
+                                                                    )
+                                                                } else if (category.code === "couriers") {
+                                                                    return (
+                                                                        <AdminInterfaceCourierActionsButtons
+                                                                            key={column.id}
+                                                                            onClick={(actionType) => handleAction(rowItem, actionType)}/>
+                                                                    )
+                                                                } else if (category.code === "offices") {
+                                                                    return (
+                                                                        <AdminInterfaceOfficeActionButtons
+                                                                            key={column.id}
+                                                                            onClick={(actionType) => handleAction(rowItem, actionType)}
+                                                                        />
+                                                                    )
+                                                                }
                                                             }
                                                         }
-                                                    }
 
-                                                    if (column.code === 'status') {
+                                                        if (column.code === 'status') {
+
+                                                            return (
+                                                                <td key={column.id} className='px-4 py-3'>
+                                                                    <button
+                                                                        className={
+                                                                            rowItem.status === 'Active' ?
+                                                                                "action_btn_green" :
+                                                                                rowItem.status === "Closed" ?
+                                                                                    "action_btn_purple" :
+                                                                                    ""
+                                                                        }
+                                                                    >
+                                                                        {rowItem[column.code]}
+                                                                    </button>
+                                                                </td>
+                                                            )
+                                                        }
 
                                                         return (
-                                                            <td key={column.id} className='px-4 py-3'>
-                                                                <button
-                                                                    className={
-                                                                        rowItem.status === 'Active' ?
-                                                                            "action_btn_green" :
-                                                                        rowItem.status === "Closed" ?
-                                                                            "action_btn_purple" :
-                                                                            ""
-                                                                    }
-                                                                >
-                                                                    {rowItem[column.code]}
-                                                                </button>
+                                                            <td key={column.id} className='px-4 py-3 text-gray-500'>
+                                                                {rowItem[column.code]}
                                                             </td>
                                                         )
-                                                    }
-
-                                                    return (
-                                                        <td key={column.id} className='px-4 py-3 text-gray-500'>
-                                                            {rowItem[column.code]}
-                                                        </td>
-                                                    )
-                                                })}
-                                            </tr>
-                                        )
-                                    })
-                            }
-                        </Fragment>
-                    )
-                })}
-                </tbody>
-            </table>
-        </div>
+                                                    })}
+                                                </tr>
+                                            )
+                                        })
+                                }
+                            </Fragment>
+                        )
+                    })}
+                    </tbody>
+                </table>
+            </div>
+        </>
     );
 };
 

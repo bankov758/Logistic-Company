@@ -15,7 +15,7 @@ const options = [
     {value: "Closed", placeholder: "Closed"},
 ];
 
-const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number }> = ({selectedItem, employeeId}) => {
+const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onActionSuccess: () => void }> = ({selectedItem, employeeId, onActionSuccess}) => {
     const [error, setError] = useState<Error | null | string>(null);
 
     const [users, setUsers] = useState<selectorItem[]>([]);
@@ -34,6 +34,12 @@ const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number }> = (
             users),
         {message: null, errors: ''}
     )
+
+    useEffect(() => {
+
+        if( editShipmentState.message ) onActionSuccess();
+
+    }, [editShipmentAction]);
 
     useEffect(() => {
         const fetchDropdownData = async() => {
