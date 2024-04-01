@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 @Component
 public class ValidationUtil {
 
-    private final CourierService courierService;
-    private final UserRepository userRepository;
-
     private static final String UNAUTHORIZED_DEFAULT = "Unauthorized action";
     private static final String UNAUTHORIZED_USER_UPDATE = "Only the owner of the account can make changes";
     private static final String UNAUTHORIZED_USER_DELETE = "Only the owner of the account or an admin can delete it";
     private static final String UNAUTHORIZED_ADMIN_ACTION = "Only Admins can %s %s entities";
     private static final String UNAUTHORIZED_OFFICE_EMPLOYEE_ACTION =
             "Only office employees from the same company as the %s can modify it";
+
+    private final CourierService courierService;
+    private final UserRepository userRepository;
 
     @Autowired
     public ValidationUtil(CourierService courierService, UserRepository userRepository) {
