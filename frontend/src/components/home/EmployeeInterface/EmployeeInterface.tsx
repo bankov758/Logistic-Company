@@ -2,17 +2,18 @@
 import React, {Fragment, useEffect, useState} from "react";
 import { categories, tableColumns } from "@/data/employee/ordersTableData";
 import {getSession, Session} from "@/lib/auth";
-import axios from "@/lib/axios";
+import useHttp from "@/hooks/useHttp";
 
 import FilterOrders, {FilterOptions} from "./FilterOrders";
 import Table, { item } from "../Table";
+
 import Button from "../../UI/BaseButton";
 import BaseDialog from "../../UI/BaseDialog";
 import Notification from "@/components/UI/Notification";
+import SkeletonLoadingAnimation from "@/components/UI/SkeletonLoadingAnimation";
+
 import CreateAnOrderForm from "@/components/home/EmployeeInterface/CreateAnOrderForm";
 import SelfDeleteUserForm from "@/components/home/ClientInterface/SelfDeleteUserForm";
-import useHttp from "@/hooks/useHttp";
-import SkeletonLoadingAnimation from "@/components/UI/SkeletonLoadingAnimation";
 
 const EmployeeInterface: React.FC = () => {
     const [showCreateOrderDialog, setShowCreateOrderDialog] = useState<boolean>(false)
@@ -22,7 +23,7 @@ const EmployeeInterface: React.FC = () => {
     const [data, setData] = useState<item[] | null>(null);
     const [unfilteredData, setUnfilteredData] = useState<item[] | null>(null);
 
-    const [tryAgain, setTryAgain] = useState<boolean>(false);
+    const [tryAgain, setTryAgain] = useState<boolean>(true);
 
     const [showSelfDeleteDialog, setShowSelfDeleteDialog] = useState<boolean>(false);
 
@@ -37,14 +38,18 @@ const EmployeeInterface: React.FC = () => {
             .then(async (response) => {
                 setSession(response)
 
-                const responseData = await sendRequest({
-                    url: "/shipments/logged-company"
-                });
+                if( tryAgain ) {
+                    const responseData = await sendRequest({
+                        url: "/shipments/logged-company"
+                    });
 
-                if( responseData && responseData.data ) {
-                    setData(responseData.data);
-                    setUnfilteredData(responseData.data);
-                };
+                    if( responseData && responseData.data ) {
+                        setData(responseData.data);
+                        setUnfilteredData(responseData.data);
+                    }
+                }
+
+                setTryAgain(false);
 
             })
     }, [sendRequest, tryAgain]);
@@ -84,18 +89,26 @@ const EmployeeInterface: React.FC = () => {
         });
     }
 
+    const onActionSuccess = () => {
+        setShowCreateOrderDialog(false);
+        setShowSelfDeleteDialog(false);
+        setData(null);
+        setUnfilteredData(null);
+        setTryAgain(true);
+    }
+
     return (
         <>
             {showCreateOrderDialog && session &&
                 <BaseDialog title="NEW ORDER" tryClose={() => setShowCreateOrderDialog(false)}>
-                    <CreateAnOrderForm employeeId={session.id}/>
+                    <CreateAnOrderForm employeeId={session.id} onActionSuccess={onActionSuccess}/>
                 </BaseDialog>
             }
             {error ?
                 <Notification status='error'>
                     <div className='flex flex-col justify-center items-center w-full'>
                         <p>{error?.message}</p>
-                        <button className='base-btn-blue' onClick={() => setTryAgain(!tryAgain)}>Try again</button>
+                        <button className='base-btn-blue' onClick={() => setTryAgain(true)}>Try again</button>
                     </div>
                 </Notification> :
                 isLoading ?
@@ -112,6 +125,7 @@ const EmployeeInterface: React.FC = () => {
                                 columns={tableColumns}
                                 categories={categories}
                                 session={session}
+                                onActionSuccess={onActionSuccess}
                                 data={data.map((item) => ({
                                     ...item,
                                     category: "registered"

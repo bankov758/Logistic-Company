@@ -442,8 +442,9 @@ export const editShipment = async (
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
     const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 
-    const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
-    const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
+    // TODO: check
+    // const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
+    // const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
 
     const companyId = await getCompanyId();
 
@@ -454,8 +455,10 @@ export const editShipment = async (
 	 	senderId: senderId || foundSenderId,
 	 	receiverId: receiverId || foundReceiverId,
 		employeeId,
-	 	sentDate: parsedSentDate || parsedOldSentDate,
-        receivedDate: parsedReceivedDate || parsedOldReceivedDate,
+	 	// sentDate: parsedSentDate || parsedOldSentDate,
+	 	sentDate: parsedSentDate,
+        // receivedDate: parsedReceivedDate || parsedOldReceivedDate,
+        receivedDate: parsedReceivedDate,
 	 	courierId: courierId || foundCourierId,
         companyId,
         receivedFromOffice: selectedItem.receivedFromOffice,

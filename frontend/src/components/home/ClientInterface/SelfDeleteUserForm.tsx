@@ -3,6 +3,7 @@ import React from "react";
 import {Session} from "@/lib/auth";
 
 const SelfDeleteUserForm: React.FC<{ session: Session | null, onClick: (setAction: boolean) => void; }> = ({ session, onClick }) => {
+
     return <>
         <div className="flex gap-x-5 items-center justify-center">
             <h2>Are you sure?</h2>

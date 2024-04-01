@@ -9,12 +9,6 @@ import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWra
 import {getSession, Session} from "@/lib/auth";
 import {editShipment, getCompanyId, getCouriers, getUsers} from "@/lib/actions";
 
-// Example usage:
-const options = [
-    {value: "Active", placeholder: "Active"},
-    {value: "Closed", placeholder: "Closed"},
-];
-
 const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onActionSuccess: () => void }> = ({selectedItem, employeeId, onActionSuccess}) => {
     const [error, setError] = useState<Error | null | string>(null);
 
@@ -39,7 +33,7 @@ const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onAct
 
         if( editShipmentState.message ) onActionSuccess();
 
-    }, [editShipmentAction]);
+    }, [editShipmentState]);
 
     useEffect(() => {
         const fetchDropdownData = async() => {
