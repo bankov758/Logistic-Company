@@ -108,31 +108,36 @@ const EmployeeInterface: React.FC = () => {
                         </div>
                         <FilterOrders onFilterOrders={onFilterOrders}/>
                         {data ?
-                                <Table
-                                    columns={tableColumns}
-                                    categories={categories}
-                                    session={session}
-                                    data={data.map((item) => ({
-                                        ...item,
-                                        category: "registered"
-                                    }))}
-                                /> :
+                            <Table
+                                columns={tableColumns}
+                                categories={categories}
+                                session={session}
+                                data={data.map((item) => ({
+                                    ...item,
+                                    category: "registered"
+                                }))}
+                            /> :
                             <p>No Data available!</p>
                          }
                     </Fragment>
             }
             {showSelfDeleteDialog &&
-                (<BaseDialog title="Self deletion" tryClose={() => setShowSelfDeleteDialog(false)}>
+                <BaseDialog title="Self deletion" tryClose={() => setShowSelfDeleteDialog(false)}>
                     <SelfDeleteUserForm
                         session={session}
                         onClick={(setAction) => {setShowSelfDeleteDialog(setAction)}}
                     />
-                </BaseDialog>)
+                </BaseDialog>
             }
             <div className="p-4 bottom-0 right-0 flex justify-center items-center z-50">
                 <h3 className="mr-2">Delete your account here: </h3>
-                <Button className="bg-red-600 text-white font-bold py-2 px-4" fill={true}
-                        onClick={() => setShowSelfDeleteDialog(true)}>Delete User</Button>
+                <Button
+                    className="bg-red-600 text-white font-bold py-2 px-4"
+                    onClick={() => setShowSelfDeleteDialog(true)}
+                    fill
+                >
+                    Delete User
+                </Button>
             </div>
         </>
     )

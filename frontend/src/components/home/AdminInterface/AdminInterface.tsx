@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Image from "next/image";
 import {AxiosError} from "axios";
 import axios from "@/lib/axios";
@@ -17,38 +17,57 @@ import {
 } from "@/data/admin/ordersTableData";
 
 import {getSession, Session} from "@/lib/auth";
-import Notification from "@/components/UI/Notification";
 import ShowCompanyInfo from "@/components/home/AdminInterface/ShowCompanyInfo";
 import CreateCompanyForm from "@/components/home/AdminInterface/CreateCompanyForm";
 import {getCompanies} from "@/lib/actions";
 
+import Notification from "@/components/UI/Notification";
+import SkeletonLoadingAnimation from "@/components/UI/SkeletonLoadingAnimation";
+
 const AdminInterface: React.FC = () => {
     const [session, setSession] = useState<null | Session>(null);
+    
     const [data, setData] = useState<item[][] | null>(null);
-    const [error, setError] = useState<AxiosError | null | string>(null);
+    const [error, setError] = useState<AxiosError | Error | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [tryAgain, setTryAgain] = useState<boolean>(false);
 
     const [companies, setCompanies] = useState<selectorItem[]>([]);
     const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
 
     const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
-    const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false)
+    const [showCreateCompanyDialog, setShowCreateCompanyDialog] = useState<boolean>(false)
 
-    const getAndSetCompanies = async () => {
-        try {
-            const companies = await getCompanies();
-
-            if( companies ) {
-                setCompanies(companies);
-            } else {
-                setError("Something went wrong!")
-            }
-        } catch (err) {
-            if( err instanceof AxiosError ) {
-                setError(err)
-            }
+    // whenever the selectedCompany state change, the entire AdminInterface React component is re-executed
+    const fetchData = useCallback(() => {
+        if( selectedCompany ) {
+            setIsLoading(true);
+            Promise.all([
+                //clients
+                axios.get(`/companies/${selectedCompany.id}/clients`),
+                //employees
+                axios.get(`/companies/${selectedCompany.id}/employees`),
+                //couriers
+                axios.get(`/couriers`),
+                //offices
+                axios.get("/offices")
+            ])
+                .then(([clientsData, employeesData, courierData, officesData]) => {
+                    const combinedData = [
+                        clientsData.data,
+                        employeesData.data,
+                        courierData.data,
+                        officesData.data
+                    ];
+                    setData(combinedData);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    setError(error);
+                    setIsLoading(false);
+                });
         }
-    }
+    }, [selectedCompany]);
 
     useEffect(() => {
         getSession()
@@ -58,34 +77,31 @@ const AdminInterface: React.FC = () => {
             });
     }, []);
 
+    useEffect(() => {
+        fetchData();
+    }, [fetchData, tryAgain]);
+
+    const getAndSetCompanies = async () => {
+        try {
+            const companies = await getCompanies();
+
+            if( companies ) {
+                setCompanies(companies);
+            } else {
+                setError(new Error("Something went wrong!"))
+            }
+        } catch (error) {
+            if( error instanceof Error || error instanceof AxiosError ) setError(error)
+        }
+    }
+
     const handleSelectCompany = (data: selectorItem) => {
         setSelectedCompany(data);
-
-        Promise.all([
-            //clients
-            axios.get(`/companies/${data.id}/clients`),
-            //employees
-            axios.get(`/companies/${data.id}/employees`),
-            //couriers
-            axios.get(`/couriers`),
-            //offices
-            axios.get("/offices")
-        ])
-            .then(([clientsData, employeesData, courierData, officesData]) => {
-                const combinedData = [
-                    clientsData.data,
-                    employeesData.data,
-                    courierData.data,
-                    officesData.data
-                ];
-                setData(combinedData);
-            })
-            .catch(error => setError(error));
     }
 
     //TODO: turn this into one function
     const onSuccessCreateCompany = async () => {
-        setShowCreateDialog(false);
+        setShowCreateCompanyDialog(false);
         await getAndSetCompanies()
     }
 
@@ -120,15 +136,14 @@ const AdminInterface: React.FC = () => {
         {error &&
             <Notification status='error'>
                 <div className='flex flex-col justify-center items-center w-full'>
-                    <p>{error instanceof AxiosError ? error.message : error}</p>
+                    <p>{error.message}</p>
                     <button className='base-btn-blue' onClick={() => setTryAgain(!tryAgain)}>Try again</button>
                 </div>
             </Notification>
         }
-        <h3 className="flex justify-start w-full px-2 py-2">
+        <h3 className="flex justify-start w-full px-2 py-2 mb-12">
             Welcome {session?.username || "user"}! You&apos;re logged in as admin.
         </h3>
-        <br/>
         <div className='flex justify-center items-center gap-x-10'>
             <DataSelectorWrapper
                 hasInitialPlaceholderValue
@@ -146,16 +161,16 @@ const AdminInterface: React.FC = () => {
             }
             <Button
                 fill
-                onClick={() => setShowCreateDialog(true)}
+                onClick={() => setShowCreateCompanyDialog(true)}
             >
                 Create a company
             </Button>
         </div>
         {/* create company dialog  */}
-        {showCreateDialog &&
-            (<BaseDialog title="Create a company" tryClose={() => setShowCreateDialog(false)}>
+        {showCreateCompanyDialog &&
+            <BaseDialog title="Create a company" tryClose={() => setShowCreateCompanyDialog(false)}>
                 <CreateCompanyForm onSuccess={onSuccessCreateCompany} />
-            </BaseDialog>)
+            </BaseDialog>
         }
         {/* company info dialog */}
         {showCompanyInfoDialog && selectedCompany &&
@@ -175,9 +190,11 @@ const AdminInterface: React.FC = () => {
             )
         }
         {/* clients + employees + currier + offices */}
-        {data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 &&
-            data
-                .map((individualData: item[], index: number) => {
+        { isLoading ?
+            <SkeletonLoadingAnimation header="tabs" layoutItems={5} /> :
+            data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 ?
+
+                data.map((individualData: item[], index: number) => {
                     if( !individualData.length ) return;
 
                     return (
@@ -190,28 +207,31 @@ const AdminInterface: React.FC = () => {
                             selectedCompany={selectedCompany}
                             data=
                                 {
-                                    individualData
-                                        .map(item => {
+                                    individualData.map(item => {
 
-                                            if( index === 0 ) {//clients
+                                        switch (index) {
+                                            case 0: // clients
                                                 return {
                                                     ...item,
                                                     category: "clients"
                                                 }
-                                            } else if( index === 1 ) {//employees
+                                            case 1: // employees
                                                 return {
                                                     ...item,
                                                     category: "employees"
                                                 }
-                                            } else if( index === 2 ) {//couriers
-                                                //const courierId: { id: number; companyName: string; } = item?.;
+                                            case 2: // couriers
                                                 if (selectedCompany.title === item?.companyName) {
                                                     return {
                                                         ...item,
                                                         category: "couriers",
                                                     };
                                                 }
-                                            } else if( index === 3 ) {//offices
+                                                return {
+                                                    ...item,
+                                                    category: ""
+                                                };
+                                            case 3: // offices
                                                 const companyId: { id: number; name: string; } = item?.companyId;
                                                 if (selectedCompany.title === companyId.name) {
                                                     return {
@@ -220,17 +240,23 @@ const AdminInterface: React.FC = () => {
                                                         category: "offices",
                                                     };
                                                 }
-                                            }
+                                                return {
+                                                    ...item,
+                                                    category: ""
+                                                };
+                                            default:
+                                                return {
+                                                    ...item,
+                                                    category: ""
+                                                };
 
-                                            return {
-                                                ...item,
-                                                category: ""
-                                            }
-                                        })
+                                        }
+                                    })
                                 }
                         />
                     )
-                })
+                }) :
+                selectedCompany && <p>No data available!</p>
         }
     </>;
 }
