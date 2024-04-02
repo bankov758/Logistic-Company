@@ -17,15 +17,16 @@ import SelfDeleteUserForm from "@/components/home/ClientInterface/SelfDeleteUser
 
 const EmployeeInterface: React.FC = () => {
     const [showCreateOrderDialog, setShowCreateOrderDialog] = useState<boolean>(false)
-    
+    const [showSelfDeleteDialog, setShowSelfDeleteDialog] = useState<boolean>(false);
+
     const [session, setSession] = useState<null | Session>(null);
+
+    const [actionSuccessMessage, setActionSuccessMessage] = useState<{  message: string; errors: string; }>({ message: "", errors: ""})
 
     const [data, setData] = useState<item[] | null>(null);
     const [unfilteredData, setUnfilteredData] = useState<item[] | null>(null);
 
     const [tryAgain, setTryAgain] = useState<boolean>(true);
-
-    const [showSelfDeleteDialog, setShowSelfDeleteDialog] = useState<boolean>(false);
 
     const {
         isLoading,
@@ -89,12 +90,13 @@ const EmployeeInterface: React.FC = () => {
         });
     }
 
-    const onActionSuccess = () => {
+    const onActionSuccess = (data: {  message: string; errors: string; }) => {
         setShowCreateOrderDialog(false);
         setShowSelfDeleteDialog(false);
         setData(null);
         setUnfilteredData(null);
         setTryAgain(true);
+        setActionSuccessMessage(data);
     }
 
     return (
@@ -103,6 +105,11 @@ const EmployeeInterface: React.FC = () => {
                 <BaseDialog title="NEW ORDER" tryClose={() => setShowCreateOrderDialog(false)}>
                     <CreateAnOrderForm employeeId={session.id} onActionSuccess={onActionSuccess}/>
                 </BaseDialog>
+            }
+            { actionSuccessMessage && (actionSuccessMessage.message || actionSuccessMessage.errors) &&
+                <Notification status={actionSuccessMessage.message ? "success" : "error"} timeout={5000} >
+                    <p>{actionSuccessMessage.message || actionSuccessMessage.errors }</p>
+                </Notification>
             }
             {error ?
                 <Notification status='error'>

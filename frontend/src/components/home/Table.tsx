@@ -92,16 +92,13 @@ const Table: React.FC<TableProps> = ({
     // const [promoteCourierState, promoteCourierAction] = useFormState(promoteCourier, { message: '', errors: '' });
 
     useEffect(() => {
-        let condition = deleteUserState.message || promoteUserIntoCourierState.message || deleteEmployeeState.message ||
-            demoteEmployeeState.message || makeEmployeeIntoCourierState.message || deleteShipmentState.message ||
-            deleteOfficeState.message || deleteCourierState.message || demoteCourierState.message;
+        let condition = deleteUserState || promoteUserIntoCourierState || deleteEmployeeState ||
+            demoteEmployeeState || makeEmployeeIntoCourierState || deleteShipmentState || deleteOfficeState ||
+            deleteCourierState || demoteCourierState;
 
-        if(condition) {
-            // onActionSuccess ? onActionSuccess(condition) : null;
+        if ( condition.message ) {
+            onActionSuccess ? onActionSuccess(condition) : null;
         }
-
-        // if( deleteUserState.message ) onActionSuccess(deleteUserState);
-        // else if()
 
     }, [onActionSuccess, deleteUserState, promoteUserIntoCourierState, deleteEmployeeState, demoteEmployeeState, makeEmployeeIntoCourierState, deleteShipmentState, deleteOfficeState, deleteCourierState, demoteCourierState]);
 

@@ -10,7 +10,7 @@ import SubmitButton from "@/components/UI/SubmitButton";
 
 import { AxiosError } from "axios";
 
-const CreateAnOrderForm: React.FC<{ employeeId: number; onActionSuccess: () => void }> = ({ employeeId, onActionSuccess }) => {
+const CreateAnOrderForm: React.FC<{ employeeId: number; onActionSuccess: (data: {  message: string; errors: string; }) => void }> = ({ employeeId, onActionSuccess }) => {
 
     const [error, setError] = useState<Error | null | string>(null);
 
@@ -31,7 +31,7 @@ const CreateAnOrderForm: React.FC<{ employeeId: number; onActionSuccess: () => v
 
     useEffect(() => {
 
-        if( createAnOrderState.message) onActionSuccess()
+        if( createAnOrderState.message) onActionSuccess(createAnOrderState)
 
     }, [createAnOrderState]);
 

@@ -4,12 +4,12 @@ import {useFormState} from "react-dom";
 import {editOffice} from "@/lib/adminActions";
 import SubmitButton from "@/components/UI/SubmitButton";
 
-const EditOfficeForm: React.FC<{ selectedItem: item, onActionSuccess: (data: string) => void }> = ({selectedItem, onActionSuccess}) => {
+const EditOfficeForm: React.FC<{ selectedItem: item, onActionSuccess: (data: {  message: string; errors: string; }) => void }> = ({selectedItem, onActionSuccess}) => {
     const [editOfficeState, editOfficeAction] = useFormState(editOffice.bind(null, selectedItem.id, selectedItem.companyId), { message: '', errors: '' });
 
     useEffect(() => {
 
-        if( editOfficeState.message ) onActionSuccess(editOfficeState.message);
+        if( editOfficeState.message ) onActionSuccess(editOfficeState);
 
     }, [editOfficeState]);
 

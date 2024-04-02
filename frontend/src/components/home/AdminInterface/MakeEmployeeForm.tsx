@@ -7,16 +7,16 @@ import SubmitButton from "@/components/UI/SubmitButton";
 import {useFormState} from "react-dom";
 import {AxiosError} from "axios";
 
-const MakeUserIntoEmployeeForm:React.FC<{actionFunction: (userId: number, officeId: number, initialState: FormState) => Promise<FormState>,  selectedItem: item; selectedCompanyId: number; onActionSuccess: (data: string) => void}> = ({actionFunction, selectedItem, selectedCompanyId, onActionSuccess}) => {
+const MakeEmployeeForm:React.FC<{actionFunction: (userId: number, officeId: number, initialState: FormState) => Promise<FormState>,  selectedItem: item; selectedCompanyId: number; onActionSuccess: (data: {  message: string; errors: string; }) => void}> = ({actionFunction, selectedItem, selectedCompanyId, onActionSuccess}) => {
 
     const [error, setError] = useState<Error | null | string>(null);
     const [offices, setOffices] = useState<selectorItem[]>([]);
     const [selectedOffice, setSelectedOffice] = useState<selectorItem> (offices[0]);
-    const [makeCourierState, makeCourierAction] = useFormState(actionFunction.bind(null, selectedItem.id, selectedOffice?.id as number), {message: '', errors: ''})
+    const [makeCourierState  , makeCourierAction] = useFormState(actionFunction.bind(null, selectedItem.id, selectedOffice?.id as number), { message: '', errors: '' })
 
     useEffect(() => {
 
-        if( makeCourierState.message ) onActionSuccess(makeCourierState.message);
+        if( makeCourierState.message ) onActionSuccess(makeCourierState as  {message: string, errors: string});
 
     }, [makeCourierState]);
 
@@ -62,4 +62,4 @@ const MakeUserIntoEmployeeForm:React.FC<{actionFunction: (userId: number, office
 
 }
 
-export default MakeUserIntoEmployeeForm;
+export default MakeEmployeeForm;
