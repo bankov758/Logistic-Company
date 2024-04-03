@@ -95,7 +95,8 @@ const Table: React.FC<TableProps> = ({
         let condition = deleteUserState || promoteUserIntoCourierState || deleteEmployeeState ||
             demoteEmployeeState || makeEmployeeIntoCourierState || deleteShipmentState || deleteOfficeState ||
             deleteCourierState || demoteCourierState;
-
+            console.log(condition);
+            console.log(condition.message);
         if ( condition.message ) {
             onActionSuccess ? onActionSuccess(condition) : null;
         }
