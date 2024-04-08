@@ -47,7 +47,6 @@ const AdminInterface: React.FC = () => {
     const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
     const [showCreateCompanyDialog, setShowCreateCompanyDialog] = useState<boolean>(false)
 
-
     // whenever the selectedCompany state change, the entire AdminInterface React component is re-executed
     const fetchData = useCallback(() => {
         if( selectedCompany ) {
@@ -125,8 +124,6 @@ const AdminInterface: React.FC = () => {
         setSelectedCompany(data);
     }
 
-    //TODO: turn this into one function
-
     // company info dialog actions START
 
     const onSuccessCreateCompany = async () => {
@@ -134,21 +131,7 @@ const AdminInterface: React.FC = () => {
         await getAndSetCompanies()
     }
 
-    const onSuccessDeleteCompany = async () => {
-        setShowCompanyInfoDialog(false);
-        setSelectedCompany(null);
-        await getAndSetCompanies();
-        setData([]);
-    }
-
-    const onSuccessEditCompany = async () => {
-        setShowCompanyInfoDialog(false);
-        setSelectedCompany(null);
-        await getAndSetCompanies();
-        setData([]);
-    }
-
-    const onSuccessAddOffice = async () => {
+    const onSuccessCompanyOrOfficeAction = async () => {
         setShowCompanyInfoDialog(false);
         setSelectedCompany(null);
         await getAndSetCompanies();
@@ -236,9 +219,9 @@ const AdminInterface: React.FC = () => {
                     <ShowCompanyInfo
                         companyData={companies}
                         selectedCompany={selectedCompany}
-                        onSuccessDelete={onSuccessDeleteCompany}
-                        onSuccessEdit={onSuccessEditCompany}
-                        onSuccessAddOffice={onSuccessAddOffice}
+                        onSuccessDelete={onSuccessCompanyOrOfficeAction}
+                        onSuccessEdit={onSuccessCompanyOrOfficeAction}
+                        onSuccessAddOffice={onSuccessCompanyOrOfficeAction}
                     />
                 </BaseDialog>
             )
