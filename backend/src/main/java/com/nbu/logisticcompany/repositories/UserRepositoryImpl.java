@@ -9,7 +9,11 @@ import com.nbu.logisticcompany.repositories.interfaces.OfficeRepository;
 import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of {@link UserRepository} using Hibernate for data access.
@@ -24,6 +28,20 @@ public class UserRepositoryImpl extends AbstractRepository<User> implements User
         super(User.class, sessionFactory);
         officeRepository = _officeRepository;
         companyRepository = _companyRepository;
+    }
+
+    @Override
+    public List<User> search(Optional<String> search) {
+        try (Session session = sessionFactory.openSession()) {
+            if (search.isEmpty()) {
+                return getAll();
+            }
+            Query<User> query = session.createQuery(
+                    " from User where username like :name ",
+                    User.class);
+            query.setParameter("name", "%" + search.get() + "%");
+            return query.list();
+        }
     }
 
     /**

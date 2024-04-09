@@ -1,11 +1,6 @@
 package com.nbu.logisticcompany.services;
 
-import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.Courier;
-import com.nbu.logisticcompany.entities.Employee;
-import com.nbu.logisticcompany.entities.OfficeEmployee;
-import com.nbu.logisticcompany.entities.Role;
-import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.entities.*;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
@@ -51,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll(Optional<String> search) {
-        return userRepository.getAll();
+        return userRepository.search(search);
     }
 
     @Override
