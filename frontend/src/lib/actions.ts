@@ -383,7 +383,7 @@ export const createAnOrder = async (
         })
 
         return {
-            message: response.data,
+            message: 'The shipment was successfully created!',
             errors: '',
         }
 
@@ -443,24 +443,24 @@ export const editShipment = async (
     const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 
     // TODO: check
-    // const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
-    // const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
+    const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
+    const parsedOldReceivedDate =  new Date(selectedItem.receivedDate?.toString());
 
     const companyId = await getCompanyId();
 
     const fields= {
         id: selectedItem?.id,
-        departureAddress: departureAddress || selectedItem?.departureAddress,
-        arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
-        weight: weight || selectedItem?.weight,
-        senderId: senderId || foundSenderId,
-        receiverId: receiverId || foundReceiverId,
+        departureAddress: departureAddress || selectedItem.departureAddress,
+        arrivalAddress: arrivalAddress || selectedItem.arrivalAddress,
+        weight: weight || selectedItem.weight,
+        senderId: senderId ?? foundSenderId,
+        receiverId: receiverId ?? foundReceiverId,
         employeeId,
-        // sentDate: parsedSentDate || parsedOldSentDate,
-        sentDate: parsedSentDate,
-        // receivedDate: parsedReceivedDate || parsedOldReceivedDate,
-        receivedDate: parsedReceivedDate,
-        courierId: courierId || foundCourierId,
+         sentDate: parsedSentDate ?? parsedOldSentDate,
+       // sentDate: parsedSentDate,
+        receivedDate: parsedReceivedDate ?? parsedOldReceivedDate,
+        //receivedDate: parsedReceivedDate,
+        courierId: courierId ?? foundCourierId,
         companyId,
         receivedFromOffice: selectedItem.receivedFromOffice,
         sentFromOffice: selectedItem.sentFromOffice

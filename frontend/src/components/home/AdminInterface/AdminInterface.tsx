@@ -80,13 +80,10 @@ const AdminInterface: React.FC = () => {
 
     const fetchUserData = useCallback( () => {
         setIsLoading(true);
-        axios.get(`/users`)
+        axios.get(`/users?search=${searchedUsername}`)
             .then(response => {
-                const filteredUsers = response.data.filter((user:item) => user.username.toLowerCase().includes(searchedUsername.toLowerCase()));
-                //const filteredUsers = response.data.filter((user:item) => user.username === searchedUsername);
-                setSearchData(filteredUsers)
+                setSearchData(response.data)
                 setIsLoading(false);
-                //setSearchedUsername('');
                 })
             .catch(error => {
                 setError(error);
