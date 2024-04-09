@@ -1,246 +1,152 @@
--- MySQL Workbench Forward Engineering
+CREATE SCHEMA IF NOT EXISTS logistic_company;
+USE logistic_company;
 
-SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
-SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
-SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE =
-        'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema logistic_company
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema logistic_company
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `logistic_company` DEFAULT CHARACTER SET utf8mb3;
-USE `logistic_company`;
-
--- -----------------------------------------------------
--- Table `logistic_company`.`company`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`company`
+create table company
 (
-    `id`   INT         NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
+    id   int auto_increment
+        primary key,
+    name varchar(45) not null,
+    constraint name_UNIQUE
+        unique (name)
+);
 
-
--- -----------------------------------------------------
--- Table `logistic_company`.`user`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`user`
+create table office
 (
-    `id`         INT         NOT NULL AUTO_INCREMENT,
-    `username`   VARCHAR(45) NOT NULL,
-    `password`   VARCHAR(45) NOT NULL,
-    `first_name` VARCHAR(45) NOT NULL,
-    `last_name`  VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
+    id         int auto_increment
+        primary key,
+    address    varchar(45) not null,
+    company_id int         not null,
+    constraint address_company
+        unique (address, company_id),
+    constraint fk_office_company1
+        foreign key (company_id) references company (id)
+);
 
+create index fk_office_company1_idx
+    on office (company_id);
 
--- -----------------------------------------------------
--- Table `logistic_company`.`company_has_client`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`company_has_client`
+create table tariff
 (
-    `company_id` INT NOT NULL,
-    `client_id`  INT NOT NULL,
-    PRIMARY KEY (`company_id`, `client_id`),
-    INDEX `fk_company_has_user_user2_idx` (`client_id` ASC) VISIBLE,
-    INDEX `fk_company_has_user_company2_idx` (`company_id` ASC) VISIBLE,
-    CONSTRAINT `fk_company_has_user_company2`
-        FOREIGN KEY (`company_id`)
-            REFERENCES `logistic_company`.`company` (`id`),
-    CONSTRAINT `fk_company_has_user_user2`
-        FOREIGN KEY (`client_id`)
-            REFERENCES `logistic_company`.`user` (`id`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
+    id              int auto_increment
+        primary key,
+    price_per_kg    float not null,
+    office_discount float not null,
+    company_id      int   not null,
+    constraint unique_tariff_combination
+        unique (price_per_kg, office_discount, company_id),
+    constraint fk_tarriffs_company1
+        foreign key (company_id) references company (id)
+);
 
+create index fk_tariffs_company_idx
+    on tariff (company_id);
 
--- -----------------------------------------------------
--- Table `logistic_company`.`office`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`office`
+create table user
 (
-    `id`         INT         NOT NULL AUTO_INCREMENT,
-    `address`    VARCHAR(45) NOT NULL,
-    `company_id` INT         NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `address_company` (`address` ASC, `company_id` ASC) VISIBLE,
-    INDEX `fk_office_company1_idx` (`company_id` ASC) VISIBLE,
-    CONSTRAINT `fk_office_company1`
-        FOREIGN KEY (`company_id`)
-            REFERENCES `logistic_company`.`company` (`id`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
+    id         int auto_increment
+        primary key,
+    username   varchar(45)  not null,
+    password   varchar(256) not null,
+    first_name varchar(45)  not null,
+    last_name  varchar(45)  not null,
+    constraint username_UNIQUE
+        unique (username)
+);
 
-
--- -----------------------------------------------------
--- Table `logistic_company`.`employee`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`employee`
+create table User_roles
 (
-    `id`         INT NOT NULL,
-    `company_id` INT NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `fk_employee_company1_idx` (`company_id` ASC) VISIBLE,
-    CONSTRAINT `fk_employee_user1`
-        FOREIGN KEY (`id`)
-            REFERENCES `logistic_company`.`user` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_employee_company1`
-        FOREIGN KEY (`company_id`)
-            REFERENCES `logistic_company`.`company` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
+    id      int auto_increment
+        primary key,
+    user_id int         not null,
+    roles   varchar(45) null,
+    constraint fk_User_roles_user1
+        foreign key (user_id) references user (id)
+);
 
+create index fk_User_roles_user1_idx
+    on User_roles (user_id);
 
--- -----------------------------------------------------
--- Table `logistic_company`.`office_employee`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`office_employee`
+create table employee
 (
-    `id`        INT NOT NULL,
-    `office_id` INT NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `fk_office_employee_office1_idx` (`office_id` ASC) VISIBLE,
-    CONSTRAINT `fk_office_employee_employee1`
-        FOREIGN KEY (`id`)
-            REFERENCES `logistic_company`.`employee` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_office_employee_office1`
-        FOREIGN KEY (`office_id`)
-            REFERENCES `logistic_company`.`office` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
+    id         int not null
+        primary key,
+    company_id int not null,
+    constraint fk_employee_company1
+        foreign key (company_id) references company (id),
+    constraint fk_employee_user1
+        foreign key (id) references user (id)
+);
 
-
--- -----------------------------------------------------
--- Table `logistic_company`.`courier`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`courier`
+create table courier
 (
-    `id` INT NOT NULL,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_courier_employee1`
-        FOREIGN KEY (`id`)
-            REFERENCES `logistic_company`.`employee` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
+    id int not null
+        primary key,
+    constraint fk_courier_employee1
+        foreign key (id) references employee (id)
+);
 
+create index fk_employee_company1_idx
+    on employee (company_id);
 
--- -----------------------------------------------------
--- Table `logistic_company`.`shipment`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`shipment`
+create table office_employee
 (
-    `id`                    INT         NOT NULL AUTO_INCREMENT,
-    `departure_address`     VARCHAR(45) NOT NULL,
-    `arrival_address`       VARCHAR(45) NOT NULL,
-    `weight`                FLOAT       NOT NULL,
-    `sender_id`             INT         NOT NULL,
-    `receiver_id`           INT         NOT NULL,
-    `is_sent_from_office`   TINYINT     NOT NULL,
-    `is_received_in_office` TINYINT     NOT NULL,
-    `office_employee_id`    INT         NOT NULL,
-    `price`                 FLOAT       NOT NULL,
-    `sent_date`             DATETIME    NOT NULL,
-    `received_date`         DATETIME    NULL,
-    `courier_id`            INT         NOT NULL,
-    `company_id`            INT         NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `fk_shipment_user1_idx` (`sender_id` ASC) VISIBLE,
-    INDEX `fk_shipment_user2_idx` (`receiver_id` ASC) VISIBLE,
-    INDEX `fk_shipment_office_employee1_idx` (`office_employee_id` ASC) VISIBLE,
-    INDEX `fk_shipment_courier1_idx` (`courier_id` ASC) VISIBLE,
-    INDEX `fk_shipment_company1_idx` (`company_id` ASC) VISIBLE,
-    CONSTRAINT `fk_shipment_user1`
-        FOREIGN KEY (`sender_id`)
-            REFERENCES `logistic_company`.`user` (`id`),
-    CONSTRAINT `fk_shipment_user2`
-        FOREIGN KEY (`receiver_id`)
-            REFERENCES `logistic_company`.`user` (`id`),
-    CONSTRAINT `fk_shipment_office_employee1`
-        FOREIGN KEY (`office_employee_id`)
-            REFERENCES `logistic_company`.`office_employee` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_shipment_courier1`
-        FOREIGN KEY (`courier_id`)
-            REFERENCES `logistic_company`.`courier` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_shipment_company1`
-        FOREIGN KEY (`company_id`)
-            REFERENCES `logistic_company`.`company` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
+    id        int not null
+        primary key,
+    office_id int not null,
+    constraint fk_office_employee_employee1
+        foreign key (id) references employee (id),
+    constraint fk_office_employee_office1
+        foreign key (office_id) references office (id)
+);
 
+create index fk_office_employee_office1_idx
+    on office_employee (office_id);
 
--- -----------------------------------------------------
--- Table `logistic_company`.`tariff`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`tariff`
+create table shipment
 (
-    `id`              INT   NOT NULL AUTO_INCREMENT,
-    `price_per_kg`    FLOAT NOT NULL,
-    `office_discount` FLOAT NOT NULL,
-    `company_id`      INT   NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `fk_tarriffs_company1_idx` (`company_id` ASC) VISIBLE,
-    UNIQUE INDEX `unique_tariff_combination` (`price_per_kg` ASC, `office_discount` ASC, `company_id` ASC) VISIBLE,
-    CONSTRAINT `fk_tarriffs_company1`
-        FOREIGN KEY (`company_id`)
-            REFERENCES `logistic_company`.`company` (`id`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
+    id                    int auto_increment
+        primary key,
+    departure_address     varchar(45) not null,
+    arrival_address       varchar(45) not null,
+    weight                float       not null,
+    sender_id             int         null,
+    receiver_id           int         null,
+    is_sent_from_office   tinyint     not null,
+    is_received_in_office tinyint     not null,
+    office_employee_id    int         null,
+    price                 float       not null,
+    sent_date             datetime    not null,
+    received_date         datetime    null,
+    courier_id            int         null,
+    company_id            int         not null,
+    constraint fk_shipment_company1
+        foreign key (company_id) references company (id),
+    constraint fk_shipment_courier1
+        foreign key (courier_id) references courier (id)
+            on delete set null,
+    constraint fk_shipment_office_employee1
+        foreign key (office_employee_id) references office_employee (id)
+            on delete set null,
+    constraint fk_shipment_user1
+        foreign key (sender_id) references user (id)
+            on delete set null,
+    constraint fk_shipment_user2
+        foreign key (receiver_id) references user (id)
+            on delete set null
+);
 
+create index fk_shipment_company1_idx
+    on shipment (company_id);
 
--- -----------------------------------------------------
--- Table `logistic_company`.`user_roles`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logistic_company`.`User_roles`
-(
-    `id`      INT         NOT NULL AUTO_INCREMENT,
-    `user_id` INT         NOT NULL,
-    `roles`   VARCHAR(45) NULL,
-    PRIMARY KEY (`id`),
-    INDEX `fk_user_roles_user1_idx` (`user_id` ASC) VISIBLE,
-    CONSTRAINT `fk_user_roles_user1`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `logistic_company`.`user` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
+create index fk_shipment_courier1_idx
+    on shipment (courier_id);
 
+create index fk_shipment_office_employee1_idx
+    on shipment (office_employee_id);
 
-SET SQL_MODE = @OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;
+create index fk_shipment_user1_idx
+    on shipment (sender_id);
+
+create index fk_shipment_user2_idx
+    on shipment (receiver_id);
+
