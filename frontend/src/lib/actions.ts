@@ -407,24 +407,24 @@ const editOrderSchema = z.object({
     arrivalAddress: z.string().trim().optional(),
     sentDate: z.date().optional(),
     receivedDate: z.date().optional(),
-    //weight: z.string().trim(),
+    weight: z.string().trim().optional(),
 });
 
-
 export const editShipment = async (
-	employeeId: number,
-	senderId: string | number | undefined,
-	receiverId: string | number | undefined,
-	courierId: string | number | undefined,
-	selectedItem: any | null,
+    employeeId: number,
+    senderId: string | number | undefined,
+    receiverId: string | number | undefined,
+    courierId: string | number | undefined,
+    selectedItem: any | null,
     users: selectorItem[],
     initialState: FormState,
     formData: FormData,
 ) => {
-	const departureAddress = formData.get('departureAddress');
-	const arrivalAddress = formData.get('arrivalAddress');
-	const sentDate = formData.get('sentDate');
+    const departureAddress = formData.get('departureAddress');
+    const arrivalAddress = formData.get('arrivalAddress');
+    const sentDate = formData.get('sentDate');
     const receivedDate = formData.get('receivedDate');
+    const weight = formData.get("weight");
 
     let foundSenderId;
     let foundReceiverId;
@@ -442,36 +442,40 @@ export const editShipment = async (
     const parsedSentDate = sentDate ? new Date(sentDate.toString()) : null;
     const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 
-    const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
-    const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
+    // TODO: check
+    // const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
+    // const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
 
     const companyId = await getCompanyId();
 
-	 const fields= {
-		id: selectedItem?.id,
-	 	departureAddress: departureAddress || selectedItem?.departureAddress,
-	 	arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
-	 	senderId: senderId || foundSenderId,
-	 	receiverId: receiverId || foundReceiverId,
-		employeeId,
-	 	sentDate: parsedSentDate || parsedOldSentDate,
-        receivedDate: parsedReceivedDate || parsedOldReceivedDate,
-	 	courierId: courierId || foundCourierId,
+    const fields= {
+        id: selectedItem?.id,
+        departureAddress: departureAddress || selectedItem?.departureAddress,
+        arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
+        weight: weight || selectedItem?.weight,
+        senderId: senderId || foundSenderId,
+        receiverId: receiverId || foundReceiverId,
+        employeeId,
+        // sentDate: parsedSentDate || parsedOldSentDate,
+        sentDate: parsedSentDate,
+        // receivedDate: parsedReceivedDate || parsedOldReceivedDate,
+        receivedDate: parsedReceivedDate,
+        courierId: courierId || foundCourierId,
         companyId,
         receivedFromOffice: selectedItem.receivedFromOffice,
         sentFromOffice: selectedItem.sentFromOffice
-	 }
+    }
 
-	const validateSchema = editOrderSchema.safeParse(fields);
+    const validateSchema = editOrderSchema.safeParse(fields);
 
-	if (!validateSchema.success ) {
-		return {
-			message: "",
-			errors: validateSchema.error.issues
-		}
-	}
+    if (!validateSchema.success ) {
+        return {
+            message: "",
+            errors: validateSchema.error.issues
+        }
+    }
 
-	try {
+    try {
         const jsession = await getCookies();
 
         const response = await axios.post('/shipments', fields, {
@@ -480,18 +484,20 @@ export const editShipment = async (
             }
         })
 
-		return {
-			message: response.data,
-			errors: '',
-		}
+        console.log(response.data)
+        return {
+            message: 'The shipment was successfully edited ',
+            errors: "",
+        }
 
-	} catch ( error ) {
+    } catch ( error ) {
         return {
             message: "",
             errors: "Something went wrong!",
         };
     }
 }
+
 
 export const deleteShipment = async (initialState: FormState, shipmentId: number) => {
     try {

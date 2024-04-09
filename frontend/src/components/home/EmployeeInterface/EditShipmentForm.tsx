@@ -5,17 +5,9 @@ import {item} from "@/components/home/Table";
 import SubmitButton from "@/components/UI/SubmitButton";
 import {useFormState} from "react-dom";
 import DataSelectorWrapper, {selectorItem} from "@/components/UI/DataSelectorWrapper";
-
-import {getSession, Session} from "@/lib/auth";
 import {editShipment, getCompanyId, getCouriers, getUsers} from "@/lib/actions";
 
-// Example usage:
-const options = [
-    {value: "Active", placeholder: "Active"},
-    {value: "Closed", placeholder: "Closed"},
-];
-
-const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number }> = ({selectedItem, employeeId}) => {
+const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onActionSuccess: (data: {  message: string; errors: string; }) => void }> = ({selectedItem, employeeId, onActionSuccess}) => {
     const [error, setError] = useState<Error | null | string>(null);
 
     const [users, setUsers] = useState<selectorItem[]>([]);
@@ -32,8 +24,13 @@ const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number }> = (
             selectedCourier?.id,
             selectedItem,
             users),
-        {message: null, errors: ''}
+        {message: '', errors: ''}
     )
+
+    useEffect(() => {
+
+        if( editShipmentState.message ) onActionSuccess(editShipmentState as {  message: string; errors: string; });
+    }, [editShipmentState]);
 
     useEffect(() => {
         const fetchDropdownData = async() => {
@@ -65,7 +62,6 @@ const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number }> = (
             case 'sender' : setSelectedSender(data); break;
             case 'receiver' : setSelectedReceiver(data); break;
             case 'courier' :  setSelectedCourier(data); break;
-           // case 'company' : setSelectedCompany(data); break;
             default: break;
         }
     }
@@ -138,14 +134,14 @@ const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number }> = (
                 />
             </div>
 
-            {/*<div className="order-div">*/}
-            {/*    <label htmlFor="weight" className="block  text-gray-500">Weight:</label>*/}
-            {/*    <input*/}
-            {/*        type='text'*/}
-            {/*        id="weight" name="weight"*/}
-            {/*        className="block text-gray-500 rounded-xl border-2 py-1.5 px-1 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line"*/}
-            {/*    />*/}
-            {/*</div>*/}
+            <div className="order-div">
+                <label htmlFor="weight" className="block  text-gray-500">Weight:</label>
+                <input
+                    type='text'
+                    id="weight" name="weight"
+                    className="block text-gray-500 rounded-xl border-2 py-1.5 px-1 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line"
+                />
+            </div>
 
             <div className='flex justify-center py-3 text-gray-500'>
                 <div className='flex justify-center py-3 text-gray-500'>

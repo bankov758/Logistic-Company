@@ -468,7 +468,7 @@ export const demoteCourier = async (initialState: FormState, userId: number) => 
     }
 }
 
-export const promoteCourierIntoEmployee = async ( userId: number, officeId: number,initialState: FormState) => {
+export const promoteCourierIntoEmployee = async ( userId: number, officeId: number, initialState: FormState) => {
 
     try {
         const jsession = await getCookies();
