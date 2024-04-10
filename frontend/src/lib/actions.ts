@@ -402,13 +402,13 @@ export const createAnOrder = async (
 	}
 }
 
-const editOrderSchema = z.object({
-    departureAddress: z.string().trim().optional(),
-    arrivalAddress: z.string().trim().optional(),
-    sentDate: z.date().optional(),
-    receivedDate: z.date().optional(),
-    weight: z.string().trim().optional(),
-});
+// const editOrderSchema = z.object({
+//     departureAddress: z.string().trim().optional(),
+//     arrivalAddress: z.string().trim().optional(),
+//     sentDate: z.date().optional(),
+//     receivedDate: z.date().optional(),
+//     weight: z.string().trim().optional(),
+// });
 
 export const editShipment = async (
     employeeId: number,
@@ -443,8 +443,8 @@ export const editShipment = async (
     const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 
     // TODO: check
-    const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
-    const parsedOldReceivedDate =  new Date(selectedItem.receivedDate?.toString());
+    const parsedOldSentDate = selectedItem.sentDate ? new Date(selectedItem.sentDate.toString()) : null;
+    const parsedOldReceivedDate =  selectedItem.receivedDate ? new Date(selectedItem.receivedDate.toString()) : null;
 
     const companyId = await getCompanyId();
 
@@ -466,19 +466,19 @@ export const editShipment = async (
         sentFromOffice: selectedItem.sentFromOffice
     }
 
-    const validateSchema = editOrderSchema.safeParse(fields);
+    // const validateSchema = editOrderSchema.safeParse(fields);
 
-    if (!validateSchema.success ) {
-        return {
-            message: "",
-            errors: validateSchema.error.issues
-        }
-    }
+    // if (!validateSchema.success ) {
+    //     return {
+    //         message: "",
+    //         errors: validateSchema.error.issues
+    //     }
+    // }
 
     try {
         const jsession = await getCookies();
 
-        await axios.post('/shipments', fields, {
+        await axios.put('/shipments', fields, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
