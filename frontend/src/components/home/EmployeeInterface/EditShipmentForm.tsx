@@ -23,7 +23,8 @@ const EditShipmentForm: React.FC<{ selectedItem: item, employeeId: number; onAct
             selectedReceiver?.id,
             selectedCourier?.id,
             selectedItem,
-            users),
+            users
+        ),
         {message: '', errors: ''}
     )
 

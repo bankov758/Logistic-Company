@@ -92,7 +92,6 @@ const AdminInterface: React.FC = () => {
             });
     }, [searchedUsername])
 
-
     useEffect(() => {
         getSession()
             .then( async (response) => {

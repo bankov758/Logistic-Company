@@ -456,8 +456,8 @@ export const editShipment = async (
         senderId: senderId ?? foundSenderId,
         receiverId: receiverId ?? foundReceiverId,
         employeeId,
-         sentDate: parsedSentDate ?? parsedOldSentDate,
-       // sentDate: parsedSentDate,
+        sentDate: parsedSentDate ?? parsedOldSentDate,
+        //sentDate: parsedSentDate,
         receivedDate: parsedReceivedDate ?? parsedOldReceivedDate,
         //receivedDate: parsedReceivedDate,
         courierId: courierId ?? foundCourierId,
@@ -478,15 +478,14 @@ export const editShipment = async (
     try {
         const jsession = await getCookies();
 
-        const response = await axios.post('/shipments', fields, {
+        await axios.post('/shipments', fields, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
         })
 
-        console.log(response.data)
         return {
-            message: 'The shipment was successfully edited ',
+            message: 'The shipment was successfully edited!',
             errors: "",
         }
 
