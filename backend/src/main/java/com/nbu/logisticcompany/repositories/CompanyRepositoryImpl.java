@@ -21,6 +21,24 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
         super(Company.class, sessionFactory);
     }
 
+    @Override
+    public void delete(int id) {
+        super.delete(id);
+        deleteRolesOfCompanyEmployees(id);
+    }
+
+    private void deleteRolesOfCompanyEmployees(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            session.getTransaction().begin();
+            session.createSQLQuery(" delete from user_roles " +
+                            " where id in (select id from employee where company_id = :id) " +
+                            " and roles in ('EMPLOYEE', 'ADMIN') ")
+                    .setParameter("id", id)
+                    .executeUpdate();
+            session.getTransaction().commit();
+        }
+    }
+
     /**
      * Retrieves the income of a company within a specified period.
      *
@@ -43,6 +61,7 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
                     .setParameter("companyId", companyId).getResultList();
         }
     }
+
     /**
      * Retrieves employees of a company.
      *
@@ -61,6 +80,7 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
                     .getResultList();
         }
     }
+
     /**
      * Retrieves clients associated with a company.
      *
@@ -82,6 +102,7 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
                     .getResultList();
         }
     }
+
     public List<CompanyCouriersDto> getCompanyCouriers(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(
