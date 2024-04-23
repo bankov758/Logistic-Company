@@ -76,5 +76,11 @@ Serves for the management of processes in a logistics company. The main activity
 # <p id="application-pictures">Application Pictures</p>
 
 ## Desktop
+![client_interface](https://github.com/bankov758/logistic-company/assets/80749603/eb50aa4b-6dac-411a-a05c-fe57f10bc660)
+![skeleton_loading](https://github.com/bankov758/logistic-company/assets/80749603/f855486f-cae2-4db0-a2ee-2d4068c49556)
+![employee_interface](https://github.com/bankov758/logistic-company/assets/80749603/fe038289-87a8-4bcd-8218-89d105281224)
+![create_shippment](https://github.com/bankov758/logistic-company/assets/80749603/dc8d5e15-0afd-4d61-aea2-3fd0a14a45ff)
+![edit_shippment](https://github.com/bankov758/logistic-company/assets/80749603/1e477dfc-3bf0-4c2a-83b5-0fb295c6bf23)
+![self_deletion](https://github.com/bankov758/logistic-company/assets/80749603/eef4c424-fb8e-4cfd-824f-e6678f7aa27c)
+![admin_interface](https://github.com/bankov758/logistic-company/assets/80749603/ec2e80c0-5500-4003-aafc-bc232996e5f3)
 
-## Mobile
