@@ -129,7 +129,7 @@ const AdminInterface: React.FC = () => {
         await getAndSetCompanies()
     }
 
-    const onSuccessCompanyOrOfficeAction = async () => {
+    const onSuccessCompanyOrOfficeActionOrTariff = async () => {
         setShowCompanyInfoDialog(false);
         setSelectedCompany(null);
         await getAndSetCompanies();
@@ -217,9 +217,10 @@ const AdminInterface: React.FC = () => {
                     <ShowCompanyInfo
                         companyData={companies}
                         selectedCompany={selectedCompany}
-                        onSuccessDelete={onSuccessCompanyOrOfficeAction}
-                        onSuccessEdit={onSuccessCompanyOrOfficeAction}
-                        onSuccessAddOffice={onSuccessCompanyOrOfficeAction}
+                        onSuccessDelete={onSuccessCompanyOrOfficeActionOrTariff}
+                        onSuccessEdit={onSuccessCompanyOrOfficeActionOrTariff}
+                        onSuccessAddOffice={onSuccessCompanyOrOfficeActionOrTariff}
+                        onSuccessAddTariff={onSuccessCompanyOrOfficeActionOrTariff}
                     />
                 </BaseDialog>
             )

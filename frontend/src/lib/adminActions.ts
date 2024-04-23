@@ -118,7 +118,7 @@ export const addTariff = async (companyId: number, pricePerKG: number, officeDis
         });
 
         return {
-            message: "Tariff was successfully added! ",
+            message: "Tariff was successfully added!",
             errors: ""
         }
     } catch (error) {

@@ -43,7 +43,7 @@ const MakeEmployeeForm:React.FC<{actionFunction: (userId: number, officeId: numb
     return <>
         <form action={makeCourierAction}>
             <h4 className="flex justify-center p-4">Choose witch office you would like the courier to work in:</h4>
-            <div className="order-div ">
+            <div className="order-div">
                 <label className="block font-bold ">Office:</label>
                 {offices &&
                     <DataSelectorWrapper
@@ -53,9 +53,7 @@ const MakeEmployeeForm:React.FC<{actionFunction: (userId: number, officeId: numb
                         onResubForNewData={(data) => setSelectedOffice(data)}
                     />
                 }
-                <SubmitButton formState={makeCourierState}>
-
-                </SubmitButton>
+                <SubmitButton formState={makeCourierState} />
             </div>
         </form>
     </>

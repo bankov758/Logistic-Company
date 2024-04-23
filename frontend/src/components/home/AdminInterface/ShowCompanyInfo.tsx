@@ -10,13 +10,15 @@ type ShowCompanyInfoProps = {
     onSuccessDelete: () => void,
     onSuccessEdit: () => void,
     onSuccessAddOffice: () => void
+    onSuccessAddTariff: () => void
 };
 
 const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
     selectedCompany,
     onSuccessDelete,
     onSuccessEdit,
-    onSuccessAddOffice
+    onSuccessAddOffice,
+    onSuccessAddTariff
 }) => {
     const [updatedCompanyName, setUpdatedCompanyName] = useState('');
     const [officeLocation, setOfficeLocation] = useState('');
@@ -42,7 +44,11 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
             onSuccessAddOffice()
         }
 
-    }, [deleteCompanyState, editCompanyCompanyState, addOfficeState, onSuccessDelete, onSuccessEdit, onSuccessAddOffice]);
+        if( addTariffState.message ) {
+            onSuccessAddTariff()
+        }
+
+    }, [deleteCompanyState, editCompanyCompanyState, addOfficeState, addTariffState, onSuccessDelete, onSuccessEdit, onSuccessAddOffice, onSuccessAddTariff]);
 
     return (
         <>
