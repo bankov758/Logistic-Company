@@ -160,11 +160,10 @@ export const promoteUserIntoEmployee = async (userId: number, officeId: number, 
     try {
         const jsession = await getCookies();
 
-        await axios.put(`/users/${userId}/make-office-employee/${officeId}`, {
+        await axios.put(`/users/${userId}/make-office-employee/${officeId}`, {},{
             headers: {
-                Cookie: `JSESSIONID=${jsession}`
+                Cookie: `JSESSIONID=${jsession?.value}`
             },
-
         });
 
         return {
@@ -184,28 +183,41 @@ export const promoteUserIntoCourier = async (userId: number, companyId: number, 
     try {
         const jsession = await getCookies();
 
-        await axios.put(`/users/${userId}/make-courier/${companyId}`,{},{
-            headers: {
-                Cookie: `JSESSIONID=${jsession}`
-            },
-        });
+        console.log(userId);
 
-        return {
-            message: "User was successfully promoted into courier! ",
-            errors: ""
+        if(userId) {
+            console.log("promote user: : " );
+            console.log(userId);
+            console.log(companyId);
+            console.log("show error: ")
+
+
+            await axios.put(`/users/${userId}/make-courier/${companyId}`,{},{
+                headers: {
+                    Cookie: `JSESSIONID=${jsession?.value}`
+                },
+            });
+
+            return {
+                message: "User was successfully promoted into courier! ",
+                errors: ""
+            }
+        } else {
+            return {
+                message: "",
+                errors: "Please wait a second",
+            }
         }
-
     } catch (error) {
         // Handle non-Axios errors
+        console.log(error);
         if (error instanceof Error) {
             return {
                 message: "",
                 errors: error.message || "Something went wrong!",
             };
-
         }
         // Check if it's an Axios error with a modified structure
-
         if( error && typeof error === 'object' && "status" in error && "message" in error && typeof error.message === "string" ) {
             return {
                 message: "",
