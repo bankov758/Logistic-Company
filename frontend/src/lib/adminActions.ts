@@ -395,7 +395,7 @@ export const deleteOffice = async (initialState: FormState, officeId: number)=> 
     try {
         const jsession = await getCookies();
 
-        await axios.delete(`/office/${officeId}`,{
+        await axios.delete(`/offices/${officeId}`,{
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
