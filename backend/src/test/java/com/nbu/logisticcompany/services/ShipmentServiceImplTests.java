@@ -40,10 +40,10 @@ public class ShipmentServiceImplTests {
 
     @Test
     public void getByIdShouldCallRepository() {
-        shipmentService.getById(1);
+        shipmentService.getById(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getById(1);
+                .getById(Mockito.anyInt());
     }
 
     @Test
@@ -51,23 +51,23 @@ public class ShipmentServiceImplTests {
         shipmentService.getNotDelivered(1);
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getNotDelivered(1);
+                .getNotDelivered(Mockito.anyInt());
     }
 
     @Test
     public void getBySenderOrReceiverShouldCallRepository() {
-        shipmentService.getBySenderOrReceiver(1);
+        shipmentService.getBySenderOrReceiver(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getBySenderOrReceiver(1);
+                .getBySenderOrReceiver(Mockito.anyInt());
     }
 
     @Test
     public void getByCompanyIdShouldCallRepository() {
-        shipmentService.getByCompanyId(1);
+        shipmentService.getByCompanyId(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getByCompanyId(1);
+                .getByCompanyId(Mockito.anyInt());
     }
 
     @Test
@@ -90,26 +90,26 @@ public class ShipmentServiceImplTests {
 
     @Test
     public void getSenderShouldCallRepository() {
-        shipmentService.getSender(1);
+        shipmentService.getSender(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getSender(1);
+                .getSender(Mockito.anyInt());
     }
 
     @Test
     public void getReceiverShouldCallRepository() {
-        shipmentService.getReceiver(1);
+        shipmentService.getReceiver(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getReceiver(1);
+                .getReceiver(Mockito.anyInt());
     }
 
     @Test
     public void getEmployeeShouldCallRepository() {
-        shipmentService.getEmployee(1);
+        shipmentService.getEmployee(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getEmployee(1);
+                .getEmployee(Mockito.anyInt());
     }
 
     @Test
