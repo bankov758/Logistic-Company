@@ -5,10 +5,10 @@ import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
-import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
+import com.nbu.logisticcompany.utils.DataUtil;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,53 +19,27 @@ import java.util.Optional;
 @Service
 public class ShipmentServiceImpl implements ShipmentService {
 
+    public static final String COURIER_COMPANY_DOES_NOT_MATCH = "Shipment and courier companies do not match";
+    public static final String OFFICE_EMPLOYEE_COMPANY_DOES_NOT_MATCH = "Shipment and office employee companies do not match";
+    private static final int DEFAULT_PRICE_PER_KG = 1;
+
     private final ShipmentRepository shipmentRepository;
     private final TariffsService tariffsService;
     private final ValidationUtil validationUtil;
     private final OfficeService officeService;
-    private final CourierService courierService;
-
-    private static final int DEFAULT_PRICE_PER_KG = 1;
 
     @Autowired
     public ShipmentServiceImpl(ShipmentRepository shipmentRepository, TariffsService tariffsService,
-                               ValidationUtil validationUtil, OfficeService officeService,
-                               CourierService courierService) {
+                               ValidationUtil validationUtil, OfficeService officeService) {
         this.shipmentRepository = shipmentRepository;
         this.tariffsService = tariffsService;
         this.validationUtil = validationUtil;
         this.officeService = officeService;
-        this.courierService = courierService;
     }
 
     @Override
     public Shipment getById(int id) {
         return shipmentRepository.getById(id);
-    }
-
-    @Override
-    public Shipment getByDepartureAddress(String departureAddress) {
-        return shipmentRepository.getByField("departureAddress", departureAddress);
-    }
-
-    @Override
-    public Shipment getByArrivalAddress(String arrivalAddress) {
-        return shipmentRepository.getByField("arrivalAddress", arrivalAddress);
-    }
-
-    @Override
-    public Shipment getBySenderId(int senderId) {
-        return shipmentRepository.getBySenderId(senderId);
-    }
-
-    @Override
-    public Shipment getByReceiverId(int receiverId) {
-        return shipmentRepository.getByReceiverId(receiverId);
-    }
-
-    @Override
-    public Shipment getByEmployeeId(int employeeId) {
-        return shipmentRepository.getByEmployeeId(employeeId);
     }
 
     @Override
@@ -117,11 +91,12 @@ public class ShipmentServiceImpl implements ShipmentService {
         applyTariff(shipment);
         shipmentRepository.create(shipment);
     }
+
     /**
      * Updates a shipment with new details after authorization and validations.
      *
      * @param shipmentToUpdate The shipment entity with updated details.
-     * @param updater The user performing the update operation.
+     * @param updater          The user performing the update operation.
      * @throws UnauthorizedOperationException If the updater is not authorized.
      */
     @Override
@@ -132,12 +107,13 @@ public class ShipmentServiceImpl implements ShipmentService {
         applyTariff(shipmentToUpdate);
         shipmentRepository.update(shipmentToUpdate);
     }
+
     /**
      * Deletes a shipment by its ID after ensuring the user has the necessary authorization.
      *
      * @param shipmentId The ID of the shipment to be deleted.
-     * @param destroyer The user attempting the deletion.
-     * @throws EntityNotFoundException If no shipment is found with the given ID.
+     * @param destroyer  The user attempting the deletion.
+     * @throws EntityNotFoundException        If no shipment is found with the given ID.
      * @throws UnauthorizedOperationException If the destroyer lacks authorization.
      */
     @Override
@@ -153,17 +129,18 @@ public class ShipmentServiceImpl implements ShipmentService {
      * @param shipment The shipment to validate.
      * @throws InvalidDataException If there's a mismatch in company IDs among the shipment, courier, or office employee.
      */
-    private void validateCompany(Shipment shipment) {
+    protected void validateCompany(Shipment shipment) {
         int shipmentCompanyId = shipment.getCompany().getId();
         Courier courier = shipment.getCourier();
         int officeEmployeeCompanyId = shipment.getEmployee().getCompany().getId();
-        if (courier == null || shipmentCompanyId != courier.getCompany().getId()) {
-            throw new InvalidDataException("Shipment and courier companies do not match");
+        if (shipmentCompanyId != courier.getCompany().getId()) {
+            throw new InvalidDataException(COURIER_COMPANY_DOES_NOT_MATCH);
         }
         if (shipmentCompanyId != officeEmployeeCompanyId) {
-            throw new InvalidDataException("Shipment and office employee companies do not match");
+            throw new InvalidDataException(OFFICE_EMPLOYEE_COMPANY_DOES_NOT_MATCH);
         }
     }
+
     /**
      * Calculates and applies the tariff to a shipment based on its weight and office pick-up/delivery status.
      * If the shipment is either sent or received from an office it gives 10% discount, if both -> 20%
@@ -171,17 +148,18 @@ public class ShipmentServiceImpl implements ShipmentService {
      *
      * @param shipment The shipment to apply the tariff to.
      */
-    private void applyTariff(Shipment shipment) {
+    protected void applyTariff(Shipment shipment) {
         Tariff tariff = tariffsService.getByCompany(shipment.getCompany().getId());
         double shipmentPrice = shipment.getWeight() * DEFAULT_PRICE_PER_KG;
-        if (tariff != null){
+        if (tariff != null) {
             double discountMultiplier = 1;
             if (shipment.isSentFromOffice() && shipment.isReceivedFromOffice()) {
-                discountMultiplier = 2 * (tariff.getOfficeDiscount() / 100);
+                discountMultiplier = DataUtil.getPrecision2Double(2 * (tariff.getOfficeDiscount() / 100));
             } else if (shipment.isSentFromOffice() || shipment.isReceivedFromOffice()) {
-                discountMultiplier = tariff.getOfficeDiscount() / 100;
+                discountMultiplier = DataUtil.getPrecision2Double(tariff.getOfficeDiscount() / 100);
             }
-            shipmentPrice = shipment.getWeight() * tariff.getPricePerKG() - shipment.getWeight() * tariff.getPricePerKG() * discountMultiplier;
+            float pricePerKg = tariff.getPricePerKG() == 0 ? DEFAULT_PRICE_PER_KG : tariff.getPricePerKG();
+            shipmentPrice = shipment.getWeight() * pricePerKg - shipment.getWeight() * pricePerKg * discountMultiplier;
         }
         shipment.setPrice(shipmentPrice);
     }
@@ -193,19 +171,19 @@ public class ShipmentServiceImpl implements ShipmentService {
      *
      * @param shipment The shipment to check and update.
      */
-    private void populateOfficeAddresses(Shipment shipment) {
+    protected void populateOfficeAddresses(Shipment shipment) {
         Company company = shipment.getCompany();
         if (shipment.getDepartureAddress() != null) {
             List<Office> offices = officeService.filter(Optional.of(shipment.getDepartureAddress()),
                     Optional.of(company.getId()), Optional.empty());
-            if (ValidationUtil.isNotEmpty(offices)) {
+            if (DataUtil.isNotEmpty(offices)) {
                 shipment.setSentFromOffice(true);
             }
         }
         if (shipment.getArrivalAddress() != null) {
             List<Office> offices = officeService.filter(Optional.of(shipment.getArrivalAddress()),
                     Optional.of(company.getId()), Optional.empty());
-            if (ValidationUtil.isNotEmpty(offices)) {
+            if (DataUtil.isNotEmpty(offices)) {
                 shipment.setReceivedFromOffice(true);
             }
         }

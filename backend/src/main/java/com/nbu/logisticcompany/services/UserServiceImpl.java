@@ -10,6 +10,7 @@ import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.repositories.interfaces.UserRepository;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import com.nbu.logisticcompany.utils.Action;
+import com.nbu.logisticcompany.utils.DataUtil;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -189,7 +190,7 @@ public class UserServiceImpl implements UserService {
      * @throws InvalidDataException if the specified role is invalid.
      */
     private void validateRoleUpdate(String role, User updater) {
-        if (ValidationUtil.isNotEmpty(updater.getRoles()) && !updater.getRoles().contains(Role.ADMIN)) {
+        if (DataUtil.isNotEmpty(updater.getRoles()) && !updater.getRoles().contains(Role.ADMIN)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_ROLE_UPDATE);
         }
         if (Arrays.stream(Role.values()).noneMatch(value -> value.toString().equals(role))) {

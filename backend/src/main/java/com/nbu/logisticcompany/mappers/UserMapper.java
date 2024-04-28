@@ -5,7 +5,7 @@ import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserRegisterDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.UserService;
-import com.nbu.logisticcompany.utils.ValidationUtil;
+import com.nbu.logisticcompany.utils.DataUtil;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class UserMapper {
         user.setId(userDto.getId());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
-        if (ValidationUtil.isNotEmpty(userDto.getNewPassword())) {
+        if (DataUtil.isNotEmpty(userDto.getNewPassword())) {
             user.setPassword(userDto.getNewPassword());
         }
     }

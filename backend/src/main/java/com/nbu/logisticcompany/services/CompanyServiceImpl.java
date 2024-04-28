@@ -1,10 +1,11 @@
 package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
-import com.nbu.logisticcompany.entities.dtos.user.*;
+import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
+import com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto;
+import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
@@ -12,7 +13,6 @@ import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.nbu.logisticcompany.entities.dtos.shipment;
 
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class ShipmentCreateDto {
 
@@ -12,6 +12,7 @@ public class ShipmentCreateDto {
     private int receiverId;
     private int employeeId;
     private LocalDate sentDate;
+    @Positive
     private int courierId;
     private int companyId;
 
