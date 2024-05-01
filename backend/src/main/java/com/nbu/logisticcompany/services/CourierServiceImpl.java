@@ -4,11 +4,9 @@ import com.nbu.logisticcompany.entities.Courier;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
-import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +32,6 @@ public class CourierServiceImpl implements CourierService {
     @Override
     public Courier getById(int id) {
         return courierRepository.getById(id);
-    }
-
-    @Override
-    public Courier getByUsername(String username) {
-        return courierRepository.getByField("username", username);
     }
 
     @Override
