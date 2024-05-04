@@ -20,8 +20,12 @@ public class UserMockData {
     }
 
     public static OfficeEmployee createMockOfficeEmployee() {
+        return createMockOfficeEmployee(new Company(1, "Test Company"));
+    }
+
+    public static OfficeEmployee createMockOfficeEmployee(Company company) {
         OfficeEmployee officeEmployee = new OfficeEmployee();
-        officeEmployee.setCompany(new Company(1, "Test Company"));
+        officeEmployee.setCompany(company);
         officeEmployee.setRoles(Set.of(Role.EMPLOYEE));
         return officeEmployee;
     }

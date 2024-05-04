@@ -26,9 +26,9 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
     private final CourierRepository courierRepository;
 
     @Autowired
-    public OfficeEmployeeServiceImpl(OfficeEmployeeRepository officeEmployeeRepository, CourierRepository _courierRepository) {
+    public OfficeEmployeeServiceImpl(OfficeEmployeeRepository officeEmployeeRepository, CourierRepository courierRepository) {
         this.officeEmployeeRepository = officeEmployeeRepository;
-        courierRepository = _courierRepository;
+        this.courierRepository = courierRepository;
     }
 
     @Override
