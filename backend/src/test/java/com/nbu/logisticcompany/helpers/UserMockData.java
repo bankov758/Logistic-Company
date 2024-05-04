@@ -6,6 +6,10 @@ import java.util.Set;
 
 public class UserMockData {
 
+    public static User createMockAdmin() {
+        return createMockUser(Role.ADMIN);
+    }
+
     public static User createMockUser(Role role) {
         User user = new Employee();
         user.setRoles(Set.of(role));

@@ -153,12 +153,12 @@ class OfficeEmployeeServiceImplTests {
         Mockito.when(courierRepository.isAlreadyCourier(Mockito.anyInt())).thenReturn(true);
 
         Assertions.assertThrows(DuplicateEntityException.class,
-                                () -> officeEmployeeService.makeCourier(1, UserMockData.createMockUser(Role.ADMIN)));
+                                () -> officeEmployeeService.makeCourier(1, UserMockData.createMockAdmin()));
     }
 
     @Test
     void makeCourierShouldCallRemoveUserFromOfficeEmployee() {
-        officeEmployeeService.makeCourier(1, UserMockData.createMockUser(Role.ADMIN));
+        officeEmployeeService.makeCourier(1, UserMockData.createMockAdmin());
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
             .removeUserFromOfficeEmployees(Mockito.anyInt());
@@ -166,7 +166,7 @@ class OfficeEmployeeServiceImplTests {
 
     @Test
     void makeOfficeEmployeeShouldCallRepository() {
-        officeEmployeeService.makeCourier(1, UserMockData.createMockUser(Role.ADMIN));
+        officeEmployeeService.makeCourier(1, UserMockData.createMockAdmin());
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
             .makeCourier(Mockito.anyInt());

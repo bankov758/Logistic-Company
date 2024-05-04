@@ -18,6 +18,14 @@ public class Office {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    public Office() {}
+
+    public Office(int id, String address, Company company) {
+        this.id = id;
+        this.address = address;
+        this.company = company;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -41,4 +49,5 @@ public class Office {
     public void setCompany(Company company) {
         this.company = company;
     }
+
 }

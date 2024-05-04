@@ -24,7 +24,7 @@ import static com.nbu.logisticcompany.services.ShipmentServiceImpl.COURIER_COMPA
 import static com.nbu.logisticcompany.services.ShipmentServiceImpl.OFFICE_EMPLOYEE_COMPANY_DOES_NOT_MATCH;
 
 @ExtendWith(MockitoExtension.class)
-public class ShipmentServiceImplTests {
+class ShipmentServiceImplTests {
 
     @Mock
     ShipmentRepository shipmentRepository;
@@ -39,81 +39,81 @@ public class ShipmentServiceImplTests {
     ShipmentServiceImpl shipmentService;
 
     @Test
-    public void getByIdShouldCallRepository() {
+    void getByIdShouldCallRepository() {
         shipmentService.getById(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getById(Mockito.anyInt());
+            .getById(Mockito.anyInt());
     }
 
     @Test
-    public void getNotDeliveredShouldCallRepository() {
+    void getNotDeliveredShouldCallRepository() {
         shipmentService.getNotDelivered(1);
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getNotDelivered(Mockito.anyInt());
+            .getNotDelivered(Mockito.anyInt());
     }
 
     @Test
-    public void getBySenderOrReceiverShouldCallRepository() {
+    void getBySenderOrReceiverShouldCallRepository() {
         shipmentService.getBySenderOrReceiver(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getBySenderOrReceiver(Mockito.anyInt());
+            .getBySenderOrReceiver(Mockito.anyInt());
     }
 
     @Test
-    public void getByCompanyIdShouldCallRepository() {
+    void getByCompanyIdShouldCallRepository() {
         shipmentService.getByCompanyId(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getByCompanyId(Mockito.anyInt());
+            .getByCompanyId(Mockito.anyInt());
     }
 
     @Test
-    public void filterShouldCallRepository() {
+    void filterShouldCallRepository() {
         shipmentService.filter(Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty());
+                               Optional.empty(), Optional.empty());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .filter(Optional.empty(), Optional.empty(),
-                        Optional.empty(), Optional.empty());
+            .filter(Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty());
     }
 
     @Test
-    public void getAllShouldCallRepository() {
+    void getAllShouldCallRepository() {
         shipmentService.getAll();
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getAll();
+            .getAll();
     }
 
     @Test
-    public void getSenderShouldCallRepository() {
+    void getSenderShouldCallRepository() {
         shipmentService.getSender(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getSender(Mockito.anyInt());
+            .getSender(Mockito.anyInt());
     }
 
     @Test
-    public void getReceiverShouldCallRepository() {
+    void getReceiverShouldCallRepository() {
         shipmentService.getReceiver(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getReceiver(Mockito.anyInt());
+            .getReceiver(Mockito.anyInt());
     }
 
     @Test
-    public void getEmployeeShouldCallRepository() {
+    void getEmployeeShouldCallRepository() {
         shipmentService.getEmployee(Mockito.anyInt());
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .getEmployee(Mockito.anyInt());
+            .getEmployee(Mockito.anyInt());
     }
 
     @Test
-    public void createShouldCallRepository() {
+    void createShouldCallRepository() {
         User creator = UserMockData.createMockEmployee();
         Shipment mockShipment = ShipmentMockData.createShipment();
         mockShipment.setEmployee(UserMockData.createMockOfficeEmployee());
@@ -122,24 +122,24 @@ public class ShipmentServiceImplTests {
         shipmentService.create(mockShipment, creator);
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .create(mockShipment);
+            .create(mockShipment);
     }
 
     @Test
-    public void createShouldCallAuthorizeOfficeEmployeeAction() {
+    void createShouldCallAuthorizeOfficeEmployeeAction() {
         User creator = UserMockData.createMockEmployee();
         Shipment mockShipment = ShipmentMockData.createShipment();
         mockShipment.setEmployee(UserMockData.createMockOfficeEmployee());
         mockShipment.setCourier(UserMockData.createMockCourier());
 
-        shipmentService.create(mockShipment,creator);
+        shipmentService.create(mockShipment, creator);
 
         Mockito.verify(validationUtil, Mockito.times(1))
-                .authorizeOfficeEmployeeAction(mockShipment.getCompany().getId(), creator, Shipment.class);
+            .authorizeOfficeEmployeeAction(mockShipment.getCompany().getId(), creator, Shipment.class);
     }
 
     @Test
-    public void updateShouldCallRepository() {
+    void updateShouldCallRepository() {
         User updater = UserMockData.createMockEmployee();
         Shipment mockShipment = ShipmentMockData.createShipment();
         mockShipment.setEmployee(UserMockData.createMockOfficeEmployee());
@@ -148,11 +148,11 @@ public class ShipmentServiceImplTests {
         shipmentService.update(mockShipment, updater);
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .update(mockShipment);
+            .update(mockShipment);
     }
 
     @Test
-    public void updateShouldCallAuthorizeOfficeEmployeeAction() {
+    void updateShouldCallAuthorizeOfficeEmployeeAction() {
         User updater = UserMockData.createMockEmployee();
         Shipment mockShipment = ShipmentMockData.createShipment();
         mockShipment.setEmployee(UserMockData.createMockOfficeEmployee());
@@ -161,11 +161,11 @@ public class ShipmentServiceImplTests {
         shipmentService.update(mockShipment, updater);
 
         Mockito.verify(validationUtil, Mockito.times(1))
-                .authorizeOfficeEmployeeAction(mockShipment.getCompany().getId(), updater, Shipment.class);
+            .authorizeOfficeEmployeeAction(mockShipment.getCompany().getId(), updater, Shipment.class);
     }
 
     @Test
-    public void deleteShouldCallRepository() {
+    void deleteShouldCallRepository() {
         User destroyer = UserMockData.createMockEmployee();
         Shipment mockShipment = ShipmentMockData.createShipment();
         Mockito.when(shipmentService.getById(mockShipment.getId())).thenReturn(mockShipment);
@@ -173,11 +173,11 @@ public class ShipmentServiceImplTests {
         shipmentService.delete(mockShipment.getId(), destroyer);
 
         Mockito.verify(shipmentRepository, Mockito.times(1))
-                .delete(mockShipment.getId());
+            .delete(mockShipment.getId());
     }
 
     @Test
-    public void deleteShouldCallAuthorizeOfficeEmployeeAction() {
+    void deleteShouldCallAuthorizeOfficeEmployeeAction() {
         User destroyer = UserMockData.createMockEmployee();
         Shipment mockShipment = ShipmentMockData.createShipment();
         Mockito.when(shipmentService.getById(mockShipment.getId())).thenReturn(mockShipment);
@@ -185,11 +185,11 @@ public class ShipmentServiceImplTests {
         shipmentService.delete(mockShipment.getId(), destroyer);
 
         Mockito.verify(validationUtil, Mockito.times(1))
-                .authorizeOfficeEmployeeAction(mockShipment.getCompany().getId(), destroyer, Shipment.class);
+            .authorizeOfficeEmployeeAction(mockShipment.getCompany().getId(), destroyer, Shipment.class);
     }
 
     @Test
-    public void applyTariffIfShipmentSentFromOffice() {
+    void applyTariffIfShipmentSentFromOffice() {
         Tariff tariff = new Tariff();
         tariff.setOfficeDiscount(20);
         Shipment mockShipment = ShipmentMockData.createShipment();
@@ -203,7 +203,7 @@ public class ShipmentServiceImplTests {
     }
 
     @Test
-    public void applyTariffIfShipmentSentAndReceivedFromOffice() {
+    void applyTariffIfShipmentSentAndReceivedFromOffice() {
         Tariff tariff = new Tariff();
         tariff.setOfficeDiscount(20);
         Shipment mockShipment = ShipmentMockData.createShipment();
@@ -218,7 +218,7 @@ public class ShipmentServiceImplTests {
     }
 
     @Test
-    public void applyTariffWithNonDefaultPricePerKgOffice() {
+    void applyTariffWithNonDefaultPricePerKgOffice() {
         Tariff tariff = new Tariff();
         tariff.setOfficeDiscount(20);
         tariff.setPricePerKG(5);
@@ -233,7 +233,7 @@ public class ShipmentServiceImplTests {
     }
 
     @Test
-    public void applyDefaultPricePerKgWhenTariffNotAvailable() {
+    void applyDefaultPricePerKgWhenTariffNotAvailable() {
         Shipment mockShipment = ShipmentMockData.createShipment();
         mockShipment.setSentFromOffice(true);
         mockShipment.setWeight(1000);
@@ -244,15 +244,15 @@ public class ShipmentServiceImplTests {
     }
 
     @Test
-    public void populateOfficeAddressesShouldRaiseSentFromOfficeFlag() {
+    void populateOfficeAddressesShouldRaiseSentFromOfficeFlag() {
         Shipment mockShipment = ShipmentMockData.createShipment();
         Office departureOffice = OfficeMockData.createOffice();
         mockShipment.setDepartureAddress(departureOffice.getAddress());
         Mockito.when(officeService.filter(
-                        Optional.of(mockShipment.getDepartureAddress()),
-                        Optional.of(mockShipment.getCompany().getId()),
-                        Optional.empty()))
-                .thenReturn(Collections.singletonList(departureOffice));
+                Optional.of(mockShipment.getDepartureAddress()),
+                Optional.of(mockShipment.getCompany().getId()),
+                Optional.empty()))
+            .thenReturn(Collections.singletonList(departureOffice));
 
         shipmentService.populateOfficeAddresses(mockShipment);
 
@@ -260,15 +260,15 @@ public class ShipmentServiceImplTests {
     }
 
     @Test
-    public void populateOfficeAddressesShouldRaiseReceivedFromOfficeFlag() {
+    void populateOfficeAddressesShouldRaiseReceivedFromOfficeFlag() {
         Shipment mockShipment = ShipmentMockData.createShipment();
         Office arrivalOffice = OfficeMockData.createOffice();
         mockShipment.setArrivalAddress(arrivalOffice.getAddress());
         Mockito.when(officeService.filter(
-                        Optional.of(mockShipment.getArrivalAddress()),
-                        Optional.of(mockShipment.getCompany().getId()),
-                        Optional.empty()))
-                .thenReturn(Collections.singletonList(arrivalOffice));
+                Optional.of(mockShipment.getArrivalAddress()),
+                Optional.of(mockShipment.getCompany().getId()),
+                Optional.empty()))
+            .thenReturn(Collections.singletonList(arrivalOffice));
 
         shipmentService.populateOfficeAddresses(mockShipment);
 
@@ -276,7 +276,7 @@ public class ShipmentServiceImplTests {
     }
 
     @Test
-    public void validateCompanyShouldThrowWhenCourierCompanyDoesNotMatchShipment() {
+    void validateCompanyShouldThrowWhenCourierCompanyDoesNotMatchShipment() {
         Shipment mockShipment = ShipmentMockData.createShipment();
         Courier mockCourier = UserMockData.createMockCourier();
         OfficeEmployee employee = UserMockData.createMockOfficeEmployee();
@@ -285,12 +285,12 @@ public class ShipmentServiceImplTests {
         mockShipment.setEmployee(employee);
 
         Assertions.assertThrowsExactly(InvalidDataException.class,
-                () -> shipmentService.validateCompany(mockShipment),
-                COURIER_COMPANY_DOES_NOT_MATCH);
+                                       () -> shipmentService.validateCompany(mockShipment),
+                                       COURIER_COMPANY_DOES_NOT_MATCH);
     }
 
     @Test
-    public void validateCompanyShouldThrowWhenOfficeEmployeeCompanyDoesNotMatchShipment() {
+    void validateCompanyShouldThrowWhenOfficeEmployeeCompanyDoesNotMatchShipment() {
         Shipment mockShipment = ShipmentMockData.createShipment();
         Courier mockCourier = UserMockData.createMockCourier();
         OfficeEmployee employee = UserMockData.createMockOfficeEmployee();
@@ -299,12 +299,12 @@ public class ShipmentServiceImplTests {
         mockShipment.setEmployee(employee);
 
         Assertions.assertThrowsExactly(InvalidDataException.class,
-                () -> shipmentService.validateCompany(mockShipment),
-                OFFICE_EMPLOYEE_COMPANY_DOES_NOT_MATCH);
+                                       () -> shipmentService.validateCompany(mockShipment),
+                                       OFFICE_EMPLOYEE_COMPANY_DOES_NOT_MATCH);
     }
 
     @Test
-    public void validateCompanyShouldNotThrowWhenAllCompaniesMatch() {
+    void validateCompanyShouldNotThrowWhenAllCompaniesMatch() {
         Shipment mockShipment = ShipmentMockData.createShipment();
         Courier mockCourier = UserMockData.createMockCourier();
         OfficeEmployee employee = UserMockData.createMockOfficeEmployee();
