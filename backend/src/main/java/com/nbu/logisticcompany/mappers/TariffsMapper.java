@@ -61,9 +61,9 @@ public class TariffsMapper {
      */
     private TariffUpdateDto objectToUpdateDTO(Tariff tariff){
         TariffUpdateDto tariffUpdateDto = new TariffUpdateDto();
-        tariffUpdateDto.setCompanyID(tariff.getCompany());
+        tariffUpdateDto.setCompanyId(tariff.getCompany());
         tariffUpdateDto.setOfficeDiscount(tariff.getOfficeDiscount());
-        tariffUpdateDto.setPricePerKG(tariff.getPricePerKG());
+        tariffUpdateDto.setPricePerKg(tariff.getPricePerKG());
         return tariffUpdateDto;
     }
 
@@ -75,10 +75,10 @@ public class TariffsMapper {
      */
     public Tariff UpdateDTOtoTariffs(TariffUpdateDto tariffUpdateDto){
         Tariff tariff = new Tariff();
-        tariff.setPricePerKG(tariffUpdateDto.getPricePerKG());
+        tariff.setPricePerKG(tariffUpdateDto.getPricePerKg());
         tariff.setOfficeDiscount(tariffUpdateDto.getOfficeDiscount());
         tariff.setId(tariffUpdateDto.getId());
-        tariff.setCompany(tariffUpdateDto.getCompanyID());
+        tariff.setCompany(tariffUpdateDto.getCompanyId());
 
         return tariff;
 
