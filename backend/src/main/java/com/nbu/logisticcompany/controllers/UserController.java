@@ -53,7 +53,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody UserRegisterDto userRegisterDTO) {
         try {
-            User user = userMapper.DtoToObject(userRegisterDTO);
+            User user = userMapper.dtoToObject(userRegisterDTO);
             userService.create(user);
             return ResponseEntity.ok().body(userRegisterDTO);
         } catch (IOException e) {

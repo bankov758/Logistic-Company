@@ -120,7 +120,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addRole(User user, String role, User updater) {
-        validateRoleUpdate(role, updater);
+        if (!Role.USER.equals(Role.valueOf(role))) {
+            validateRoleUpdate(role, updater);
+        }
         user.getRoles().add(Role.valueOf(role));
         userRepository.update(user);
     }
@@ -189,8 +191,8 @@ public class UserServiceImpl implements UserService {
      * @throws UnauthorizedOperationException if updater lacks 'ADMIN' role.
      * @throws InvalidDataException if the specified role is invalid.
      */
-    private void validateRoleUpdate(String role, User updater) {
-        if (DataUtil.isNotEmpty(updater.getRoles()) && !updater.getRoles().contains(Role.ADMIN)) {
+    protected void validateRoleUpdate(String role, User updater) {
+        if (DataUtil.isEmpty(updater.getRoles()) || !updater.getRoles().contains(Role.ADMIN)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_ROLE_UPDATE);
         }
         if (Arrays.stream(Role.values()).noneMatch(value -> value.toString().equals(role))) {

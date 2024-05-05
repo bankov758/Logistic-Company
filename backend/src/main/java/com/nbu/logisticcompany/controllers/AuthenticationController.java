@@ -73,7 +73,7 @@ public class AuthenticationController {
                         "Password confirmation should match password.");
                 return ResponseEntity.badRequest().body(getDefaultMessages(errors));
             }
-            User user = userMapper.DtoToObject(register);
+            User user = userMapper.dtoToObject(register);
             User newUser = userService.create(user);
             session.setAttribute("currentUser", newUser);
             return ResponseEntity.ok().body(userMapper.ObjectToDto(newUser));
