@@ -2,9 +2,9 @@ package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.*;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
-import com.nbu.logisticcompany.helpers.OfficeMockData;
-import com.nbu.logisticcompany.helpers.ShipmentMockData;
-import com.nbu.logisticcompany.helpers.UserMockData;
+import com.nbu.logisticcompany.mock.OfficeMockData;
+import com.nbu.logisticcompany.mock.ShipmentMockData;
+import com.nbu.logisticcompany.mock.UserMockData;
 import com.nbu.logisticcompany.repositories.interfaces.ShipmentRepository;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;

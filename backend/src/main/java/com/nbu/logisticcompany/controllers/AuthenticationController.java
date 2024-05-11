@@ -20,6 +20,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import static com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper.LOGGED_USER_KEY;
+
 @Controller
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -44,7 +46,7 @@ public class AuthenticationController {
                 return ResponseEntity.badRequest().body(getDefaultMessages(errors));
             }
             User loggedUser = authenticationHelper.verifyAuthentication(userLoginDto.getUsername(), userLoginDto.getPassword());
-            session.setAttribute("currentUser", loggedUser);
+            session.setAttribute(LOGGED_USER_KEY, loggedUser);
             return ResponseEntity.ok().body(userMapper.ObjectToDto(loggedUser));
         } catch (AuthenticationFailureException e) {
             errors.rejectValue("username", "auth.error", e.getMessage());
@@ -54,10 +56,10 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
-        if (session.getAttribute("currentUser") == null){
+        if (session.getAttribute(LOGGED_USER_KEY) == null){
             return ResponseEntity.notFound().build();
         }
-        session.removeAttribute("currentUser");
+        session.removeAttribute(LOGGED_USER_KEY);
         return ResponseEntity.ok().build();
     }
 
@@ -75,7 +77,7 @@ public class AuthenticationController {
             }
             User user = userMapper.dtoToObject(register);
             User newUser = userService.create(user);
-            session.setAttribute("currentUser", newUser);
+            session.setAttribute(LOGGED_USER_KEY, newUser);
             return ResponseEntity.ok().body(userMapper.ObjectToDto(newUser));
         } catch (DuplicateEntityException | EntityNotFoundException | IOException ex) {
             String[] exceptionMessage = ex.getMessage().split(" ");

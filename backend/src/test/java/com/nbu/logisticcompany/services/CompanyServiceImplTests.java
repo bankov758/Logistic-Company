@@ -1,11 +1,10 @@
 package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Company;
-import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
-import com.nbu.logisticcompany.helpers.UserMockData;
+import com.nbu.logisticcompany.mock.UserMockData;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;

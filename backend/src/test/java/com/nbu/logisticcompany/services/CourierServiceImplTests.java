@@ -2,13 +2,11 @@ package com.nbu.logisticcompany.services;
 
 import java.util.Optional;
 
-import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Courier;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
-import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.helpers.UserMockData;
+import com.nbu.logisticcompany.mock.UserMockData;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.utils.Action;

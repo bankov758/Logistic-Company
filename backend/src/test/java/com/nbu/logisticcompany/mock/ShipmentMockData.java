@@ -1,4 +1,4 @@
-package com.nbu.logisticcompany.helpers;
+package com.nbu.logisticcompany.mock;
 
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Shipment;

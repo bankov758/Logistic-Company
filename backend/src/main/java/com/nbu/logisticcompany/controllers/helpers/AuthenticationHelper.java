@@ -15,8 +15,9 @@ import javax.servlet.http.HttpSession;
 @Component
 public class AuthenticationHelper {
 
-    public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
+    //public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     public static final String AUTHENTICATION_FAILURE_MESSAGE = "Wrong username or password.";
+    public static final String LOGGED_USER_KEY = "currentUser";
 
     private final UserService userService;
 
@@ -25,21 +26,21 @@ public class AuthenticationHelper {
         this.userService = userService;
     }
 
-    public User tryGetUser(HttpHeaders headers){
-        if(!headers.containsKey(AUTHORIZATION_HEADER_NAME)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "The request resource requires authentication.");
-        }
-        try{
-            String username = headers.getFirst(AUTHORIZATION_HEADER_NAME);
-            return userService.getByUsername(username);
-        }catch (EntityNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username");
-        }
-    }
+//    public User tryGetUser(HttpHeaders headers){
+//        if(!headers.containsKey(AUTHORIZATION_HEADER_NAME)){
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+//                    "The request resource requires authentication.");
+//        }
+//        try{
+//            String username = headers.getFirst(AUTHORIZATION_HEADER_NAME);
+//            return userService.getByUsername(username);
+//        }catch (EntityNotFoundException e){
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username");
+//        }
+//    }
 
     public User tryGetUser(HttpSession session) {
-        User currentUser = (User) session.getAttribute("currentUser");
+        User currentUser = (User) session.getAttribute(LOGGED_USER_KEY);
         if (currentUser == null) {
             throw new AuthenticationFailureException("No user logged in.");
         }
