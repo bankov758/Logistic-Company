@@ -26,7 +26,7 @@ const CreateAnOrderForm: React.FC<{ employeeId: number; onActionSuccess: (data: 
             selectedSender?.id,
             selectedReceiver?.id,
             selectedCourier?.id),
-        {message: null, errors: ''}
+        {message: '', errors: ''}
     );
 
     useEffect(() => {

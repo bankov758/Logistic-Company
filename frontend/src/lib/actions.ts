@@ -383,7 +383,7 @@ export const createAnOrder = async (
         })
 
         return {
-            message: response.data,
+            message: 'The shipment was successfully created!',
             errors: '',
         }
 
@@ -402,13 +402,13 @@ export const createAnOrder = async (
 	}
 }
 
-const editOrderSchema = z.object({
-    departureAddress: z.string().trim().optional(),
-    arrivalAddress: z.string().trim().optional(),
-    sentDate: z.date().optional(),
-    receivedDate: z.date().optional(),
-    weight: z.string().trim().optional(),
-});
+// const editOrderSchema = z.object({
+//     departureAddress: z.string().trim().optional(),
+//     arrivalAddress: z.string().trim().optional(),
+//     sentDate: z.date().optional(),
+//     receivedDate: z.date().optional(),
+//     weight: z.string().trim().optional(),
+// });
 
 export const editShipment = async (
     employeeId: number,
@@ -443,50 +443,49 @@ export const editShipment = async (
     const parsedReceivedDate = receivedDate ? new Date(receivedDate.toString()) : null;
 
     // TODO: check
-    // const parsedOldSentDate = new Date(selectedItem.sentDate.toString()) ;
-    // const parsedOldReceivedDate =  new Date(selectedItem.receivedDate.toString());
+    const parsedOldSentDate = selectedItem.sentDate ? new Date(selectedItem.sentDate.toString()) : null;
+    const parsedOldReceivedDate =  selectedItem.receivedDate ? new Date(selectedItem.receivedDate.toString()) : null;
 
     const companyId = await getCompanyId();
 
     const fields= {
         id: selectedItem?.id,
-        departureAddress: departureAddress || selectedItem?.departureAddress,
-        arrivalAddress: arrivalAddress || selectedItem?.arrivalAddress,
-        weight: weight || selectedItem?.weight,
-        senderId: senderId || foundSenderId,
-        receiverId: receiverId || foundReceiverId,
+        departureAddress: departureAddress || selectedItem.departureAddress,
+        arrivalAddress: arrivalAddress || selectedItem.arrivalAddress,
+        weight: weight || selectedItem.weight,
+        senderId: senderId ?? foundSenderId,
+        receiverId: receiverId ?? foundReceiverId,
         employeeId,
-        // sentDate: parsedSentDate || parsedOldSentDate,
-        sentDate: parsedSentDate,
-        // receivedDate: parsedReceivedDate || parsedOldReceivedDate,
-        receivedDate: parsedReceivedDate,
-        courierId: courierId || foundCourierId,
+        sentDate: parsedSentDate ?? parsedOldSentDate,
+        //sentDate: parsedSentDate,
+        receivedDate: parsedReceivedDate ?? parsedOldReceivedDate,
+        //receivedDate: parsedReceivedDate,
+        courierId: courierId ?? foundCourierId,
         companyId,
         receivedFromOffice: selectedItem.receivedFromOffice,
         sentFromOffice: selectedItem.sentFromOffice
     }
 
-    const validateSchema = editOrderSchema.safeParse(fields);
+    // const validateSchema = editOrderSchema.safeParse(fields);
 
-    if (!validateSchema.success ) {
-        return {
-            message: "",
-            errors: validateSchema.error.issues
-        }
-    }
+    // if (!validateSchema.success ) {
+    //     return {
+    //         message: "",
+    //         errors: validateSchema.error.issues
+    //     }
+    // }
 
     try {
         const jsession = await getCookies();
 
-        const response = await axios.post('/shipments', fields, {
+        await axios.put('/shipments', fields, {
             headers: {
                 Cookie: `JSESSIONID=${jsession?.value}`
             }
         })
 
-        console.log(response.data)
         return {
-            message: 'The shipment was successfully edited ',
+            message: 'The shipment was successfully edited!',
             errors: "",
         }
 

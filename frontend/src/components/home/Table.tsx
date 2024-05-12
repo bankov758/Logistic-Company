@@ -92,12 +92,18 @@ const Table: React.FC<TableProps> = ({
     // const [promoteCourierState, promoteCourierAction] = useFormState(promoteCourier, { message: '', errors: '' });
 
     useEffect(() => {
-        let condition = deleteUserState || promoteUserIntoCourierState || deleteEmployeeState ||
-            demoteEmployeeState || makeEmployeeIntoCourierState || deleteShipmentState || deleteOfficeState ||
-            deleteCourierState || demoteCourierState;
-            console.log(condition);
-            console.log(condition.message);
-        if ( condition.message ) {
+        let condition =
+            (deleteUserState.message || deleteUserState.errors) ? deleteUserState :
+            (promoteUserIntoCourierState.message || promoteUserIntoCourierState.errors) ? promoteUserIntoCourierState :
+            (deleteEmployeeState.message || deleteEmployeeState.errors) ? deleteEmployeeState :
+            (demoteEmployeeState.message || demoteEmployeeState.errors) ? demoteEmployeeState :
+            (makeEmployeeIntoCourierState.message || makeEmployeeIntoCourierState.errors) ? makeEmployeeIntoCourierState :
+            (deleteShipmentState.message || deleteShipmentState.errors) ? deleteShipmentState :
+            (deleteOfficeState.message || deleteOfficeState.errors) ? deleteOfficeState :
+            (deleteCourierState.message || deleteCourierState.errors) ? deleteCourierState :
+            (demoteCourierState.message || demoteCourierState.errors) ? demoteCourierState : null;
+
+        if ( condition && condition.message ) {
             onActionSuccess ? onActionSuccess(condition) : null;
         }
 

@@ -42,6 +42,7 @@ const AdminInterface: React.FC = () => {
     const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
 
     const [searchData, setSearchData ] = useState<item[] | null>(null);
+    const [isSearchingUser, setIsSearchingUser] = useState<boolean>(false);
     const [searchedUsername, setSearchedUsername] = useState("");
 
     const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
@@ -79,20 +80,17 @@ const AdminInterface: React.FC = () => {
     }, [selectedCompany]);
 
     const fetchUserData = useCallback( () => {
-        setIsLoading(true);
-        axios.get(`/users`)
+        setIsSearchingUser(true);
+        axios.get(`/users?search=${searchedUsername}`)
             .then(response => {
-                const filteredUsers = response.data.filter((user:item) => user.username.toLowerCase().includes(searchedUsername.toLowerCase()));
-                //const filteredUsers = response.data.filter((user:item) => user.username === searchedUsername);
-                setSearchData(filteredUsers)
-                setIsLoading(false);
-                //setSearchedUsername('');
-                })
+                setSearchData(response.data)
+                setIsSearchingUser(false);
+            })
             .catch(error => {
                 setError(error);
-                setIsLoading(false);});
-        }, [searchedUsername])
-
+                setIsSearchingUser(false);
+            });
+    }, [searchedUsername])
 
     useEffect(() => {
         getSession()
@@ -131,7 +129,7 @@ const AdminInterface: React.FC = () => {
         await getAndSetCompanies()
     }
 
-    const onSuccessCompanyOrOfficeAction = async () => {
+    const onSuccessCompanyOrOfficeActionOrTariff = async () => {
         setShowCompanyInfoDialog(false);
         setSelectedCompany(null);
         await getAndSetCompanies();
@@ -176,7 +174,7 @@ const AdminInterface: React.FC = () => {
                 <label htmlFor="clientName" className="" >Search for client with name: </label>
                 <input type="text" id="clientName" name="clientName" className="input-info-dialog" placeholder="username" value={searchedUsername}
                        onChange={(e) => setSearchedUsername(e.target.value)}/>
-                <Button fill={true} onClick={() => {fetchUserData(); setSelectedCompany(null); }}>Search</Button>
+                <Button fill={true} onClick={() => {fetchUserData(); setSelectedCompany(null); setData([]) }}>Search</Button>
         </div>
         {/* search for user by username END */}
 
@@ -219,9 +217,10 @@ const AdminInterface: React.FC = () => {
                     <ShowCompanyInfo
                         companyData={companies}
                         selectedCompany={selectedCompany}
-                        onSuccessDelete={onSuccessCompanyOrOfficeAction}
-                        onSuccessEdit={onSuccessCompanyOrOfficeAction}
-                        onSuccessAddOffice={onSuccessCompanyOrOfficeAction}
+                        onSuccessDelete={onSuccessCompanyOrOfficeActionOrTariff}
+                        onSuccessEdit={onSuccessCompanyOrOfficeActionOrTariff}
+                        onSuccessAddOffice={onSuccessCompanyOrOfficeActionOrTariff}
+                        onSuccessAddTariff={onSuccessCompanyOrOfficeActionOrTariff}
                     />
                 </BaseDialog>
             )
@@ -295,7 +294,7 @@ const AdminInterface: React.FC = () => {
                 }) :
                 selectedCompany && <p>No data available!</p>
         }
-        {isLoading ?
+        {isSearchingUser ?
             <SkeletonLoadingAnimation header="tabs" layoutItems={5}/> :
             searchData && Object.keys(searchData).length > 0 && !selectedCompany ?
                 <Table
@@ -306,10 +305,10 @@ const AdminInterface: React.FC = () => {
                     data={searchData.map((item) => ({
                         ...item,
                         category: "clients"
-                    }))}/>
-                : searchedUsername && searchData && !searchData?.length && !selectedCompany ?
-                    <p>There is no found user with this username.</p>
-                : null
+                    }))}/> :
+            searchedUsername && searchData && !searchData?.length && !selectedCompany ?
+                    <p>There is no found user with this username.</p> :
+                    null
         }
     </>;
 }
