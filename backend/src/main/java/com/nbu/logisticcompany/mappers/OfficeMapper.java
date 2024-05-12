@@ -1,23 +1,26 @@
 package com.nbu.logisticcompany.mappers;
 
-import java.io.IOException;
-
 import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.dtos.office.OfficeCreateDto;
 import com.nbu.logisticcompany.entities.dtos.office.OfficeOutDto;
 import com.nbu.logisticcompany.entities.dtos.office.OfficeUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.CompanyService;
+import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 public class OfficeMapper {
 
     private final CompanyService companyService;
+    private final OfficeService officeService;
 
     @Autowired
-    public OfficeMapper(CompanyService companyService) {
+    public OfficeMapper(CompanyService companyService, OfficeService officeService) {
         this.companyService = companyService;
+        this.officeService = officeService;
     }
 
     /**
@@ -55,7 +58,7 @@ public class OfficeMapper {
      * @return Updated Office object.
      */
     public Office UpdateDTOtoOffice(OfficeUpdateDto officeUpdateDto) {
-        Office office = new Office();
+        Office office = officeService.getById(officeUpdateDto.getId());
         office.setAddress(officeUpdateDto.getAddress());
         office.setId(officeUpdateDto.getId());
         return office;
