@@ -1,9 +1,5 @@
 package com.nbu.logisticcompany.services;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 import com.nbu.logisticcompany.entities.Role;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
@@ -24,6 +20,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTests {
@@ -148,7 +148,7 @@ class UserServiceImplTests {
     void addRoleShouldNotCallValidateRoleUpdateIfRoleUser() {
         User user = new User();
         user.setId(1);
-        userService = Mockito.spy(new UserServiceImpl(userRepository, null, null));
+        userService = Mockito.spy(new UserServiceImpl(userRepository, null, null, null));
 
         userService.addRole(user, String.valueOf(Role.USER), UserMockData.createMockAdmin());
 
@@ -160,7 +160,7 @@ class UserServiceImplTests {
     void addRoleShouldCallValidateRoleUpdate() {
         User user = new User();
         user.setId(1);
-        userService = Mockito.spy(new UserServiceImpl(userRepository, null, null));
+        userService = Mockito.spy(new UserServiceImpl(userRepository, null, null, null));
 
         userService.addRole(user, String.valueOf(Role.EMPLOYEE), UserMockData.createMockAdmin());
 
@@ -195,7 +195,7 @@ class UserServiceImplTests {
     void removeRoleShouldCallValidateRoleUpdate() {
         User user = new User();
         user.setId(1);
-        userService = Mockito.spy(new UserServiceImpl(userRepository, null, null));
+        userService = Mockito.spy(new UserServiceImpl(userRepository, null, null, null));
 
         userService.removeRole(user, String.valueOf(Role.EMPLOYEE), UserMockData.createMockAdmin());
 

@@ -13,6 +13,7 @@ import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.DataUtil;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -27,12 +28,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final OfficeEmployeeRepository officeEmployeeRepository;
     private final CourierRepository courierRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, OfficeEmployeeRepository _officeEmployeeRepository, CourierRepository _courierRepository) {
+    public UserServiceImpl(UserRepository userRepository, OfficeEmployeeRepository officeEmployeeRepository,
+                           CourierRepository courierRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        officeEmployeeRepository = _officeEmployeeRepository;
-        courierRepository = _courierRepository;
+        this.officeEmployeeRepository = officeEmployeeRepository;
+        this.courierRepository = courierRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -76,9 +80,8 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateEntityException("User", "username", user.getUsername());
         }
 
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        String hashedPassword = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(hashedPassword);
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
 
         userRepository.create(user);
         User alreadySaved = getById(user.getId());
@@ -95,17 +98,16 @@ public class UserServiceImpl implements UserService {
      *
      * @param userToUpdate The user object containing updated information.
      * @param updater The user attempting to perform the update, needs to be the owner or authorized.
-     * @throws UNAUTHORIZED_USER_UPDATE if the updater is not authorized to update the user.
+     * @throws UnauthorizedOperationException if the updater is not authorized to update the user.
      */
     @Override
     public void update(User userToUpdate, User updater) {
         ValidationUtil.validateOwnerUpdate(userToUpdate.getId(), updater.getId());
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        if (ValidationUtil.isNotEmpty(userToUpdate.getPassword())
-//                && !passwordEncoder.matches(userToUpdate.getPassword(), updater.getPassword())){
-//            String hashedPassword = passwordEncoder.encode(userToUpdate.getPassword());
-//            userToUpdate.setPassword(hashedPassword);
-//        }
+        if (DataUtil.isNotEmpty(userToUpdate.getPassword())
+                && !passwordEncoder.matches(userToUpdate.getPassword(), updater.getPassword())){
+            String hashedPassword = passwordEncoder.encode(userToUpdate.getPassword());
+            userToUpdate.setPassword(hashedPassword);
+        }
         userRepository.update(userToUpdate);
     }
 
