@@ -54,7 +54,7 @@ const ClientInterface: React.FC = () => {
                     <Fragment>
                         {data ?
                             <Fragment>
-                                <h3 className="flex justify-start w-full mb-12">Welcome {session?.username || "Anonymous"}!
+                                <h3 className="flex justify-start px-3 py-3 w-full mb-12">Welcome {session?.username || "Anonymous"}!
                                     This is your home page.</h3>
                                 <Table
                                     columns={tableColumns}
