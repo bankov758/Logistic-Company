@@ -256,6 +256,7 @@ const Table: React.FC<TableProps> = ({
                                                                     return (
                                                                         <AdminInterfaceUserActionsButtons
                                                                             key={column.id}
+                                                                            disableActions={!selectedCompany}
                                                                             onClick={(actionType) => handleAction(rowItem, actionType)}
                                                                         />
                                                                     )
