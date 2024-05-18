@@ -8,6 +8,7 @@ public class ShipmentCreateDto {
     @NotNull(message = "Address field is mandatory")
     @Size(min = 3, max = 64, message = "The address should be between 3 and 64 symbols")
     private String departureAddress;
+
     @NotNull(message = "Address field is mandatory")
     @Size(min = 3, max = 64, message = "The address should be between 3 and 64 symbols")
     private String arrivalAddress;
@@ -17,9 +18,11 @@ public class ShipmentCreateDto {
     @DecimalMax(value = "1000.0", inclusive = true, message = "Weight has to be less than or equal to 1000")
     @Positive(message = "Weight has to be a positive number")
     private double weight;
+
     @NotNull(message = "Please enter the sender's id")
     @Positive(message = "Sender ID has to be a positive number")
     private int senderId;
+
     @NotNull(message = "Please enter the receiver's id")
     @Positive(message = "Receiver ID has to be a positive number")
     private int receiverId;
@@ -30,6 +33,7 @@ public class ShipmentCreateDto {
 
     @FutureOrPresent(message = "Please enter a current or future date")
     private LocalDate sentDate;
+
     @NotNull(message = "Please enter the courier's id")
     @Positive(message = "Courier ID has to be a positive number")
     private int courierId;

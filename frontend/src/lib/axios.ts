@@ -28,12 +28,13 @@ const onFulfilled = (response: AxiosResponse) => {
 
 const onRejected = (_err: AxiosError) => {
     // Check if the error has a response and modify it accordingly
+    console.log(_err)
     if( _err.response ) {
         // Default message from the error object
         let message = _err.message;
 
         // If the status code if 400, try to get the message from the response data
-        if(_err.response.status === 400 && Array.isArray(_err.response.data) && _err.response.data.length > 0 || (_err.response.status === 404 || _err.response.status === 409) && typeof _err.response.data === "string") {
+        if(_err.response.status === 400 && Array.isArray(_err.response.data) && _err.response.data.length > 0 || (_err.response.status === 404 || _err.response.status === 409 || _err.response.status === 401) && typeof _err.response.data === "string") {
             message = _err.response.status === 400 ? _err.response.data[0] : _err.response.data;
         }
 

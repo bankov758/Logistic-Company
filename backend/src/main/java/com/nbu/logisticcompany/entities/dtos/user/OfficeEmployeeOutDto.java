@@ -1,7 +1,6 @@
 package com.nbu.logisticcompany.entities.dtos.user;
 
 import com.nbu.logisticcompany.entities.Role;
-import com.nbu.logisticcompany.entities.dtos.user.CourierOutDto;
 
 import java.util.Set;
 
@@ -15,6 +14,12 @@ public class OfficeEmployeeOutDto extends CourierOutDto {
     public OfficeEmployeeOutDto(int id, String username, String firstName, String lastName, String companyName,
                                 Set<Role> roles, String officeAddress) {
         super(id, username, firstName, lastName, companyName, roles);
+        this.officeAddress = officeAddress;
+    }
+
+    public OfficeEmployeeOutDto(int id, String username, String firstName, String lastName,
+                                String companyName, String officeAddress) {
+        super(id, username, firstName, lastName, companyName, null);
         this.officeAddress = officeAddress;
     }
 

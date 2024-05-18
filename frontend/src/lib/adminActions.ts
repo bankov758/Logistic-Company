@@ -43,7 +43,7 @@ export const createCompany = async (
     } catch (error) {
         return {
             message: '',
-            errors: 'Error creating company! '
+            errors: error.message
         };
     }
 };

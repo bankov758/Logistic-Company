@@ -5,7 +5,7 @@ import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto;
-import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
+import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeOutDto;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyEmployeesDto> getCompanyEmployees(int companyId, User user) {
+    public List<OfficeEmployeeOutDto> getCompanyEmployees(int companyId, User user) {
         return companyRepository.getCompanyEmployees(companyId, user);
     }
 

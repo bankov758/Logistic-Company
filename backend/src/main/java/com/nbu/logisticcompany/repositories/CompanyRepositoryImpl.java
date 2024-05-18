@@ -5,7 +5,7 @@ import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.entities.dtos.company.CompanyOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto;
-import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
+import com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeOutDto;
 import com.nbu.logisticcompany.repositories.interfaces.CompanyRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -67,15 +67,15 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
      *
      * @param companyId ID of the company.
      * @param user      User initiating the request.
-     * @return List of CompanyEmployeesDto objects containing employee ID, username, first name, last name,
+     * @return List of OfficeEmployeeOutDto objects containing employee ID, username, first name, last name,
      * and company name.
      */
-    public List<CompanyEmployeesDto> getCompanyEmployees(int companyId, User user) {
+    public List<OfficeEmployeeOutDto> getCompanyEmployees(int companyId, User user) {
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto " +
+            return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.OfficeEmployeeOutDto " +
                             " (employee.id, employee.username, employee.firstName," +
-                            " employee.lastName, employee.company.name) from OfficeEmployee employee " +
-                            " where employee.company.id = :companyId", CompanyEmployeesDto.class)
+                            " employee.lastName, employee.company.name, employee.office.address) from OfficeEmployee employee " +
+                            " where employee.company.id = :companyId", OfficeEmployeeOutDto.class)
                     .setParameter("companyId", companyId)
                     .getResultList();
         }

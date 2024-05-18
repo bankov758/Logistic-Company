@@ -4,11 +4,9 @@ import {z, ZodIssue} from "zod";
 import {getCookies, Session, signIn, signOut} from "@/lib/auth";
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import axios from "@/lib/axios";
-import { AxiosError } from "axios";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-
-import {item} from "@/components/home/Table";
+import {AxiosError} from "axios";
+import {cookies} from "next/headers";
+import {redirect} from "next/navigation";
 
 export type FormState = {
     message: string | { username: string; roles: string[]; };
@@ -82,7 +80,7 @@ export const login = async (initialState: FormState, formData: FormData) => {
         // Handle any other potential errors
         return {
             message: "",
-            errors: "Something went wrong",
+            errors: error.message,
         };
     }
 }
@@ -172,7 +170,7 @@ export const register = async (initialState: FormState, formData: FormData) => {
         // Handle any other potential errors
         return {
             message: "",
-            errors: "Something went wrong",
+            errors: error.message,
         };
     }
 }
@@ -212,7 +210,7 @@ export const deleteUser = async (session: Session | null) => {
         // Handle any other potential errors
         return {
             message: "",
-            errors: "Something went wrong",
+            errors: error.message,
         };
 	}
 
@@ -388,6 +386,7 @@ export const createAnOrder = async (
         }
 
     } catch (error) {
+        console.log(error)
         if (error instanceof AxiosError && error.response) {
             return {
                 errors: error.response.data || "Something went wrong!",
@@ -396,7 +395,7 @@ export const createAnOrder = async (
 
         }
         return {
-            errors: "Something went wrong!",
+            errors: error.message,
             message: ""
         }
 	}
@@ -492,7 +491,7 @@ export const editShipment = async (
     } catch ( error ) {
         return {
             message: "",
-            errors: "Something went wrong!",
+            errors: error.message,
         };
     }
 }
