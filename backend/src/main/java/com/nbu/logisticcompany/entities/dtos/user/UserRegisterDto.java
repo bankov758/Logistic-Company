@@ -20,7 +20,7 @@ public class UserRegisterDto {
     private String password;
 
     @NotNull(message = "Please confirm password")
-    @NotEmpty(message = "cannot be empty")
+    @NotEmpty(message = "Confirm password cannot be empty")
     private String confirmPassword;
 
     public UserRegisterDto() {

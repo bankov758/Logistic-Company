@@ -4,8 +4,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class CourierUpdateDto extends UserUpdateDto {
+
     @Size(min = 2, max = 40, message = "Company name should be between 2 and 40 symbols")
-    @NotNull(message = "Field is mandatory")
+    @NotNull(message = "Company name is mandatory")
     private String companyName;
 
     public CourierUpdateDto() {

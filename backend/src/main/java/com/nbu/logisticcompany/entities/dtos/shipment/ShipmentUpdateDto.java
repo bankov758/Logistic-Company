@@ -11,7 +11,7 @@ public class ShipmentUpdateDto extends ShipmentCreateDto {
     @Positive(message = "ID has to be a positive number")
     private int id;
 
-    @FutureOrPresent(message = "Receive date has to be either today or a future date")
+    @FutureOrPresent(message = "Received date has to be either today or a future date")
     private LocalDate receivedDate;
 
     public ShipmentUpdateDto() {

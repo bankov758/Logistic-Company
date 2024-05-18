@@ -32,9 +32,9 @@ public class TariffsMapper {
      */
     public Tariff DTOtoObject(TariffCreateDto tariffCreateDto) throws IOException{
         Tariff tariff = new Tariff();
-        tariff.setCompany(companyService.getById(tariffCreateDto.getCompanyID()));
+        tariff.setCompany(companyService.getById(tariffCreateDto.getCompanyId()));
         tariff.setOfficeDiscount(tariffCreateDto.getOfficeDiscount());
-        tariff.setPricePerKG(tariffCreateDto.getPricePerKG());
+        tariff.setPricePerKG(tariffCreateDto.getPricePerKg());
         return tariff;
     }
 

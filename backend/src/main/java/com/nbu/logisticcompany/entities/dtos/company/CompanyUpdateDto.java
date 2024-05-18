@@ -7,6 +7,7 @@ public class CompanyUpdateDto {
 
     @Size(min = 2, max = 40, message = "Company name should be between 2 and 40 symbols")
     private String name;
+
     @Positive(message = "Company IDs are positive integers")
     private  int id;
 

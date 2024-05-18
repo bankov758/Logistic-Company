@@ -17,7 +17,8 @@ public class UserUpdateDto {
 
     @NotNull(message = "Password mandatory")
     private String currentPassword;
-    @NotNull(message = "New pass is mandatory")
+
+    @NotNull(message = "New password is mandatory")
     private String newPassword;
 
     public UserUpdateDto() {
