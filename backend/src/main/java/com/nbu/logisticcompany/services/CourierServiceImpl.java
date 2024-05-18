@@ -8,7 +8,6 @@ import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
-import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +36,6 @@ public class CourierServiceImpl implements CourierService {
     }
 
     @Override
-    public Courier getByUsername(String username) {
-        return courierRepository.getByField("username", username);
-    }
-
-    @Override
     public List<Courier> getAll(Optional<String> search) {
         return courierRepository.getAll();
     }
@@ -53,6 +47,15 @@ public class CourierServiceImpl implements CourierService {
 
     @Override
     public void create(Courier courier) {
+        boolean duplicateUser = true;
+        try {
+            courierRepository.getByField("username", courier.getUsername());
+        } catch (EntityNotFoundException e) {
+            duplicateUser = false;
+        }
+        if (duplicateUser) {
+            throw new DuplicateEntityException("User", "username", courier.getUsername());
+        }
         courierRepository.create(courier);
     }
 
@@ -63,8 +66,8 @@ public class CourierServiceImpl implements CourierService {
     }
 
     @Override
-    public void delete(int courierToDeleteId, User deleter) {
-        ValidationUtil.validateOwnerDelete(courierToDeleteId, deleter);
+    public void delete(int courierToDeleteId, User destroyer) {
+        ValidationUtil.validateOwnerDelete(courierToDeleteId, destroyer);
         courierRepository.delete(courierToDeleteId);
     }
 

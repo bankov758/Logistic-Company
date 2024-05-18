@@ -1,9 +1,11 @@
 package com.nbu.logisticcompany.entities.dtos.user;
 
-import com.nbu.logisticcompany.entities.dtos.user.CourierRegisterDto;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class OfficeEmployeeRegisterDto extends CourierRegisterDto {
-
+    @Size(min = 2, max = 64, message = "Address should be between 2 and 64 symbols")
+    @NotNull(message = "Field is mandatory")
     private String officeAddress;
 
     public OfficeEmployeeRegisterDto() {

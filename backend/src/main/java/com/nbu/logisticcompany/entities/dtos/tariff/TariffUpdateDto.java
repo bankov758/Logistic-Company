@@ -1,24 +1,31 @@
 package com.nbu.logisticcompany.entities.dtos.tariff;
 
 import com.nbu.logisticcompany.entities.Company;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class TariffUpdateDto {
 
     private int id;
-    private float pricePerKG;
-
+    @Positive(message = "The price per kilogram has to be a positive number")
+    private float pricePerKg;
+    @Positive(message = "The discount percentage has to be a postive number")
+    @Range(min = 0, max = (99/100) , message = "Discount has to be 99% at most (there's no such thing as a free lunch) ")
     private float officeDiscount;
-
-    private Company companyID;
+    @Positive(message = "ID has to be a positive number")
+    @NotNull(message = "Field is mandatory")
+    private Company companyId;
 
     public TariffUpdateDto() {
     }
 
-    public TariffUpdateDto(int id, float pricePerKG, float officeDiscount, Company companyID) {
+    public TariffUpdateDto(int id, float pricePerKg, float officeDiscount, Company companyId) {
         this.id = id;
-        this.pricePerKG = pricePerKG;
+        this.pricePerKg = pricePerKg;
         this.officeDiscount = officeDiscount;
-        this.companyID = companyID;
+        this.companyId = companyId;
     }
 
     public int getId() {
@@ -29,12 +36,12 @@ public class TariffUpdateDto {
         this.id = id;
     }
 
-    public float getPricePerKG() {
-        return pricePerKG;
+    public float getPricePerKg() {
+        return pricePerKg;
     }
 
-    public void setPricePerKG(float pricePerKG) {
-        this.pricePerKG = pricePerKG;
+    public void setPricePerKg(float pricePerKG) {
+        this.pricePerKg = pricePerKG;
     }
 
     public float getOfficeDiscount() {
@@ -45,11 +52,12 @@ public class TariffUpdateDto {
         this.officeDiscount = officeDiscount;
     }
 
-    public Company getCompanyID() {
-        return companyID;
+    public Company getCompanyId() {
+        return companyId;
     }
 
-    public void setCompanyID(Company companyID) {
-        this.companyID = companyID;
+    public void setCompanyId(Company companyID) {
+        this.companyId = companyID;
     }
+
 }

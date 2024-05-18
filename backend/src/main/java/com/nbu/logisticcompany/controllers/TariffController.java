@@ -10,6 +10,7 @@ import com.nbu.logisticcompany.mappers.TariffsMapper;
 import com.nbu.logisticcompany.services.interfaces.TariffsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,6 +19,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.nbu.logisticcompany.utils.DataUtil.getDefaultMessages;
 
 @RestController
 @RequestMapping("/api/tariffs")
@@ -51,7 +54,10 @@ public class TariffController {
 
     @PostMapping
     public ResponseEntity<?> create(HttpSession session,
-                                    @Valid @RequestBody TariffCreateDto tariffCreateDto) {
+                                    @Valid @RequestBody TariffCreateDto tariffCreateDto, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+        }
         try {
             User creator = authenticationHelper.tryGetUser(session);
             Tariff tariff = tariffsMapper.DTOtoObject(tariffCreateDto);
@@ -64,7 +70,10 @@ public class TariffController {
 
     @PutMapping
     public ResponseEntity<?> update(HttpSession session,
-                                    @Valid @RequestBody TariffUpdateDto tariffUpdateDto) {
+                                    @Valid @RequestBody TariffUpdateDto tariffUpdateDto, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+        }
         User updater = authenticationHelper.tryGetUser(session);
         Tariff tariff = tariffsMapper.UpdateDTOtoTariffs(tariffUpdateDto);
         tariffsService.update(tariff, updater);

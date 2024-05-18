@@ -10,8 +10,6 @@ public interface CourierService {
 
     Courier getById(int id);
 
-    Courier getByUsername(String username);
-
     List<Courier> getAll(Optional<String> search);
 
     Courier getCourierFromShipment(int shipmentId);
@@ -20,7 +18,7 @@ public interface CourierService {
 
     void update(Courier courierToUpdate, User updater);
 
-    void delete(int courierToDeleteId, User deleter);
+    void delete(int courierToDeleteId, User destroyer);
 
     void demoteToUser(int courierToDemoteId, User updater);
 

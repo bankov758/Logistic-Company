@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.nbu.logisticcompany.utils.DataUtil.getDefaultMessages;
+
 @RestController
 @RequestMapping("/api/offices")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -53,6 +55,9 @@ public class OfficeController {
     @PostMapping
     public ResponseEntity<?> create(HttpSession session,
                          @Valid @RequestBody OfficeCreateDto officeCreateDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(result));
+        }
         try {
             ValidationUtil.validate(result);
             User creator = authenticationHelper.tryGetUser(session);
@@ -67,6 +72,9 @@ public class OfficeController {
     @PutMapping()
     public ResponseEntity<?> update(HttpSession session,
                          @Valid @RequestBody OfficeUpdateDto officeUpdateDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(result));
+        }
         ValidationUtil.validate(result);
         User updater = authenticationHelper.tryGetUser(session);
         Office office = officeMapper.UpdateDTOtoOffice(officeUpdateDto);

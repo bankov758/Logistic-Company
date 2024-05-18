@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.nbu.logisticcompany.utils.DataUtil.getDefaultMessages;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("/api/couriers")
@@ -52,6 +54,9 @@ public class CourierController {
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CourierRegisterDto courierRegisterDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(result));
+        }
         ValidationUtil.validate(result);
         Courier courier = courierMapper.DtoToObject(courierRegisterDto);
         courierService.create(courier);
@@ -75,6 +80,9 @@ public class CourierController {
     @PutMapping
     public ResponseEntity<?> update(HttpSession session,
                                     @Valid @RequestBody CourierUpdateDto courierToUpdate, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(result));
+        }
         ValidationUtil.validate(result);
         User updater = authenticationHelper.tryGetUser(session);
         Courier courier = courierMapper.UpdateDtoToCourier(courierToUpdate);

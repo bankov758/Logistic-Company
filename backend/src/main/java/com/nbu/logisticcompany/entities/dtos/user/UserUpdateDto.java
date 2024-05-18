@@ -1,6 +1,7 @@
 package com.nbu.logisticcompany.entities.dtos.user;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class UserUpdateDto {
@@ -14,8 +15,9 @@ public class UserUpdateDto {
     @NotEmpty(message = "Last name should not be empty")
     private String lastName;
 
+    @NotNull(message = "Password mandatory")
     private String currentPassword;
-
+    @NotNull(message = "New pass is mandatory")
     private String newPassword;
 
     public UserUpdateDto() {

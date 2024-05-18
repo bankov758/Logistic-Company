@@ -43,22 +43,6 @@ public class ValidationUtil {
         }
     }
 
-    public static boolean isEmpty(String string) {
-        return string == null || string.isEmpty();
-    }
-
-    public static boolean isNotEmpty(String string) {
-        return !isEmpty(string);
-    }
-
-    public static <T> boolean isEmpty(Collection<T> collection) {
-        return collection == null || collection.isEmpty();
-    }
-
-    public static <T> boolean isNotEmpty(Collection<T> collection) {
-        return !isEmpty(collection);
-    }
-
     public static void validateOwnerUpdate(int userToUpdateId, int updaterId) {
         if (userToUpdateId != updaterId) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_USER_UPDATE);

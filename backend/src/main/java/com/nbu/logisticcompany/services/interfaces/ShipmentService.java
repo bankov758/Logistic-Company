@@ -12,16 +12,6 @@ public interface ShipmentService {
 
     Shipment getById(int id);
 
-    Shipment getByDepartureAddress(String departureAddress);
-
-    Shipment getByArrivalAddress(String arrivalAddress);
-
-    Shipment getBySenderId(int senderId);
-
-    Shipment getByReceiverId(int receiverId);
-
-    Shipment getByEmployeeId(int employeeId);
-
     List<Shipment> getNotDelivered(int companyId);
 
     List<Shipment> getBySenderOrReceiver(int userId);

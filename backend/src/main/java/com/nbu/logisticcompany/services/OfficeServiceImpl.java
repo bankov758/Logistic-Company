@@ -7,6 +7,7 @@ import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeRepository;
 import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.utils.Action;
+import com.nbu.logisticcompany.utils.DataUtil;
 import com.nbu.logisticcompany.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class OfficeServiceImpl implements OfficeService {
         ValidationUtil.validateAdminAction(creator, Office.class, Action.CREATE);
         List<Office> existingOffices = officeRepository.filter(Optional.ofNullable(office.getAddress()),
                 Optional.of(office.getCompany().getId()), Optional.empty());
-        if (ValidationUtil.isNotEmpty(existingOffices)) {
+        if (DataUtil.isNotEmpty(existingOffices)) {
             throw new DuplicateEntityException(String.format("An office for %s already exists at address - %s",
                     office.getCompany().getName(), office.getAddress()));
 

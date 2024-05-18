@@ -5,7 +5,7 @@ import com.nbu.logisticcompany.entities.dtos.user.UserOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserRegisterDto;
 import com.nbu.logisticcompany.entities.dtos.user.UserUpdateDto;
 import com.nbu.logisticcompany.services.interfaces.UserService;
-import com.nbu.logisticcompany.utils.ValidationUtil;
+import com.nbu.logisticcompany.utils.DataUtil;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,15 +26,16 @@ public class UserMapper {
      * @return Converted User object.
      * @throws IOException if an I/O error occurs.
      */
-    public User DtoToObject(UserRegisterDto userRegisterDTO) throws IOException {
+    public User dtoToObject(UserRegisterDto userRegisterDTO) throws IOException {
         User user = new User();
         setUserFieldsFromDto(user, userRegisterDTO);
         return user;
     }
+
     /**
      * Sets user fields from a UserRegisterDto object.
      *
-     * @param user           User object to update.
+     * @param user User object to update.
      * @param userRegisterDTO UserRegisterDto object containing new user information.
      */
     protected void setUserFieldsFromDto(User user, UserRegisterDto userRegisterDTO) {
@@ -59,7 +60,7 @@ public class UserMapper {
     /**
      * Sets fields from a User object to a UserOutDto object.
      *
-     * @param user       User object to retrieve information from.
+     * @param user User object to retrieve information from.
      * @param userOutDto UserOutDto object to update.
      */
     protected void setFieldsFormObjectToOutDto(User user, UserOutDto userOutDto) {
@@ -69,6 +70,7 @@ public class UserMapper {
         userOutDto.setLastName(user.getLastName());
         userOutDto.setRoles(user.getRoles());
     }
+
     /**
      * Converts a UserUpdateDto object to a User object for update.
      *
@@ -85,13 +87,13 @@ public class UserMapper {
      * Sets fields from a UserUpdateDto object to a User object for update.
      *
      * @param userDto UserUpdateDto object containing updated user information.
-     * @param user    User object to update.
+     * @param user User object to update.
      */
     protected void setFieldsFromUpdateDtoToObject(UserUpdateDto userDto, User user) {
         user.setId(userDto.getId());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
-        if (ValidationUtil.isNotEmpty(userDto.getNewPassword())) {
+        if (DataUtil.isNotEmpty(userDto.getNewPassword())) {
             user.setPassword(userDto.getNewPassword());
         }
     }

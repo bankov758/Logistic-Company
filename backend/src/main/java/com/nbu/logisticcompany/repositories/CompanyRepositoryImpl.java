@@ -74,7 +74,7 @@ public class CompanyRepositoryImpl extends AbstractRepository<Company> implement
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(" select new com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto " +
                             " (employee.id, employee.username, employee.firstName," +
-                            " employee.lastName, employee.company.name) from Employee employee " +
+                            " employee.lastName, employee.company.name) from OfficeEmployee employee " +
                             " where employee.company.id = :companyId", CompanyEmployeesDto.class)
                     .setParameter("companyId", companyId)
                     .getResultList();

@@ -10,6 +10,7 @@ import com.nbu.logisticcompany.mappers.UserMapper;
 import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.nbu.logisticcompany.utils.DataUtil.getDefaultMessages;
 
 @RestController
 @RequestMapping("/api/users")
@@ -51,9 +54,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody UserRegisterDto userRegisterDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody UserRegisterDto userRegisterDTO, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+        }
         try {
-            User user = userMapper.DtoToObject(userRegisterDTO);
+            User user = userMapper.dtoToObject(userRegisterDTO);
             userService.create(user);
             return ResponseEntity.ok().body(userRegisterDTO);
         } catch (IOException e) {
@@ -63,7 +69,10 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<?> update(HttpSession session,
-                                    @Valid @RequestBody UserUpdateDto userToUpdate) {
+                                    @Valid @RequestBody UserUpdateDto userToUpdate, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+        }
         User updater = authenticationHelper.tryGetUser(session);
         User user = userMapper.UpdateDtoToUser(userToUpdate);
         userService.update(user, updater);
@@ -73,6 +82,7 @@ public class UserController {
     @PutMapping("/add-role")
     public User addRole(HttpSession session,
                         @Valid @RequestBody UserRole userRole) {
+
         User updater = authenticationHelper.tryGetUser(session);
         User user = userService.getById(userRole.getUserId());
         userService.addRole(user, userRole.getRole(), updater);

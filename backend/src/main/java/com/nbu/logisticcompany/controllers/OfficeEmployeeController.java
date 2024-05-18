@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.nbu.logisticcompany.utils.DataUtil.getDefaultMessages;
+
 @RestController
 @RequestMapping("/api/office-employees")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -78,6 +80,9 @@ public class OfficeEmployeeController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody OfficeEmployeeRegisterDto officeEmployeeRegisterDto,
                                     BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(result));
+        }
         ValidationUtil.validate(result);
         OfficeEmployee officeEmployee = officeEmployeeMapper.DtoToObject(officeEmployeeRegisterDto);
         officeEmployeeService.create(officeEmployee);

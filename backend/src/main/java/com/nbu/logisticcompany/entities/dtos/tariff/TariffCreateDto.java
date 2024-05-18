@@ -1,15 +1,18 @@
 package com.nbu.logisticcompany.entities.dtos.tariff;
 
-import com.nbu.logisticcompany.entities.Company;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.Positive;
 
 public class TariffCreateDto {
 
 
-
+    @Positive(message = "The price per kilogram has to be a positive number")
     private float pricePerKG;
-
+    @Positive(message = "The discount percentage has to be a postive number")
+    @Range(min = 0, max = (99/100) , message = "Discount has to be 99% at most (there's no such thing as a free lunch) ")
     private float officeDiscount;
-
+    @Positive(message = "ID has to be a positive number")
     private int companyID;
 
     public TariffCreateDto() {
