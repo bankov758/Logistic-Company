@@ -25,6 +25,13 @@ public class AuthenticationHelper {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Attempts to retrieve the currently logged-in user from the session.
+     *
+     * @param session the HTTP session
+     * @return the currently logged-in user
+     * @throws AuthenticationFailureException if no user is logged in
+     */
     public User tryGetUser(HttpSession session) {
         User currentUser = (User) session.getAttribute(LOGGED_USER_KEY);
         if (currentUser == null) {
@@ -33,6 +40,15 @@ public class AuthenticationHelper {
         return userService.getByUsername(currentUser.getUsername());
     }
 
+    /**
+     * Verifies the authentication of a user based on the provided username and password.
+     * Hash the user's password on login if the user existed before the implementation of the passwordEncoder.
+     *
+     * @param username the username
+     * @param password the password
+     * @return the authenticated user
+     * @throws AuthenticationFailureException if authentication fails due to incorrect username or password
+     */
     public User verifyAuthentication(String username, String password) {
         try {
             User user = userService.getByUsername(username);

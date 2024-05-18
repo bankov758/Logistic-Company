@@ -8,6 +8,9 @@ import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+/**
+ * Utility class for common data-related operations.
+ */
 public class DataUtil {
 
     /**
