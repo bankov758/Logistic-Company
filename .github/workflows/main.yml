@@ -30,7 +30,9 @@ jobs:
       #       ${{ runner.os }}-gradle-
 
       - name: Unit Tests
-        run: .backend/gradlew test
+        working-directory: ./backend
+        run: ./gradlew test
 
       - name: Build the application
-        run: .backend/gradlew
+        working-directory: ./backend
+        run: ./gradlew
