@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 public class OfficeEmployeeMapper extends UserMapper {
 
     private final CompanyService companyService;
+
     private final OfficeService officeService;
+
     private final OfficeEmployeeService officeEmployeeService;
 
     @Autowired
