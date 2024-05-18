@@ -152,7 +152,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         Tariff tariff = tariffsService.getByCompany(shipment.getCompany().getId());
         double shipmentPrice = shipment.getWeight() * DEFAULT_PRICE_PER_KG;
         if (tariff != null) {
-            double discountMultiplier = 1;
+            double discountMultiplier = 0;
             if (shipment.isSentFromOffice() && shipment.isReceivedFromOffice()) {
                 discountMultiplier = DataUtil.getPrecision2Double(2 * (tariff.getOfficeDiscount() / 100));
             } else if (shipment.isSentFromOffice() || shipment.isReceivedFromOffice()) {

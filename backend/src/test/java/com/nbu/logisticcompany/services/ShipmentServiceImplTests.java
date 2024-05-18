@@ -223,13 +223,12 @@ class ShipmentServiceImplTests {
         tariff.setOfficeDiscount(20);
         tariff.setPricePerKG(5);
         Shipment mockShipment = ShipmentMockData.createShipment();
-        mockShipment.setSentFromOffice(true);
         mockShipment.setWeight(1000);
         Mockito.when(tariffsService.getByCompany(Mockito.anyInt())).thenReturn(tariff);
 
         shipmentService.applyTariff(mockShipment);
 
-        Assertions.assertEquals(4000, mockShipment.getPrice());
+        Assertions.assertEquals(5000, mockShipment.getPrice());
     }
 
     @Test
