@@ -2,6 +2,8 @@ import React from "react";
 import type {Metadata} from "next";
 import {Source_Sans_3} from "next/font/google";
 import "@/styles/globals.css";
+import TheHeader from "@/components/layout/TheHeader";
+import {getSession} from "@/lib/auth";
 
 const source_sans_3 = Source_Sans_3({
     weight: ["400", "600", "700"],
@@ -32,6 +34,7 @@ export default async function RootLayout({
 				<div id="overlay"/>
 				<div id="backdrop"/>
 				<main className="container flex flex-col flex-grow justify-start items-center gap-y-4 w-full my-6">
+                    {await getSession() && <TheHeader/>}
 					{children}
 				</main>
 			</body>

@@ -121,7 +121,7 @@ const EmployeeInterface: React.FC = () => {
                 isLoading ?
                     <SkeletonLoadingAnimation header="tabs" layoutItems={5}/> :
                     <Fragment>
-                        <div className='flex justify-start items-center gap-x-4'>
+                        <div className='flex justify-start px-2 py-4 items-center gap-x-4'>
                             <h3>Welcome, {session?.username || "user"}! You&apos;re logged in as employee.</h3>
                             <br/>
                             <Button fill onClick={() => setShowCreateOrderDialog(true)}>Create an order</Button>
