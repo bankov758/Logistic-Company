@@ -11,7 +11,8 @@ public class CompanyPeriodDto {
 
     @NotNull(message = "Please enter end of period")
     private LocalDateTime periodEnd;
-    @Positive(message = "ID has to be a positive number")
+
+    @Positive(message = "Company ID has to be a positive number")
     int companyId;
 
     public CompanyPeriodDto() {

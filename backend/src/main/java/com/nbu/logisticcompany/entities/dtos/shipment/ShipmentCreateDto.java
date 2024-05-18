@@ -6,16 +6,16 @@ import java.time.LocalDate;
 public class ShipmentCreateDto {
 
     @NotNull(message = "Address field is mandatory")
-    @Size(min = 3, max = 64, message = "The address should be between 3 and 64 symbols")
+    @Size(min = 3, max = 64, message = "Departure address should be between 3 and 64 symbols")
     private String departureAddress;
 
     @NotNull(message = "Address field is mandatory")
-    @Size(min = 3, max = 64, message = "The address should be between 3 and 64 symbols")
+    @Size(min = 3, max = 64, message = "Arrival address should be between 3 and 64 symbols")
     private String arrivalAddress;
 
     @NotNull(message = "Please enter weight")
     @DecimalMin(value = "0.0", inclusive = false, message = "Weight has to be greater than 0")
-    @DecimalMax(value = "1000.0", inclusive = true, message = "Weight has to be less than or equal to 1000")
+    @DecimalMax(value = "1000.0", message = "Weight has to be less than or equal to 1000")
     @Positive(message = "Weight has to be a positive number")
     private double weight;
 
@@ -31,7 +31,7 @@ public class ShipmentCreateDto {
     @Positive(message = " Employee ID has to be a positive number")
     private int employeeId;
 
-    @FutureOrPresent(message = "Please enter a current or future date")
+    @FutureOrPresent(message = "Please enter a current or future sent date")
     private LocalDate sentDate;
 
     @NotNull(message = "Please enter the courier's id")

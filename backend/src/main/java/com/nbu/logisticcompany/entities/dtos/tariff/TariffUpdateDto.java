@@ -9,13 +9,16 @@ import javax.validation.constraints.Positive;
 public class TariffUpdateDto {
 
     private int id;
+
     @Positive(message = "The price per kilogram has to be a positive number")
     private float pricePerKg;
-    @Positive(message = "The discount percentage has to be a postive number")
-    @Range(min = 0, max = (99/100) , message = "Discount has to be 99% at most (there's no such thing as a free lunch) ")
+
+    @Positive(message = "The discount percentage has to be a positive number")
+    @Range(min = 0, max = 99, message = "Discount has to be 99% at most (there's no such thing as a free lunch) ")
     private float officeDiscount;
-    @Positive(message = "ID has to be a positive number")
-    @NotNull(message = "Field is mandatory")
+
+    @Positive(message = "Company ID has to be a positive number")
+    @NotNull(message = "Company ID is mandatory")
     private Company companyId;
 
     public TariffUpdateDto() {

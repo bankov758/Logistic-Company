@@ -6,30 +6,31 @@ import javax.validation.constraints.Positive;
 
 public class TariffCreateDto {
 
-
     @Positive(message = "The price per kilogram has to be a positive number")
-    private float pricePerKG;
-    @Positive(message = "The discount percentage has to be a postive number")
-    @Range(min = 0, max = (99/100) , message = "Discount has to be 99% at most (there's no such thing as a free lunch) ")
+    private float pricePerKg;
+
+    @Positive(message = "The discount percentage has to be a positive number")
+    @Range(min = 0, max = 99, message = "Discount has to be 99% at most (there's no such thing as a free lunch) ")
     private float officeDiscount;
-    @Positive(message = "ID has to be a positive number")
-    private int companyID;
+
+    @Positive(message = "Company ID has to be a positive number")
+    private int companyId;
 
     public TariffCreateDto() {
     }
 
-    public TariffCreateDto(float pricePerKG, float officeDiscount, int companyID) {
-        this.pricePerKG = pricePerKG;
+    public TariffCreateDto(float pricePerKg, float officeDiscount, int companyId) {
+        this.pricePerKg = pricePerKg;
         this.officeDiscount = officeDiscount;
-        this.companyID = companyID;
+        this.companyId = companyId;
     }
 
-    public float getPricePerKG() {
-        return pricePerKG;
+    public float getPricePerKg() {
+        return pricePerKg;
     }
 
-    public void setPricePerKG(float pricePerKG) {
-        this.pricePerKG = pricePerKG;
+    public void setPricePerKg(float pricePerKG) {
+        this.pricePerKg = pricePerKG;
     }
 
     public float getOfficeDiscount() {
@@ -40,11 +41,11 @@ public class TariffCreateDto {
         this.officeDiscount = officeDiscount;
     }
 
-    public int getCompanyID() {
-        return companyID;
+    public int getCompanyId() {
+        return companyId;
     }
 
-    public void setCompanyID(int     companyID) {
-        this.companyID = companyID;
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }
