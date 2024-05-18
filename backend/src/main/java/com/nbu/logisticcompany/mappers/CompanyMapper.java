@@ -29,7 +29,7 @@ public class CompanyMapper {
      */
     public Company DtoToObject(CompanyCreateDto companyCreateDTO) throws IOException {
         Company company = new Company();
-        ompany.setName(companyCreateDTO.getName());
+        company.setName(companyCreateDTO.getName());
         return company;
     }
 
