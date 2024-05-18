@@ -31,10 +31,15 @@ export const adminColumns: column[][] = [
             id: 2,
         },
         {
+            title: "Office",
+            code: "officeAddress",
+            id: 3,
+        },
+        {
             title: "Actions",
             code: "adminInterfaceActions",
             hide: true,
-            id: 3,
+            id: 4,
         }
     ],
     [//courier column
@@ -62,15 +67,10 @@ export const adminColumns: column[][] = [
             id: 1,
         },
         {
-            title: "Company Name",
-            code: "name",
-            id: 2,
-        },
-        {
             title: "Actions",
             code: "adminInterfaceActions",
             hide: true,
-            id: 3,
+            id: 2,
         },
     ],
 ]

@@ -3,6 +3,9 @@ import {useFormState} from "react-dom";
 
 import {selectorItem} from "@/components/UI/DataSelectorWrapper";
 import {addOffice, addTariff, deleteCompany, editCompany} from "@/lib/adminActions";
+import {getCookies} from "@/lib/auth";
+import axios from "@/lib/axios";
+import {AxiosError} from "axios";
 
 type ShowCompanyInfoProps = {
     companyData: selectorItem[],
@@ -23,6 +26,7 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
     const [updatedCompanyName, setUpdatedCompanyName] = useState('');
     const [officeLocation, setOfficeLocation] = useState('');
     const [tariff, setTariff] = useState<number>(0);
+    const [showTariff, setShowTariff] = useState<{pricePerKG:number, officeDiscount: number } | null | undefined>({ pricePerKG: 0, officeDiscount: 0})
     const [discount, setDiscount] = useState<number>(0);
 
     const [deleteCompanyState, deleteCompanyAction] = useFormState(deleteCompany.bind(null, selectedCompany), { message: '', errors: ''})
@@ -50,81 +54,119 @@ const ShowCompanyInfo: React.FC<ShowCompanyInfoProps> = ({
 
     }, [deleteCompanyState, editCompanyCompanyState, addOfficeState, addTariffState, onSuccessDelete, onSuccessEdit, onSuccessAddOffice, onSuccessAddTariff]);
 
-    return (
-        <>
-            <div className="flex items-center  gap-x-2 pt-3 pb-4">
+    useEffect(() => {
+        const setTariff = async () => {
+                try {
+                    const jsession = await getCookies();
 
-                <label className="block  text-gray-500">Delete this company:</label>
+                    const response = await axios.get<{
+                        pricePerKG: number;
+                        officeDiscount: number;
+                        companyID: { id: number }
+                    }[]>(`/tariffs`, {
+                        headers: {
+                            Cookie: `JSESSIONID=${jsession?.value}`
+                        }
+                    });
 
-                <button
-                    className="action_btn_red px-12 py-1.5 "
-                    onClick={() => deleteCompanyAction()}
-                >
-                    DELETE COMPANY
-                </button>
-            </div>
+                    const foundTariff = response.data.find(tariff => tariff.companyID.id === selectedCompany.id)
+                    console.log(foundTariff)
+                    if (foundTariff) setShowTariff( {
+                        pricePerKG: foundTariff.pricePerKG,
+                        officeDiscount: foundTariff.officeDiscount
+                    })
 
-            <div className="flex items-center  gap-x-2 pb-4">
-                <label htmlFor="company_name_edit" className="block text-gray-500">Change company name:</label>
+                } catch (err) {
+                    if (err instanceof AxiosError) {
+                        throw err;
+                    }
+                }
+        }
+        setTariff();
+        }, []);
 
-                <input type="text" id="company_name_edit" name="company_name_edit" className="input-info-dialog"
-                       onChange={(e) => setUpdatedCompanyName(e.target.value)}
-                       placeholder="Speedy "/>
 
-                <div className='flex py-3 text-gray-500'>
+        return (
+            <>
+                <div className="flex items-center  gap-x-2 pt-3 pb-4">
 
-                    <button
-                        className="action_btn_green px-6 py-2"
-                        onClick={() => editCompanyAction()}
-                    >
-                        Edit
-                    </button>
-                </div>
-            </div>
-
-            <div className="flex items-center gap-x-2 pb-4">
-                <label htmlFor="office_location" className="block text-gray-500">Add a new office location:</label>
-
-                <input type="text" id="office_location" name="office_location" className="input-info-dialog"
-                       onChange={(e) => setOfficeLocation(e.target.value)}
-                       placeholder="Sofia"/>
-
-                <div className='flex py-3 text-gray-500'>
+                    <label className="block  text-gray-500">Delete this company:</label>
 
                     <button
-                        className="action_btn_blue px-3 py-1.5"
-                        onClick={() => addOfficeAction()}
+                        className="action_btn_red px-12 py-1.5 "
+                        onClick={() => deleteCompanyAction()}
                     >
-                        Add
+                        DELETE COMPANY
                     </button>
                 </div>
-            </div>
 
-            <div className="flex items-center gap-x-2 pb-4">
-                <label htmlFor="tariff" className="block text-gray-500">Set price per kilogram:</label>
+                <div className="flex items-center  gap-x-2 pb-4">
+                    <label htmlFor="company_name_edit" className="block text-gray-500">Change company name:</label>
 
-                <input type="text" id="tariff" name="tariff" className="input-info-dialog"
-                       onChange={(e) => setTariff(Number(e.target.value))}
-                       placeholder="5"/>
+                    <input type="text" id="company_name_edit" name="company_name_edit" className="input-info-dialog"
+                           onChange={(e) => setUpdatedCompanyName(e.target.value)}
+                           placeholder={selectedCompany.title}/>
 
-                <label htmlFor="discount" className="block text-gray-500">Set user discount:</label>
+                    <div className='flex py-3 text-gray-500'>
 
-                <input type="text" id="discount" name="discount" className="input-info-dialog"
-                       onChange={(e) => setDiscount(Number(e.target.value))}
-                       placeholder="10"/>
-
-                <div className='flex py-3 text-gray-500'>
-
-                    <button
-                        className="action_btn_blue px-3 py-1.5"
-                        onClick={() => addTariffAction()}
-                    >
-                        Set
-                    </button>
+                        <button
+                            className="action_btn_green px-6 py-2"
+                            onClick={() => editCompanyAction()}
+                        >
+                            Edit
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </>
-    );
+
+                <div className="flex items-center gap-x-2 pb-4">
+                    <label htmlFor="office_location" className="block text-gray-500">Add a new office location:</label>
+
+                    <input type="text" id="office_location" name="office_location" className="input-info-dialog"
+                           onChange={(e) => setOfficeLocation(e.target.value)}
+                           placeholder="Sofia"/>
+
+                    <div className='flex py-3 text-gray-500'>
+
+                        <button
+                            className="action_btn_blue px-3 py-1.5"
+                            onClick={() => addOfficeAction()}
+                        >
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div className="flex items-center gap-x-6 pb-4">
+                    <label className="block text-gray-500"> Current price per kg:  {showTariff?.pricePerKG} </label>
+                    <label className="block text-gray-500"> Current discount:  {showTariff?.officeDiscount} </label>
+                </div>
+                <div className="flex items-center gap-x-2 pb-4 justify-center">
+                    <label htmlFor="tariff" className="block text-gray-500">Set price per kilogram:</label>
+
+                    <input type="text" id="tariff" name="tariff" className="input-info-dialog"
+                           onChange={(e) => setTariff(Number(e.target.value))}
+                           placeholder={String(showTariff?.pricePerKG)}/>
+
+                    <label htmlFor="discount" className="block text-gray-500">Set discount:</label>
+
+                    <input type="text" id="discount" name="discount" className="input-info-dialog"
+                           onChange={(e) => setDiscount(Number(e.target.value))}
+                           placeholder={String(showTariff?.officeDiscount)}/>
+
+                    <div className='flex py-3 text-gray-500'>
+
+                        <button
+                            className="action_btn_blue px-3 py-1.5"
+                            onClick={() => addTariffAction()}
+                        >
+                            Set
+                        </button>
+                    </div>
+
+                </div>
+
+
+            </>
+        );
 }
 
 export default ShowCompanyInfo;
