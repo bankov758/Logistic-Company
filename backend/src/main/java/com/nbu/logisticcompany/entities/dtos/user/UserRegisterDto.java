@@ -1,5 +1,7 @@
 package com.nbu.logisticcompany.entities.dtos.user;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class UserRegisterDto {
@@ -13,9 +15,12 @@ public class UserRegisterDto {
     @Size(min = 2, max = 32, message = "Last name should be between 2 and 32 symbols")
     private String lastName;
 
+
     @Size(min = 8, message = "Password should be at least 8 symbols")
     private String password;
 
+    @NotNull(message = "Please confirm password")
+    @NotEmpty(message = "cannot be empty")
     private String confirmPassword;
 
     public UserRegisterDto() {

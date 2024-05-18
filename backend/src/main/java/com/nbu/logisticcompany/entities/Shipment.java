@@ -1,8 +1,6 @@
 package com.nbu.logisticcompany.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -16,14 +14,12 @@ public class Shipment {
     private int id;
 
     @Column(name = "departure_address")
-    @NotNull(message = "Departure address can not be null")
     private String departureAddress;
 
     @Column(name = "arrival_address")
     private String arrivalAddress;
 
     @Column(name = "weight")
-    @Positive(message = "Weight must be a positive number")
     private double weight;
 
     @ManyToOne
@@ -45,7 +41,6 @@ public class Shipment {
     private boolean isReceivedFromOffice;
 
     @Column(name = "price")
-    @Positive(message = "Price must be a positive number")
     private double price;
 
     @Column(name = "sent_date")

@@ -8,7 +8,6 @@ import com.nbu.logisticcompany.exceptions.InvalidDataException;
 import com.nbu.logisticcompany.exceptions.UnauthorizedOperationException;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
-import com.nbu.logisticcompany.services.interfaces.CourierService;
 import com.nbu.logisticcompany.services.interfaces.OfficeEmployeeService;
 import com.nbu.logisticcompany.utils.Action;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +53,15 @@ public class OfficeEmployeeServiceImpl implements OfficeEmployeeService {
      */
     @Override
     public void create(OfficeEmployee officeEmployee) {
+        boolean duplicateUser = true;
+        try {
+            officeEmployeeRepository.getByField("username", officeEmployee.getUsername());
+        } catch (EntityNotFoundException e) {
+            duplicateUser = false;
+        }
+        if (duplicateUser) {
+            throw new DuplicateEntityException("User", "username", officeEmployee.getUsername());
+        }
         if (officeEmployee.getOffice().getCompany().getId() != officeEmployee.getCompany().getId()){
             throw new InvalidDataException("Office employee company and office company do not match");
         }

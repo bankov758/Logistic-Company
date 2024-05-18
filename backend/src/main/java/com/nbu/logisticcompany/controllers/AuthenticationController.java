@@ -12,15 +12,14 @@ import com.nbu.logisticcompany.services.interfaces.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.stream.Stream;
 
 import static com.nbu.logisticcompany.controllers.helpers.AuthenticationHelper.LOGGED_USER_KEY;
+import static com.nbu.logisticcompany.utils.DataUtil.getDefaultMessages;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -87,8 +86,6 @@ public class AuthenticationController {
         }
     }
 
-    private Stream<String> getDefaultMessages(BindingResult errors) {
-        return errors.getFieldErrors().stream().map(FieldError::getDefaultMessage);
-    }
+
 
 }

@@ -1,12 +1,11 @@
 package com.nbu.logisticcompany.services;
 
-import java.util.Optional;
-
 import com.nbu.logisticcompany.entities.Company;
 import com.nbu.logisticcompany.entities.Office;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
+import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.exceptions.InvalidDataException;
 import com.nbu.logisticcompany.mock.OfficeMockData;
 import com.nbu.logisticcompany.mock.UserMockData;
@@ -22,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class OfficeEmployeeServiceImplTests {
@@ -39,7 +40,7 @@ class OfficeEmployeeServiceImplTests {
         officeEmployeeService.getById(Mockito.anyInt());
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
-            .getById(Mockito.anyInt());
+                .getById(Mockito.anyInt());
     }
 
     @Test
@@ -47,7 +48,7 @@ class OfficeEmployeeServiceImplTests {
         officeEmployeeService.getAll(Optional.empty());
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
-            .getAll();
+                .getAll();
     }
 
     @Test
@@ -55,7 +56,7 @@ class OfficeEmployeeServiceImplTests {
         officeEmployeeService.getByUsername("test username");
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
-            .getByField("username", "test username");
+                .getByField("username", "test username");
     }
 
     @Test
@@ -64,11 +65,14 @@ class OfficeEmployeeServiceImplTests {
         Office office = OfficeMockData.createOffice(company);
         OfficeEmployee employee = UserMockData.createMockOfficeEmployee(company);
         employee.setOffice(office);
+        employee.setUsername("test username");
+        Mockito.when(officeEmployeeRepository.getByField("username", employee.getUsername()))
+                .thenThrow(EntityNotFoundException.class);
 
         officeEmployeeService.create(employee);
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
-            .create(Mockito.any());
+                .create(Mockito.any());
     }
 
     @Test
@@ -78,9 +82,11 @@ class OfficeEmployeeServiceImplTests {
         Office office = OfficeMockData.createOffice(company);
         OfficeEmployee employee = UserMockData.createMockOfficeEmployee(company2);
         employee.setOffice(office);
+        Mockito.when(officeEmployeeRepository.getByField("username", employee.getUsername()))
+                .thenThrow(EntityNotFoundException.class);
 
         Assertions.assertThrows(InvalidDataException.class,
-                                () -> officeEmployeeService.create(employee));
+                () -> officeEmployeeService.create(employee));
     }
 
     @Test
@@ -94,7 +100,7 @@ class OfficeEmployeeServiceImplTests {
             officeEmployeeService.update(employee, new User());
 
             mockedStatic.verify(() -> ValidationUtil.validateOwnerUpdate(Mockito.anyInt(), Mockito.anyInt()),
-                                Mockito.times(1));
+                    Mockito.times(1));
         }
     }
 
@@ -107,7 +113,7 @@ class OfficeEmployeeServiceImplTests {
         employee.setOffice(office);
 
         Assertions.assertThrows(InvalidDataException.class,
-                                () -> officeEmployeeService.update(employee, new User()));
+                () -> officeEmployeeService.update(employee, new User()));
     }
 
     @Test
@@ -116,7 +122,7 @@ class OfficeEmployeeServiceImplTests {
             officeEmployeeService.delete(1, new User());
 
             mockedStatic.verify(() -> ValidationUtil.validateOwnerDelete(1, new User()),
-                                Mockito.times(1));
+                    Mockito.times(1));
         }
     }
 
@@ -126,9 +132,9 @@ class OfficeEmployeeServiceImplTests {
             officeEmployeeService.demoteToUser(1, new User());
 
             mockedStatic.verify(() -> ValidationUtil.validateAdminAction(Mockito.any(User.class),
-                                                                         Mockito.eq(OfficeEmployee.class),
-                                                                         Mockito.eq(Action.UPDATE)),
-                                Mockito.times(1));
+                            Mockito.eq(OfficeEmployee.class),
+                            Mockito.eq(Action.UPDATE)),
+                    Mockito.times(1));
         }
     }
 
@@ -140,9 +146,9 @@ class OfficeEmployeeServiceImplTests {
             officeEmployeeService.makeCourier(1, new User());
 
             mockedStatic.verify(() -> ValidationUtil.validateAdminAction(Mockito.any(User.class),
-                                                                         Mockito.eq(OfficeEmployee.class),
-                                                                         Mockito.eq(Action.UPDATE)),
-                                Mockito.times(1));
+                            Mockito.eq(OfficeEmployee.class),
+                            Mockito.eq(Action.UPDATE)),
+                    Mockito.times(1));
         }
     }
 
@@ -151,7 +157,7 @@ class OfficeEmployeeServiceImplTests {
         Mockito.when(courierRepository.isAlreadyCourier(Mockito.anyInt())).thenReturn(true);
 
         Assertions.assertThrows(DuplicateEntityException.class,
-                                () -> officeEmployeeService.makeCourier(1, UserMockData.createMockAdmin()));
+                () -> officeEmployeeService.makeCourier(1, UserMockData.createMockAdmin()));
     }
 
     @Test
@@ -159,7 +165,7 @@ class OfficeEmployeeServiceImplTests {
         officeEmployeeService.makeCourier(1, UserMockData.createMockAdmin());
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
-            .removeUserFromOfficeEmployees(Mockito.anyInt());
+                .removeUserFromOfficeEmployees(Mockito.anyInt());
     }
 
     @Test
@@ -167,7 +173,7 @@ class OfficeEmployeeServiceImplTests {
         officeEmployeeService.makeCourier(1, UserMockData.createMockAdmin());
 
         Mockito.verify(officeEmployeeRepository, Mockito.times(1))
-            .makeCourier(Mockito.anyInt());
+                .makeCourier(Mockito.anyInt());
     }
 
 }

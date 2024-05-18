@@ -4,6 +4,7 @@ import com.nbu.logisticcompany.entities.Courier;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
+import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
 import com.nbu.logisticcompany.services.interfaces.CourierService;
@@ -46,6 +47,15 @@ public class CourierServiceImpl implements CourierService {
 
     @Override
     public void create(Courier courier) {
+        boolean duplicateUser = true;
+        try {
+            courierRepository.getByField("username", courier.getUsername());
+        } catch (EntityNotFoundException e) {
+            duplicateUser = false;
+        }
+        if (duplicateUser) {
+            throw new DuplicateEntityException("User", "username", courier.getUsername());
+        }
         courierRepository.create(courier);
     }
 

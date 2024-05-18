@@ -1,11 +1,17 @@
 package com.nbu.logisticcompany.entities.dtos.company;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 public class CompanyPeriodDto {
 
+    @NotNull(message = "Please enter start of period")
     private LocalDateTime periodStart;
+
+    @NotNull(message = "Please enter end of period")
     private LocalDateTime periodEnd;
+    @Positive(message = "ID has to be a positive number")
     int companyId;
 
     public CompanyPeriodDto() {

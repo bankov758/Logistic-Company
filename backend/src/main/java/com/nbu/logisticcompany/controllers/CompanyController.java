@@ -12,7 +12,6 @@ import com.nbu.logisticcompany.entities.dtos.shipment.ShipmentOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.ClientOutDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyCouriersDto;
 import com.nbu.logisticcompany.entities.dtos.user.CompanyEmployeesDto;
-import com.nbu.logisticcompany.entities.dtos.user.CourierOutDto;
 import com.nbu.logisticcompany.mappers.CompanyMapper;
 import com.nbu.logisticcompany.mappers.OfficeMapper;
 import com.nbu.logisticcompany.mappers.ShipmentMapper;
@@ -21,6 +20,7 @@ import com.nbu.logisticcompany.services.interfaces.OfficeService;
 import com.nbu.logisticcompany.services.interfaces.ShipmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.nbu.logisticcompany.utils.DataUtil.getDefaultMessages;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -113,8 +115,12 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(HttpSession session, @Valid @RequestBody CompanyCreateDto companyCreateDTO) {
+    public ResponseEntity<?> create(HttpSession session, @Valid @RequestBody CompanyCreateDto companyCreateDTO, BindingResult errors) {
+
         try {
+            if (errors.hasErrors()) {
+                return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+            }
             User creator = authenticationHelper.tryGetUser(session);
             Company company = companyMapper.DtoToObject(companyCreateDTO);
             companyService.create(company, creator);
@@ -125,7 +131,10 @@ public class CompanyController {
     }
 
     @PutMapping()
-    public ResponseEntity<?> update(HttpSession session, @Valid @RequestBody CompanyUpdateDto companyUpdateDTO) {
+    public ResponseEntity<?> update(HttpSession session, @Valid @RequestBody CompanyUpdateDto companyUpdateDTO,BindingResult errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(getDefaultMessages(errors));
+        }
         User updater = authenticationHelper.tryGetUser(session);
         Company company = companyMapper.UpdateDtoToToCompany(companyUpdateDTO);
         companyService.update(company, updater);

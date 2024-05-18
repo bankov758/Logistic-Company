@@ -1,11 +1,10 @@
 package com.nbu.logisticcompany.services;
 
-import java.util.Optional;
-
 import com.nbu.logisticcompany.entities.Courier;
 import com.nbu.logisticcompany.entities.OfficeEmployee;
 import com.nbu.logisticcompany.entities.User;
 import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
+import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.mock.UserMockData;
 import com.nbu.logisticcompany.repositories.interfaces.CourierRepository;
 import com.nbu.logisticcompany.repositories.interfaces.OfficeEmployeeRepository;
@@ -19,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class CourierServiceImplTests {
@@ -57,7 +58,12 @@ class CourierServiceImplTests {
 
     @Test
     void createShouldCallRepository() {
-        courierService.create(new Courier());
+        Courier courier = new Courier();
+        courier.setId(1);
+        courier.setUsername("test username");
+        Mockito.when(courierRepository.getByField("username", courier.getUsername())).thenThrow(EntityNotFoundException.class);
+
+        courierService.create(courier);
 
         Mockito.verify(courierRepository, Mockito.times(1))
             .create(Mockito.any());
