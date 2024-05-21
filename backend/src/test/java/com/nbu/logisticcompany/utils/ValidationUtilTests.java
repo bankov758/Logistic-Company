@@ -93,7 +93,8 @@ public class ValidationUtilTests {
     public void testValidateOwnerUpdateMethodThrowsWhenUpdaterIsNotOwner() {
         int userToUpdateId = 1;
         int updaterId = 2;
-        Assertions.assertThrows(UnauthorizedOperationException.class, () -> ValidationUtil.validateOwnerUpdate(userToUpdateId, updaterId));
+        Assertions.assertThrows(UnauthorizedOperationException.class,
+                () -> ValidationUtil.validateOwnerUpdate(userToUpdateId, updaterId));
     }
 
     @Test
@@ -101,7 +102,8 @@ public class ValidationUtilTests {
         int userToDeleteId = 1;
         User destroyer = new User();
         destroyer.setId(2);
-        Assertions.assertThrows(UnauthorizedOperationException.class, () -> ValidationUtil.validateOwnerDelete(userToDeleteId, destroyer));
+        Assertions.assertThrows(UnauthorizedOperationException.class,
+                () -> ValidationUtil.validateOwnerDelete(userToDeleteId, destroyer));
     }
 
     @Test
@@ -110,12 +112,14 @@ public class ValidationUtilTests {
         user.setRoles(Collections.singleton(Role.USER));
         Class<User> entityClass = User.class;
         Action action = Action.CREATE;
-        Assertions.assertThrows(UnauthorizedOperationException.class, () -> ValidationUtil.validateAdminAction(user, entityClass, action));
+        Assertions.assertThrows(UnauthorizedOperationException.class,
+                () -> ValidationUtil.validateAdminAction(user, entityClass, action));
     }
 
     @Test
     public void testValidateAdminActionMethodThrowsWhenParametersAreNull() {
-        Assertions.assertThrows(UnauthorizedOperationException.class, () -> ValidationUtil.validateAdminAction(null, null, null));
+        Assertions.assertThrows(UnauthorizedOperationException.class,
+                () -> ValidationUtil.validateAdminAction(null, null, null));
     }
 
     @Test
@@ -126,7 +130,8 @@ public class ValidationUtilTests {
         user.setId(1);
         Mockito.when(courierService.getById(user.getId())).thenReturn(new Courier());
         Class<User> entityClass = User.class;
-        Assertions.assertThrows(UnauthorizedOperationException.class, () -> validationUtil.authorizeOfficeEmployeeAction(entityCompanyId, user, entityClass));
+        Assertions.assertThrows(UnauthorizedOperationException.class,
+                () -> validationUtil.authorizeOfficeEmployeeAction(entityCompanyId, user, entityClass));
     }
 
     @Test
@@ -136,7 +141,8 @@ public class ValidationUtilTests {
         user.setRoles(Collections.singleton(Role.EMPLOYEE));
         user.setId(1);
         Class<User> entityClass = User.class;
-        Assertions.assertThrows(UnauthorizedOperationException.class, () -> validationUtil.authorizeOfficeEmployeeAction(entityCompanyId, user, entityClass));
+        Assertions.assertThrows(UnauthorizedOperationException.class,
+                () -> validationUtil.authorizeOfficeEmployeeAction(entityCompanyId, user, entityClass));
     }
 
     @Test

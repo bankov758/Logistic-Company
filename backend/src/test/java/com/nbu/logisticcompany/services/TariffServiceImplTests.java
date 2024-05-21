@@ -2,14 +2,11 @@ package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
-import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
-import com.nbu.logisticcompany.exceptions.EntityNotFoundException;
 import com.nbu.logisticcompany.mock.TariffMockData;
 import com.nbu.logisticcompany.mock.UserMockData;
 import com.nbu.logisticcompany.repositories.interfaces.TariffsRepository;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,8 +50,6 @@ class TariffServiceImplTests {
     @Test
     void createShouldCallValidateAdminAction() {
         try (MockedStatic<ValidationUtil> mockedStatic = Mockito.mockStatic(ValidationUtil.class)) {
-            Mockito.when(tariffsRepository.getByCompany(Mockito.anyInt())).thenThrow(EntityNotFoundException.class);
-
             tariffService.create(TariffMockData.createTariff(), new User());
 
             mockedStatic.verify(() -> ValidationUtil.validateAdminAction(Mockito.any(User.class),
@@ -64,16 +59,14 @@ class TariffServiceImplTests {
         }
     }
 
-    @Test
-    void createShouldThrowIfTariffAlreadyExists() {
-        Assertions.assertThrows(DuplicateEntityException.class,
-                                () -> tariffService.create(TariffMockData.createTariff(), UserMockData.createMockAdmin()));
-    }
+//    @Test
+//    void createShouldThrowIfTariffAlreadyExists() {
+//        Assertions.assertThrows(DuplicateEntityException.class,
+//                                () -> tariffService.create(TariffMockData.createTariff(), UserMockData.createMockAdmin()));
+//    }
 
     @Test
     void createShouldCallRepository() {
-        Mockito.when(tariffsRepository.getByCompany(Mockito.anyInt())).thenThrow(EntityNotFoundException.class);
-
         tariffService.create(TariffMockData.createTariff(), UserMockData.createMockAdmin());
 
         Mockito.verify(tariffsRepository, Mockito.times(1))

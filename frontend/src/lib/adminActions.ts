@@ -100,13 +100,13 @@ export const editCompany = async (updatedCompanyName: string, selectedCompany: s
     }
 }
 
-export const addTariff = async (companyId: number, pricePerKG: number, officeDiscount: number) => {
+export const addTariff = async (companyId: number, pricePerKg: number, officeDiscount: number) => {
 
     try {
         const requestedData = {
-            pricePerKG,
+            pricePerKg: pricePerKg,
             officeDiscount,
-            companyID: companyId
+            companyId: companyId
         }
 
         const jsession = await getCookies();

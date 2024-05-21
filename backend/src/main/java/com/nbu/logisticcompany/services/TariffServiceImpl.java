@@ -51,13 +51,8 @@ public class TariffServiceImpl implements TariffsService {
     @Override
     public void create(Tariff tariff, User creator) {
         ValidationUtil.validateAdminAction(creator, Tariff.class, Action.CREATE);
-        boolean duplicateTariff = true;
-        try {
-            tariffsRepository.getByCompany(tariff.getCompany().getId());
-        } catch (EntityNotFoundException e) {
-            duplicateTariff = false;
-        }
-        if (duplicateTariff) {
+        Tariff existingTariff = tariffsRepository.getByCompany(tariff.getCompany().getId());
+        if (existingTariff != null) {
             throw new DuplicateEntityException("Tariff", "company", tariff.getCompany().getName());
         }
         tariffsRepository.create(tariff);
