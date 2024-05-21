@@ -126,7 +126,7 @@ public class ValidationUtil {
         }
     }
 
-    private boolean isCourier(User user) {
+    public boolean isCourier(User user) {
         try {
             courierService.getById(user.getId());
         } catch (EntityNotFoundException e) {
