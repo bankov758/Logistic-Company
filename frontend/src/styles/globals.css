@@ -48,27 +48,27 @@ body, html {
     }
 }
 
-@media only screen and (max-width : 768px) {
-	.animate {
-		/*CSS transitions*/
-		-o-transition-property: none !important;
-		-moz-transition-property: none !important;
-		-ms-transition-property: none !important;
-		-webkit-transition-property: none !important;
-		transition-property: none !important;
-		/*CSS transforms*/
-		-o-transform: none !important;
-		-moz-transform: none !important;
-		-ms-transform: none !important;
-		-webkit-transform: none !important;
-		transform: none !important;
-		/*CSS animations*/
-		-webkit-animation: none !important;
-		-moz-animation: none !important;
-		-o-animation: none !important;
-		-ms-animation: none !important;
-		animation: none !important;
-	}
+@media only screen and (max-width: 768px) {
+    .animate {
+        /*CSS transitions*/
+        -o-transition-property: none !important;
+        -moz-transition-property: none !important;
+        -ms-transition-property: none !important;
+        -webkit-transition-property: none !important;
+        transition-property: none !important;
+        /*CSS transforms*/
+        -o-transform: none !important;
+        -moz-transform: none !important;
+        -ms-transform: none !important;
+        -webkit-transform: none !important;
+        transform: none !important;
+        /*CSS animations*/
+        -webkit-animation: none !important;
+        -moz-animation: none !important;
+        -o-animation: none !important;
+        -ms-animation: none !important;
+        animation: none !important;
+    }
 }
 
 @layer base {
@@ -115,15 +115,19 @@ body, html {
         padding: theme('spacing.6');
         box-shadow: theme('boxShadow.xl');
     }
+
     .input-info-dialog {
         @apply block rounded-xl border-2 p-2  placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 whitespace-pre-line
     }
+
     .order-div {
         @apply flex items-center justify-items-center justify-center gap-x-4 pb-3 mx-auto
     }
+
     .input-style {
         @apply block px-2 w-full rounded-xl border-0 py-1.5  ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6
     }
+
     .table-border {
         @apply border border-slate-300
     }
@@ -174,46 +178,50 @@ body, html {
 
     .base-btn {
         @apply bg-green-500 text-white text-sm font-bold py-[10px] px-[42px] mt-2 rounded-[10px] shadow-md
-                hover:bg-green-600
-                focus:shadow-lg 
-                disabled:opacity-[.65] disabled:cursor-not-allowed;
+        hover:bg-green-600
+        focus:shadow-lg
+        disabled:opacity-[.65] disabled:cursor-not-allowed;
     }
+
     .base-btn-blue {
-        @apply bg-blue-500 text-white text-sm font-bold py-[10px] px-[42px] rounded-[10px] shadow-md 
-                hover:bg-blue-600 
-                focus:shadow-lg 
-                disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
+        @apply bg-blue-500 text-white text-sm font-bold py-[10px] px-[42px] rounded-[10px] shadow-md
+        hover:bg-blue-600
+        focus:shadow-lg
+        disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
     }
 
     .action_btn_green {
         @apply ring ring-inset ring-green-600 ring-opacity-50 rounded-md
-            bg-green-50 text-green-700
-            text-sm 
-            px-2 py-1;
+        bg-green-50 text-green-700
+        text-sm
+        px-2 py-1
+        disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
     }
 
     .action_btn_blue {
         @apply ring ring-inset ring-blue-600 ring-opacity-50 rounded-md
-            bg-blue-50 text-blue-700
-            text-sm 
-            px-2 py-1
-            focus:shadow-sm;
+        bg-blue-50 text-blue-700
+        text-sm
+        px-2 py-1
+        focus:shadow-sm
+        disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
     }
 
     .action_btn_red {
         @apply ring ring-inset ring-red-600 ring-opacity-50 rounded-md
-            bg-red-50 text-red-700
-            text-sm 
-            px-2 py-1
-            focus:shadow-sm;
+        bg-red-50 text-red-700
+        text-sm
+        px-2 py-1
+        focus:shadow-sm
+        disabled:opacity-[.65] disabled:cursor-not-allowed disabled:bg-gray-300;
     }
 
     .action_btn_purple {
         @apply ring ring-inset ring-purple-600 ring-opacity-50 rounded-md
-            bg-red-50 text-purple-700
-            text-sm 
-            px-2 py-1
-            focus:shadow-sm;
+        bg-red-50 text-purple-700
+        text-sm
+        px-2 py-1
+        focus:shadow-sm;
     }
 
     .accessibility {

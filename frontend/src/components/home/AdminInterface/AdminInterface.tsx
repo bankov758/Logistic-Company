@@ -33,7 +33,10 @@ const AdminInterface: React.FC = () => {
     const [session, setSession] = useState<null | Session>(null);
     const [data, setData] = useState<item[][] | null>(null);
 
-    const [actionSuccessMessage, setActionSuccessMessage] = useState<{  message: string; errors: string; }>({ message: "", errors: ""})
+    const [actionSuccessMessage, setActionSuccessMessage] = useState<{ message: string; errors: string; }>({
+        message: "",
+        errors: ""
+    })
     const [error, setError] = useState<AxiosError | Error | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [tryAgain, setTryAgain] = useState<boolean>(false);
@@ -41,8 +44,9 @@ const AdminInterface: React.FC = () => {
     const [companies, setCompanies] = useState<selectorItem[]>([]);
     const [selectedCompany, setSelectedCompany] = useState<selectorItem | null>(null);
 
-    const [searchData, setSearchData ] = useState<item[] | null>(null);
-    const [isSearchingUser, setIsSearchingUser] = useState<boolean>(false);
+    const [searchData, setSearchData] = useState<item[] | null>(null);
+    const [isLoadingUser, setIsLoadingUser] = useState<boolean>(false);
+    const [isFetchedUser, setIsFetchedUser] = useState<boolean>(false);
     const [searchedUsername, setSearchedUsername] = useState("");
 
     const [showCompanyInfoDialog, setShowCompanyInfoDialog] = useState<boolean>(false)
@@ -50,7 +54,7 @@ const AdminInterface: React.FC = () => {
 
     // whenever the selectedCompany state change, the entire AdminInterface React component is re-executed
     const fetchData = useCallback(() => {
-        if( selectedCompany ) {
+        if (selectedCompany && !isFetchedUser) {
             setIsLoading(true);
             Promise.all([
                 //clients
@@ -77,24 +81,37 @@ const AdminInterface: React.FC = () => {
                     setIsLoading(false);
                 });
         }
-    }, [selectedCompany]);
+    }, [selectedCompany, isFetchedUser]);
 
-    const fetchUserData = useCallback( () => {
-        setIsSearchingUser(true);
+    const fetchUserData = useCallback(() => {
+        setIsLoadingUser(true);
         axios.get(`/users?search=${searchedUsername}`)
             .then(response => {
-                setSearchData(response.data)
-                setIsSearchingUser(false);
+                setSearchData(response.data);
+                setIsFetchedUser(true);
             })
             .catch(error => {
                 setError(error);
-                setIsSearchingUser(false);
+            })
+            .finally(() => {
+                setIsLoadingUser(false);
             });
     }, [searchedUsername])
 
+    const handleSearchUser = () => {
+        fetchUserData();
+        setData([]);
+    }
+
+    const handleClearUser = () => {
+        setSearchedUsername('');
+        setIsFetchedUser(false);
+        fetchData();
+    }
+
     useEffect(() => {
         getSession()
-            .then( async (response) => {
+            .then(async (response) => {
                 setSession(response)
                 await getAndSetCompanies();
             });
@@ -108,13 +125,13 @@ const AdminInterface: React.FC = () => {
         try {
             const companies = await getCompanies();
 
-            if( companies ) {
+            if (companies) {
                 setCompanies(companies);
             } else {
                 setError(new Error("Something went wrong!"))
             }
         } catch (error) {
-            if( error instanceof Error || error instanceof AxiosError ) setError(error)
+            if (error instanceof Error || error instanceof AxiosError) setError(error)
         }
     }
 
@@ -139,11 +156,13 @@ const AdminInterface: React.FC = () => {
     // company info dialog actions END
 
     // reset the data
-    const onActionSuccess = async (data: {  message: string; errors: string; }) => {
+    const onActionSuccess = async (data: { message: string; errors: string; }) => {
         setSelectedCompany(null);
         await getAndSetCompanies();
         setData([]);
         setSearchData([]);
+        setIsFetchedUser(false);
+        setSearchedUsername('')
         setIsLoading(false);
         setActionSuccessMessage(data)
     }
@@ -159,9 +178,9 @@ const AdminInterface: React.FC = () => {
             </Notification>
         }
         {/*Notification message*/}
-        { actionSuccessMessage && (actionSuccessMessage.message || actionSuccessMessage.errors) &&
-            <Notification status={actionSuccessMessage.message ? "success" : "error"} timeout={5000} >
-                <p>{actionSuccessMessage.message || actionSuccessMessage.errors }</p>
+        {actionSuccessMessage && (actionSuccessMessage.message || actionSuccessMessage.errors) &&
+            <Notification status={actionSuccessMessage.message ? "success" : "error"} timeout={5000}>
+                <p>{actionSuccessMessage.message || actionSuccessMessage.errors}</p>
             </Notification>
         }
 
@@ -170,11 +189,13 @@ const AdminInterface: React.FC = () => {
         </h3>
 
         {/* search for user by username BEGIN */}
-        <div className="flex justify-center gap-x-5 items-center" >
-                <label htmlFor="clientName" className="" >Search for client with name: </label>
-                <input type="text" id="clientName" name="clientName" className="input-info-dialog" placeholder="username" value={searchedUsername}
-                       onChange={(e) => setSearchedUsername(e.target.value)}/>
-                <Button fill={true} onClick={() => {fetchUserData(); setSelectedCompany(null); setData([]) }}>Search</Button>
+        <div className="flex justify-center gap-x-5 items-center">
+            <label htmlFor="clientName" className="">Search for client with name: </label>
+            <input type="text" id="clientName" name="clientName" className="input-info-dialog" placeholder="username"
+                   value={searchedUsername}
+                   onChange={(e) => setSearchedUsername(e.target.value)}/>
+            <Button disabled={searchedUsername.trim().length === 0} fill={true} onClick={handleSearchUser}>Search</Button>
+            {isFetchedUser && <Button fill={true} onClick={handleClearUser}>Clear</Button>}
         </div>
         {/* search for user by username END */}
 
@@ -186,7 +207,7 @@ const AdminInterface: React.FC = () => {
                 selectorData={companies}
                 onResubForNewData={handleSelectCompany}
             />
-            { selectedCompany &&
+            {selectedCompany &&
                 <Image
                     src={InfoIcon}
                     alt='Message'
@@ -204,14 +225,14 @@ const AdminInterface: React.FC = () => {
         {/* create company dialog  */}
         {showCreateCompanyDialog &&
             <BaseDialog title="Create a company" tryClose={() => setShowCreateCompanyDialog(false)}>
-                <CreateCompanyForm onSuccess={onSuccessCreateCompany} />
+                <CreateCompanyForm onSuccess={onSuccessCreateCompany}/>
             </BaseDialog>
         }
         {/* company info dialog */}
         {showCompanyInfoDialog && selectedCompany &&
             (
                 <BaseDialog
-                    title={ "Edit company " + selectedCompany.title + "'s information"}
+                    title={"Edit company " + selectedCompany.title + "'s information"}
                     tryClose={() => setShowCompanyInfoDialog(false)}
                 >
                     <ShowCompanyInfo
@@ -226,12 +247,12 @@ const AdminInterface: React.FC = () => {
             )
         }
         {/* clients + employees + currier + offices */}
-        { isLoading ?
-            <SkeletonLoadingAnimation header="tabs" layoutItems={5} /> :
+        {isLoading ?
+            <SkeletonLoadingAnimation header="tabs" layoutItems={5}/> :
             data && Object.keys(data).length > 0 && selectedCompany && Object.keys(selectedCompany).length > 0 ?
 
                 data.map((individualData: item[], index: number) => {
-                    if( !individualData.length ) return;
+                    if (!individualData.length) return;
 
                     return (
                         <Table
@@ -292,11 +313,11 @@ const AdminInterface: React.FC = () => {
                         />
                     )
                 }) :
-                selectedCompany && <p>No data available!</p>
+                selectedCompany && !isFetchedUser && <p>No data available!</p>
         }
-        {isSearchingUser ?
+        {isLoadingUser ?
             <SkeletonLoadingAnimation header="tabs" layoutItems={5}/> :
-            searchData && Object.keys(searchData).length > 0 && !selectedCompany ?
+            searchData && Object.keys(searchData).length > 0 ?
                 <Table
                     columns={searchColumns}
                     categories={searchCategories}
@@ -305,8 +326,10 @@ const AdminInterface: React.FC = () => {
                     data={searchData.map((item) => ({
                         ...item,
                         category: "clients"
-                    }))}/> :
-            searchedUsername && searchData && !searchData?.length && !selectedCompany ?
+                    }))}
+                    selectedCompany={selectedCompany ?? undefined}
+                /> :
+                searchedUsername && searchData && !searchData?.length && !selectedCompany ?
                     <p>There is no found user with this username.</p> :
                     null
         }

@@ -43,7 +43,7 @@ export const createCompany = async (
     } catch (error) {
         return {
             message: '',
-            errors: error.message
+            errors: (error as Error).message
         };
     }
 };
@@ -128,6 +128,7 @@ export const addTariff = async (companyId: number, pricePerKG: number, officeDis
         };
     }
 }
+
 
 // COMPANY ACTIONS END
 

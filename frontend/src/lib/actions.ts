@@ -80,7 +80,7 @@ export const login = async (initialState: FormState, formData: FormData) => {
         // Handle any other potential errors
         return {
             message: "",
-            errors: error.message,
+            errors: (error as Error).message,
         };
     }
 }
@@ -170,7 +170,7 @@ export const register = async (initialState: FormState, formData: FormData) => {
         // Handle any other potential errors
         return {
             message: "",
-            errors: error.message,
+            errors: (error as Error).message,
         };
     }
 }
@@ -210,7 +210,7 @@ export const deleteUser = async (session: Session | null) => {
         // Handle any other potential errors
         return {
             message: "",
-            errors: error.message,
+            errors: (error as Error).message,
         };
 	}
 
@@ -395,7 +395,7 @@ export const createAnOrder = async (
 
         }
         return {
-            errors: error.message,
+            errors: (error as Error).message,
             message: ""
         }
 	}
@@ -491,7 +491,7 @@ export const editShipment = async (
     } catch ( error ) {
         return {
             message: "",
-            errors: error.message,
+            errors: (error as Error).message,
         };
     }
 }
