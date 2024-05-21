@@ -2,11 +2,13 @@ package com.nbu.logisticcompany.services;
 
 import com.nbu.logisticcompany.entities.Tariff;
 import com.nbu.logisticcompany.entities.User;
+import com.nbu.logisticcompany.exceptions.DuplicateEntityException;
 import com.nbu.logisticcompany.mock.TariffMockData;
 import com.nbu.logisticcompany.mock.UserMockData;
 import com.nbu.logisticcompany.repositories.interfaces.TariffsRepository;
 import com.nbu.logisticcompany.utils.Action;
 import com.nbu.logisticcompany.utils.ValidationUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,11 +61,13 @@ class TariffServiceImplTests {
         }
     }
 
-//    @Test
-//    void createShouldThrowIfTariffAlreadyExists() {
-//        Assertions.assertThrows(DuplicateEntityException.class,
-//                                () -> tariffService.create(TariffMockData.createTariff(), UserMockData.createMockAdmin()));
-//    }
+    @Test
+    void createShouldThrowIfTariffAlreadyExists() {
+        Mockito.when(tariffsRepository.getByCompany(Mockito.anyInt())).thenReturn(new Tariff());
+
+        Assertions.assertThrows(DuplicateEntityException.class,
+                                () -> tariffService.create(TariffMockData.createTariff(), UserMockData.createMockAdmin()));
+    }
 
     @Test
     void createShouldCallRepository() {
