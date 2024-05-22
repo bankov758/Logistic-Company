@@ -83,4 +83,5 @@ Serves for the management of processes in a logistics company. The main activity
 ![edit_shippment](https://github.com/bankov758/logistic-company/assets/80749603/1e477dfc-3bf0-4c2a-83b5-0fb295c6bf23)
 ![self_deletion](https://github.com/bankov758/logistic-company/assets/80749603/eef4c424-fb8e-4cfd-824f-e6678f7aa27c)
 ![admin_interface](https://github.com/bankov758/logistic-company/assets/80749603/ec2e80c0-5500-4003-aafc-bc232996e5f3)
+![final_baza_final](https://github.com/bankov758/logistic-company/assets/74242831/f158bf39-ed8a-40ea-b84d-de96c06f08d0)
 
