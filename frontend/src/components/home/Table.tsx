@@ -246,6 +246,7 @@ const Table: React.FC<TableProps> = ({
                                                                 return (
                                                                     <EmployeeInterfaceActionsButtons
                                                                         key={column.id}
+                                                                        status={rowItem?.status}
                                                                         onClick={(actionType) => handleAction(rowItem, actionType)}
                                                                     />
                                                                 )

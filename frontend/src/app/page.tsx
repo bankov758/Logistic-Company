@@ -9,10 +9,10 @@ import EmployeeInterface from "@/components/home/EmployeeInterface/EmployeeInter
 import AdminInterface from "@/components/home/AdminInterface/AdminInterface";
 import BaseDialog from "@/components/UI/BaseDialog";
 
-import type { Session } from '@/lib/auth';
+import type {Session} from '@/lib/auth';
 
 const Home: React.FC = () => {
-	const [session, setSession] = useState<null | Session>(null);
+    const [session, setSession] = useState<null | Session>(null);
     const [selectedInterface, setSelectedInterface] = useState<string | null>(null);
     const [showDialog, setShowDialog] = useState<boolean>(true);
     const [isResolved, setIsResolved] = useState(false)
@@ -31,7 +31,7 @@ const Home: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if( !session && isResolved) {
+        if (!session && isResolved) {
             redirect("/login")
         }
     }, [session, isResolved]);
@@ -43,23 +43,25 @@ const Home: React.FC = () => {
 
     return (
         <Fragment>
-            {	session && showDialog &&
+            {session && showDialog &&
                 <BaseDialog title="Choose an administrative role">
                     <div className="flex gap-x-3 justify-center items-center">
                         <button className="base-btn-blue" onClick={() => selectInterface('user')}>User</button>
-                        <button className="base-btn-blue" onClick={() => selectInterface('employee')}>Employee</button>
-                        {session.roles.includes("ADMIN") && <button className="base-btn-blue" onClick={() => selectInterface("admin")}>Admin</button>}
+                        {!session.roles.includes("ADMIN") && <button className="base-btn-blue"
+                                                                     onClick={() => selectInterface('employee')}>Employee</button>}
+                        {session.roles.includes("ADMIN") &&
+                            <button className="base-btn-blue" onClick={() => selectInterface("admin")}>Admin</button>}
                     </div>
                 </BaseDialog>
             }
             {
                 selectedInterface === "user" ?
-                    <ClientInterface /> :
-                selectedInterface === "employee" ?
-                    <EmployeeInterface /> :
-                selectedInterface === "admin" ?
-                    <AdminInterface /> :
-                    null
+                    <ClientInterface/> :
+                    selectedInterface === "employee" ?
+                        <EmployeeInterface/> :
+                        selectedInterface === "admin" ?
+                            <AdminInterface/> :
+                            null
             }
         </Fragment>
     );

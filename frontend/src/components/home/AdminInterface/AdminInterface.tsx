@@ -106,6 +106,7 @@ const AdminInterface: React.FC = () => {
     const handleClearUser = () => {
         setSearchedUsername('');
         setIsFetchedUser(false);
+        setSearchData([]);
         fetchData();
     }
 

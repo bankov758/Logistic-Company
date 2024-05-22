@@ -1,7 +1,7 @@
 import React from "react";
 import {ActionType} from "@/components/home/Table";
 
-const EmployeeInterfaceActionsButtons: React.FC<{ onClick: (actionType: ActionType | null) => void; }> = ({ onClick }) => {
+const EmployeeInterfaceActionsButtons: React.FC<{ onClick: (actionType: ActionType | null) => void; status?: string; }> = ({ onClick, status }) => {
 
     return (
         <td className='flex gap-x-2 justify-center items-center px-4 py-3 text-gray-500'>
@@ -12,12 +12,12 @@ const EmployeeInterfaceActionsButtons: React.FC<{ onClick: (actionType: ActionTy
                 Delete
             </button>
 
-            <button
+            {(!status || (status && status !== "Closed")) && <button
                 className="action_btn_blue"
                 onClick={() => onClick("editShipment")}
             >
                 Edit
-            </button>
+            </button>}
         </td>
     )
 }
